@@ -5,7 +5,7 @@ import Link from "next/link";
 export const Resume = () => {
   return (
     <Link
-      href="https://cv.anshori.co/"
+      href="https://cv.anshori.com/"
       target="_blank"
       className="group aspect-square w-[calc(50%-12px)] sm:w-48">
       <Card type="link" className="size-full items-center justify-center">
