@@ -70,13 +70,9 @@ export const Spotify = () => {
             <EqualizerAnimatedIcon />
 
             {!isCurrentlyPlaying ? (
-              <span className="font-medium text-neutral-500">
-                Offline. Recently played
-              </span>
+              <span className="text-neutral-500">Offline. Recently played</span>
             ) : (
-              <span className="font-medium text-neutral-500">
-                Currently playing
-              </span>
+              <span className="text-neutral-500">Currently playing</span>
             )}
           </div>
 
@@ -113,9 +109,7 @@ export const Spotify = () => {
             <EqualizerAnimatedIcon notAnimated />
 
             {isLoading && (
-              <span className="font-medium text-neutral-500">
-                Currently playing
-              </span>
+              <span className="text-neutral-500">Currently playing</span>
             )}
           </div>
 
