@@ -1,5 +1,11 @@
-import { ChevronDownIcon } from "lucide-react";
+import {
+  ChevronDownIcon,
+  MoreVerticalIcon,
+  PauseIcon,
+  PencilIcon,
+} from "lucide-react";
 import { Card } from "../ui/card";
+import { Button } from "../ui/button";
 
 export const AutomationCard = () => {
   return (
@@ -9,7 +15,7 @@ export const AutomationCard = () => {
           <Card className="bg-background flex w-full flex-col rounded-md border-l-4 border-l-[#4B86E3] p-4 py-4">
             <div className="grid grid-cols-[2rem_1fr] items-center gap-4">
               <ChevronDownIcon />
-              <div className="flex items-center justify-between gap-4">
+              <div className="flex justify-between gap-4">
                 <div className="flex flex-col gap-1">
                   <div className="flex items-center gap-1">
                     <h3 className="text-sm font-semibold">New Automation</h3>
@@ -19,10 +25,24 @@ export const AutomationCard = () => {
                   </div>
 
                   <p className="text-xs text-neutral-500">
-                    Trigger: Customer Never Engaged (24h).<br />
-                    Stop on reply: Yes.<br />
+                    Trigger: Customer Never Engaged (24h).
+                    <br />
+                    Stop on reply: Yes.
+                    <br />
                     Max runs: 1
                   </p>
+                </div>
+
+                <div className="flex gap-1">
+                  <Button variant="outline" size="icon" className="size-7">
+                    <PauseIcon className="size-4" />
+                  </Button>
+                  <Button variant="outline" size="icon" className="size-7">
+                    <PencilIcon className="size-4" />
+                  </Button>
+                  <Button variant="outline" size="icon" className="size-7">
+                    <MoreVerticalIcon className="size-4" />
+                  </Button>
                 </div>
               </div>
             </div>
