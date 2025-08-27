@@ -61,7 +61,7 @@ const MapController = ({
       const THROTTLE_MS = 600;
       if (now - lastFlyRef.current < THROTTLE_MS) return;
       lastFlyRef.current = now;
-    } catch (e) {
+    } catch {
       // If anything goes wrong reading the map, fall back to a single view change
     }
 
