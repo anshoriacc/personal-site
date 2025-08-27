@@ -11,7 +11,8 @@ import { AutomationCard } from "@/components/covena/automation-card";
 
 export const metadata: Metadata = {
   title: "My Perspective on Covena CRM's User Experience",
-  description: "a Software Engineer, Frontend.",
+  description:
+    "I highlight key opportunities to improve the clarity, hierarchy, and usability of three Covena CRM screens: Automations, Analytics, and Conversations. The goal is to create a more intuitive flow, reduce visual clutter, and strengthen the overall user experience while maintaining consistency with modern design standards.",
 };
 
 export default async function CovenaPage() {
