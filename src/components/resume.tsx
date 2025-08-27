@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { Card } from "./ui/card";
+import { Card } from "./ui/card-home";
 import Link from "next/link";
 
 export const Resume = () => {

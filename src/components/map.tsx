@@ -8,7 +8,7 @@ import {
   TileLayer,
   useMap,
 } from "react-leaflet";
-import { LatLngExpression, Map as TMap } from "leaflet";
+import { LatLngExpression, Map as TMap, latLng } from "leaflet";
 import { cn } from "@/lib/utils";
 
 type TView = {
@@ -28,14 +28,51 @@ const MapController = ({
   indonesiaView,
 }: MapControllerProps) => {
   const map = useMap();
+  const lastFlyRef = useRef<number>(0);
+  const prevIsHovered = useRef<boolean>(isHovered);
 
   useEffect(() => {
-    if (isHovered) {
-      map.flyTo(jakartaView.center, jakartaView.zoom, { duration: 1 });
-    } else {
-      map.flyTo(indonesiaView.center, indonesiaView.zoom, { duration: 1 });
+    // Only react to actual hover state transitions
+    const entering = isHovered && !prevIsHovered.current;
+    const leaving = !isHovered && prevIsHovered.current;
+
+    // Update prev for next run
+    prevIsHovered.current = isHovered;
+
+    if (!entering && !leaving) return;
+
+    // Choose target view based on current hover state
+    const target = isHovered ? jakartaView : indonesiaView;
+
+    // Avoid calling flyTo if we're already very close to the target view
+    try {
+      const currentZoom = map.getZoom();
+      const currentCenter = map.getCenter();
+      const targetLatLng = latLng(target.center as LatLngExpression);
+      const centerDistance = currentCenter.distanceTo(targetLatLng);
+
+      const zoomDiff = Math.abs(currentZoom - target.zoom);
+
+      // If both zoom and center are already very close, skip the animation
+      if (zoomDiff < 0.2 && centerDistance < 100) return;
+
+      // Throttle repeated toggles to avoid interrupting animations constantly
+      const now = Date.now();
+      const THROTTLE_MS = 600;
+      if (now - lastFlyRef.current < THROTTLE_MS) return;
+      lastFlyRef.current = now;
+    } catch (e) {
+      // If anything goes wrong reading the map, fall back to a single view change
     }
-  }, [indonesiaView, isHovered, jakartaView, map]);
+
+    if (entering) {
+      // Smooth zoom in when user intentionally hovered — use setView with animate
+      map.setView(target.center as LatLngExpression, target.zoom, { animate: true });
+    } else {
+      // On leave, snap back instantly to avoid interrupting animations
+      map.setView(target.center as LatLngExpression, target.zoom, { animate: false });
+    }
+  }, [isHovered, jakartaView, indonesiaView, map]);
 
   return null;
 };

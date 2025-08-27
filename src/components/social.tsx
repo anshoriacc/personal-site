@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { GithubIcon } from "./svg/github-icon";
 import { LinkedinIcon } from "./svg/linkedin-icon";
 import { MailIcon } from "./svg/mail-icon";
-import { Card } from "./ui/card";
+import { Card } from "./ui/card-home";
 
 export const Social = () => {
   return (

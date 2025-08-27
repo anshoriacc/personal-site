@@ -6,7 +6,7 @@ import { Fragment, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { useGetCurrentlyPlayingQuery } from "@/hooks/api/spotify";
 import { EqualizerAnimatedIcon } from "./svg/equalizer-animated-icon";
-import { Card } from "./ui/card";
+import { Card } from "./ui/card-home";
 
 export const Spotify = () => {
   const { data, isLoading } = useGetCurrentlyPlayingQuery();
