@@ -135,7 +135,7 @@ export default async function CovenaPage() {
         (AI Agent, ongoing-qa, etc). I think we need to unify it to reduce
         noise. Second one is the time semantics on chat list, I think we need to
         add a hover effect to show the complete time information. This way,
-        users can quickly scan relative times (like "2h ago") but still access
+        users can quickly scan relative times (like &quot;2h ago&quot;) but still access
         the exact timestamp when needed, improving clarity without cluttering
         the UI.
       </p>
@@ -177,7 +177,7 @@ export default async function CovenaPage() {
 
       <p>
         The colors need to improve because purple and blue are low contrast
-        (even tho I know its Covena's color brand), but I think user's
+        (even tho I know its Covena&apos;s color brand), but I think user&apos;s
         accessibility and readability should take priority. Consider using
         higher contrast colors or providing alternative color schemes for better
         visibility, especially for users with visual impairments.
