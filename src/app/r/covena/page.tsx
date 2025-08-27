@@ -26,7 +26,7 @@ export default async function CovenaPage() {
         "[&_figcaption]:mt-2 [&_figcaption]:text-center [&_figcaption]:text-xs [&_figcaption]:text-neutral-500",
       )}>
       <div className="space-y-6">
-        <h1>My Perspective on Covena CRM's User Experience</h1>
+        <h1>My Perspective on Covena CRM&apos;s User Experience</h1>
 
         <p>
           I highlight key opportunities to improve the clarity, hierarchy, and
@@ -76,7 +76,7 @@ export default async function CovenaPage() {
       </p>
 
       <p>
-        Logout button also destructive to the current sessions, so it's better
+        Logout button also destructive to the current sessions, so it&apos;s better
         hiding inside a dropdown menu to reduce accidental clicks. I think this
         patterns is widely used in so many web app nowadays. We can see the
         improved placement from the example provided below.
