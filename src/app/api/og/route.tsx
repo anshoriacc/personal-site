@@ -1,4 +1,4 @@
-import { NEXT_PUBLIC_BASE_URL } from "@/constants/env";
+import { BASE_URL } from "@/constants/env";
 import { ImageResponse } from "next/og";
 
 export async function GET(req: Request) {
@@ -6,7 +6,7 @@ export async function GET(req: Request) {
   const title = searchParams.get("title");
   const subtitle = searchParams.get("subtitle");
 
-  const baseUrl = NEXT_PUBLIC_BASE_URL ?? "https://anshori.com";
+  const baseUrl = BASE_URL ?? "https://anshori.com";
 
   return new ImageResponse(
     (
@@ -26,9 +26,9 @@ export async function GET(req: Request) {
           tw={title ? "absolute top-8 right-8" : ""}
         />
 
-        <div tw="absolute bottom-8 left-8 text-3xl flex flex-col text-neutral-500">
-          <span tw="text-white">anshori</span>
-          <span tw="text-xl">Software Engineer</span>
+        <div tw="absolute bottom-8 left-8 flex flex-col text-neutral-500">
+          <span tw="text-white text-5xl">anshori</span>
+          <span tw="text-4xl">Software Engineer</span>
         </div>
       </div>
     ),
