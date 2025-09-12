@@ -54,6 +54,7 @@ export const Spotify = () => {
       <Link
         href="/spotify"
         target="_blank"
+        rel="noopener noreferrer"
         className="absolute top-3 right-3 size-7"
         title="go to my spotify profile">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
@@ -76,23 +77,26 @@ export const Spotify = () => {
             )}
           </div>
 
-          <Link
+          <a
             href={song?.external_urls?.spotify ?? "#"}
             target="_blank"
+            rel="noopener noreferrer"
             title={`open ${song?.name} by ${artistsName} in spotify web player`}
             className="line-clamp-1 w-fit text-2xl font-bold">
             {song?.name}
-          </Link>
+          </a>
 
           <div className="line-clamp-1 w-fit text-lg font-semibold text-neutral-500">
             {artists?.map(artist => (
               <Fragment key={artist.id}>
-                <Link
+                <a
                   href={artist.external_urls?.spotify ?? "#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   title={`go to ${artist.name} spotify page`}
                   className="group">
                   {artist.name}
-                </Link>
+                </a>
 
                 <span className="last:hidden">{", "}</span>
               </Fragment>
