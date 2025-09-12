@@ -17,7 +17,7 @@ export const Card = ({
     <div
       ref={ref}
       className={cn(
-        "group relative flex flex-col gap-4 overflow-hidden rounded-[26px] bg-neutral-900 p-6 transition-all duration-300 **:transition-all",
+        "group relative border border-border flex flex-col gap-4 overflow-hidden rounded-[26px] bg-neutral-900 p-6 transition-all duration-300 **:transition-all",
         className,
       )}
       {...props}>

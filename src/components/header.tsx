@@ -24,7 +24,7 @@ export const Header = () => {
       animate={{ width: isActive ? 138 : 98 }}
       transition={{ type: "spring", duration: 0.5 }}
       className={cn(
-        "fixed left-1/2 top-4 z-404 flex h-10 -translate-x-1/2 items-center justify-between gap-4 rounded-full px-2 text-neutral-50 shadow-md border border-white/10 backdrop-blur-xl bg-background/5",
+        "fixed left-1/2 top-6 z-404 flex h-10 -translate-x-1/2 items-center justify-between gap-4 rounded-full px-2 text-neutral-50 shadow-md border border-white/10 backdrop-blur-xl bg-background/5",
       )}>
       <Link href="/" className="overflow-hidden">
         <svg className="pointer-events-none h-5 w-20 fill-neutral-50">
