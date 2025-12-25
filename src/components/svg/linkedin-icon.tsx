@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-export const LinkedinIcon = ({
+export const LinkedInIcon = ({
   className,
   ...props
 }: React.SVGProps<SVGSVGElement>) => {

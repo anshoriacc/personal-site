@@ -15,7 +15,7 @@ const nextConfig: NextConfig = {
     },
     {
       source: "/linkedin",
-      destination: "https://www.linkedin.com/in/achmad-anshori/",
+      destination: "https://www.linkedin.com/in/achmad-anshori",
       permanent: true,
     },
   ],

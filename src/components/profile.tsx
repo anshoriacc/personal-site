@@ -1,33 +1,71 @@
-import React from "react";
-import { Card } from "./ui/card-home";
+import Link from "next/link";
+
 import { cn } from "@/lib/utils";
-import { BackgroundBeams } from "./ui/background-beams";
+import { Button } from "./ui/button";
+import { MailIcon } from "./svg/mail-icon";
+import { GithubIcon } from "./svg/github-icon";
+import { LinkedInIcon } from "./svg/linkedin-icon";
 
 export const Profile = () => {
   return (
-    <Card className="h-48 w-full gap-1 sm:w-[calc(100%-216px)]">
-      <div className="z-1 flex flex-col">
-        <h1 className="text-xl font-bold">Achmad Anshori</h1>
-        <h2>
-          <span className="text-lg font-semibold text-neutral-500">
-            Software Engineer, Frontend
-          </span>
-        </h2>
+    <section className="space-y-6">
+      <div>
+        <h1 className="sm:text-lg font-semibold">Achmad Anshori</h1>
+        <p className="text-sm sm:text-base text-muted-foreground">
+          Software Engineer
+        </p>
       </div>
-
-      <div className="z-1 h-[1px] bg-neutral-800" />
 
       <p
         className={cn(
-          "z-1 text-neutral-500",
-          "[&_span:hover]:text-neutral-50 [&_span:hover]:transition-all [&_span:hover]:duration-300",
-        )}>
-        a <span>software engineer</span> with{" "}
-        <span>3 years of hands on experience</span>. Interested in{" "}
-        <span>react</span>, <span>next.js</span>, and <span>node.js</span>.
+          "z-1 text-muted-foreground",
+          "[&_span:hover]:text-foreground"
+        )}
+      >
+        I'm a <span>software engineer</span> with more than 3 years of
+        experience. I craft delightful user experiences with <span>React</span>{" "}
+        and modern <span>JavaScript</span>. Currently based in{" "}
+        <span>Jakarta, Indonesia</span>.
       </p>
 
-      <BackgroundBeams className="z-0" />
-    </Card>
+      <div className="flex gap-2">
+        <Button
+          variant="secondary"
+          size="sm"
+          className="rounded-3xl gap-1"
+          asChild
+        >
+          <Link href="mailto:anshoriacc@gmail.com">
+            <MailIcon className="size-4" />
+            Mail
+          </Link>
+        </Button>
+        <Button
+          variant="secondary"
+          size="sm"
+          className="rounded-3xl gap-1"
+          asChild
+        >
+          <Link href="/github" target="_blank">
+            <GithubIcon className="size-4" />
+            GitHub
+          </Link>
+        </Button>
+        <Button
+          variant="secondary"
+          size="sm"
+          className="rounded-3xl gap-1"
+          asChild
+        >
+          <Link
+            href="/linkedin"
+            target="_blank"
+          >
+            <LinkedInIcon className="size-5" />
+            LinkedIn
+          </Link>
+        </Button>
+      </div>
+    </section>
   );
 };
