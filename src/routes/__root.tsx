@@ -2,7 +2,7 @@ import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 
-import { ThemeProvider } from '../components/theme-provider'
+import { Providers } from '../components/providers'
 import { getThemeServerFn } from '../lib/theme'
 import appCss from '../styles.css?url'
 
@@ -11,14 +11,19 @@ export const Route = createRootRoute({
   head: () => ({
     meta: [
       {
-        charSet: 'utf-8',
+        title: 'Achmad Anshori',
       },
+      { name: 'description', content: 'Achmad Anshori Personal Website' },
+      { property: 'og:title', content: 'Achmad Anshori' },
       {
-        name: 'viewport',
-        content: 'width=device-width, initial-scale=1',
+        property: 'og:description',
+        content: 'Achmad Anshori Personal Website',
       },
+      { property: 'og:type', content: 'website' },
+      { property: 'og:url', content: 'https://anshori.com' },
       {
-        title: 'TanStack Start Starter',
+        property: 'og:image',
+        content: 'https://anshori.com/og-image.png',
       },
     ],
     links: [
@@ -28,24 +33,26 @@ export const Route = createRootRoute({
       },
     ],
   }),
-
   shellComponent: RootDocument,
+  notFoundComponent: () => <div>404 Not Found</div>,
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   const theme = Route.useLoaderData()
-  
+
   return (
     <html lang="en" className={theme} suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
+
       <body>
-        <ThemeProvider theme={theme}>
+        <Providers theme={theme}>
           {children}
+
           <TanStackDevtools
             config={{
-              position: 'bottom-right',
+              position: 'bottom-left',
             }}
             plugins={[
               {
@@ -54,7 +61,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
               },
             ]}
           />
-        </ThemeProvider>
+        </Providers>
         <Scripts />
       </body>
     </html>

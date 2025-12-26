@@ -8,12 +8,13 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { useTheme } from '@/components/theme-provider'
+import { useTheme, useSetTheme } from '@/stores/theme.store'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { MoonIcon, SunIcon } from '@hugeicons/core-free-icons'
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme()
+  const theme = useTheme()
+  const setTheme = useSetTheme()
 
   return (
     <DropdownMenu>
