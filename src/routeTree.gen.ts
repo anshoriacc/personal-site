@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as homeLayoutRouteImport } from './routes/(home)/_layout'
 import { Route as homeLayoutIndexRouteImport } from './routes/(home)/_layout.index'
+import { Route as homeLayoutProjectsRouteImport } from './routes/(home)/_layout.projects'
 
 const homeLayoutRoute = homeLayoutRouteImport.update({
   id: '/(home)/_layout',
@@ -21,24 +22,36 @@ const homeLayoutIndexRoute = homeLayoutIndexRouteImport.update({
   path: '/',
   getParentRoute: () => homeLayoutRoute,
 } as any)
+const homeLayoutProjectsRoute = homeLayoutProjectsRouteImport.update({
+  id: '/projects',
+  path: '/projects',
+  getParentRoute: () => homeLayoutRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
+  '/projects': typeof homeLayoutProjectsRoute
   '/': typeof homeLayoutIndexRoute
 }
 export interface FileRoutesByTo {
+  '/projects': typeof homeLayoutProjectsRoute
   '/': typeof homeLayoutIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/(home)/_layout': typeof homeLayoutRouteWithChildren
+  '/(home)/_layout/projects': typeof homeLayoutProjectsRoute
   '/(home)/_layout/': typeof homeLayoutIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/projects' | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/(home)/_layout' | '/(home)/_layout/'
+  to: '/projects' | '/'
+  id:
+    | '__root__'
+    | '/(home)/_layout'
+    | '/(home)/_layout/projects'
+    | '/(home)/_layout/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -61,14 +74,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof homeLayoutIndexRouteImport
       parentRoute: typeof homeLayoutRoute
     }
+    '/(home)/_layout/projects': {
+      id: '/(home)/_layout/projects'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof homeLayoutProjectsRouteImport
+      parentRoute: typeof homeLayoutRoute
+    }
   }
 }
 
 interface homeLayoutRouteChildren {
+  homeLayoutProjectsRoute: typeof homeLayoutProjectsRoute
   homeLayoutIndexRoute: typeof homeLayoutIndexRoute
 }
 
 const homeLayoutRouteChildren: homeLayoutRouteChildren = {
+  homeLayoutProjectsRoute: homeLayoutProjectsRoute,
   homeLayoutIndexRoute: homeLayoutIndexRoute,
 }
 

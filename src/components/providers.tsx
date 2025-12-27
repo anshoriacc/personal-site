@@ -1,6 +1,6 @@
 import { type PropsWithChildren, useEffect } from 'react'
 import { useThemeStore } from '@/stores/theme.store'
-import { type TTheme } from '@/lib/theme'
+import { type TTheme } from '@/server/theme'
 
 type Props = PropsWithChildren<{ theme: TTheme }>
 

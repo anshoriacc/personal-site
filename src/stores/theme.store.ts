@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { setThemeServerFn, type TTheme } from '@/lib/theme'
+import { setThemeServerFn, type TTheme } from '@/server/theme'
 
 interface ThemeStore {
   theme: TTheme
