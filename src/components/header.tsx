@@ -58,15 +58,18 @@ export const Header = ({ constraintsRef }: Props) => {
   const [variantKey, setVariantKey] = React.useState<string>('idle')
   const isMobile = useIsMobile()
 
+  const headerRef = React.useRef<HTMLElement>(null)
   const hoverTimeoutRef = React.useRef<NodeJS.Timeout | null>(null)
   const isHoveringRef = React.useRef(false)
 
-  const handleViewChange = (newView: ViewState) => {
-    if (newView === view) return
-
-    setView(newView)
-    setVariantKey(`${view}-${newView}`)
-  }
+  const handleViewChange = React.useCallback(
+    (newView: ViewState) => {
+      if (newView === view) return
+      setVariantKey(`${view}-${newView}`)
+      setView(newView)
+    },
+    [view],
+  )
 
   const handleMouseEnter = () => {
     if (isMobile) return
@@ -96,12 +99,25 @@ export const Header = ({ constraintsRef }: Props) => {
   }
 
   React.useEffect(() => {
+    if (view !== 'expanded') return
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        headerRef.current &&
+        !headerRef.current.contains(event.target as Node)
+      ) {
+        handleViewChange('idle')
+      }
+    }
+
+    document.addEventListener('click', handleClickOutside, true)
     return () => {
+      document.removeEventListener('click', handleClickOutside, true)
       if (hoverTimeoutRef.current) {
         clearTimeout(hoverTimeoutRef.current)
       }
     }
-  }, [])
+  }, [view, handleViewChange])
 
   const renderContent = (viewState: ViewState) => {
     if (viewState === 'idle') {
@@ -161,14 +177,15 @@ export const Header = ({ constraintsRef }: Props) => {
     <MotionConfig transition={{ type: 'spring', bounce: 0.2, duration: 0.3 }}>
       <motion.div className="pointer-events-none select-none fixed top-6 left-0 z-1 flex w-full group cursor-default">
         <motion.header
+          ref={headerRef}
           // drag // for development purpose
           dragConstraints={constraintsRef}
           layout
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
-          onClick={(e) => {
-            if (isMobile && e.target === e.currentTarget) {
-              handleViewChange(view === 'idle' ? 'expanded' : 'idle')
+          onClick={() => {
+            if (isMobile && view === 'idle') {
+              handleViewChange('expanded')
             }
           }}
           transition={{
