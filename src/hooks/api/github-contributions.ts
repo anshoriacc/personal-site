@@ -1,7 +1,10 @@
 import { getGithubContributions } from '@/server/github-contributions'
-import { queryOptions } from '@tanstack/react-query'
+import { queryOptions, useQuery } from '@tanstack/react-query'
 
 export const getGithubContributionsQueryOptions = queryOptions({
   queryKey: ['github-contributions'],
-  queryFn: () => getGithubContributions(),
+  queryFn: getGithubContributions,
 })
+
+export const useGetGithubContributionsQuery = () =>
+  useQuery(getGithubContributionsQueryOptions)

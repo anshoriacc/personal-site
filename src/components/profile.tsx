@@ -30,7 +30,7 @@ export const Profile = () => {
         <span>Jakarta, Indonesia</span>.
       </p>
 
-      <div className="flex gap-2">
+      <div className="flex gap-2 flex-wrap">
         <Button
           variant="secondary"
           className="gap-1"

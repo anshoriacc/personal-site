@@ -159,7 +159,7 @@ export const Header = ({ constraintsRef }: Props) => {
 
   return (
     <MotionConfig transition={{ type: 'spring', bounce: 0.2, duration: 0.3 }}>
-      <div className="pointer-events-none fixed top-6 left-0 z-1 flex w-full group cursor-default">
+      <motion.div className="pointer-events-none select-none fixed top-6 left-0 z-1 flex w-full group cursor-default">
         <motion.header
           // drag // for development purpose
           dragConstraints={constraintsRef}
@@ -239,7 +239,7 @@ export const Header = ({ constraintsRef }: Props) => {
             )}
           </AnimatePresence>
         </div> */}
-      </div>
+      </motion.div>
     </MotionConfig>
   )
 }
