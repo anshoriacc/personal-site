@@ -21,15 +21,15 @@ export const EqualizerAnimatedIcon = ({
             <animate
               attributeName="y"
               begin="0s"
-              dur="0.6s"
-              values="6;4;6;8;6"
+              dur="0.9s"
+              values="6;2;6;10;6"
               repeatCount="indefinite"
             />
             <animate
               attributeName="height"
               begin="0s"
-              dur="0.6s"
-              values="12;16;12;8;12"
+              dur="0.9s"
+              values="12;20;12;6;12"
               repeatCount="indefinite"
             />
           </>
@@ -47,16 +47,16 @@ export const EqualizerAnimatedIcon = ({
           <>
             <animate
               attributeName="y"
-              begin="0.2s"
-              dur="0.6s"
-              values="6;8;6;4;6"
+              begin="0.25s"
+              dur="0.9s"
+              values="6;10;6;2;6"
               repeatCount="indefinite"
             />
             <animate
               attributeName="height"
-              begin="0.2s"
-              dur="0.6s"
-              values="12;8;12;16;12"
+              begin="0.25s"
+              dur="0.9s"
+              values="12;6;12;20;12"
               repeatCount="indefinite"
             />
           </>
@@ -74,16 +74,16 @@ export const EqualizerAnimatedIcon = ({
           <>
             <animate
               attributeName="y"
-              begin="0.4s"
-              dur="0.6s"
-              values="6;4;6;8;6"
+              begin="0.5s"
+              dur="0.9s"
+              values="6;2;6;10;6"
               repeatCount="indefinite"
             />
             <animate
               attributeName="height"
-              begin="0.4s"
-              dur="0.6s"
-              values="12;16;12;8;12"
+              begin="0.5s"
+              dur="0.9s"
+              values="12;20;12;6;12"
               repeatCount="indefinite"
             />
           </>

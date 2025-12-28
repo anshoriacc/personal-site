@@ -1,5 +1,5 @@
 import React from "react";
-import { Card } from "./ui/card";
+import { Card } from "./ui/card-home";
 import { cn } from "@/lib/utils";
 import { BackgroundBeams } from "./ui/background-beams";
 

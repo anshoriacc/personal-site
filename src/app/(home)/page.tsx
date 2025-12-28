@@ -1,8 +1,4 @@
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryClient,
-} from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
 
 import { getCurrentlyPlaying } from "@/data/spotify";
 import { Location } from "@/components/location";
@@ -21,16 +17,13 @@ export default async function HomePage() {
   });
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <main className="flex flex-wrap gap-6">
-        <Profile />
-
-        <Location />
-        <Resume />
-        <Social />
-        <Spotify />
-        <MoreTiles />
-      </main>
-    </HydrationBoundary>
+    <main className="flex flex-wrap gap-6">
+      <Profile />
+      <Location />
+      <Resume />
+      <Social />
+      <Spotify />
+      <MoreTiles />
+    </main>
   );
 }

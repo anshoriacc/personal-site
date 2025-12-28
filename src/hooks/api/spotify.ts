@@ -5,5 +5,5 @@ export const useGetCurrentlyPlayingQuery = () =>
   useQuery({
     queryKey: ["currently-playing"],
     queryFn: getCurrentlyPlaying,
-    refetchInterval: 15 * 1000, // 30 seconds
+    staleTime: 30 * 1000,
   });
