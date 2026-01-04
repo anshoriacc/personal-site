@@ -10,7 +10,7 @@
     "lint": "eslint",
     "format": "prettier",
     "check": "prettier --write . && eslint --fix",
-    "start": "node --env-file=.env .output/server/index.mjs"
+    "start": "node .output/server/index.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.0.0",
@@ -59,8 +59,5 @@
     "vite": "^7.1.7",
     "vitest": "^3.0.5",
     "web-vitals": "^5.1.0"
-  },
-  "engines": {
-    "node": ">=22.0.0"
   }
 }
