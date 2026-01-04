@@ -1,12 +1,8 @@
-import {
-  GithubIcon,
-  Linkedin02Icon,
-  Mail01Icon,
-} from '@hugeicons/core-free-icons'
-import { HugeiconsIcon } from '@hugeicons/react'
-
 import { cn } from '@/lib/utils'
 import { Button } from './ui/button'
+import { MailIcon } from './svg/mail-icon'
+import { GithubIcon } from './svg/github-icon'
+import { LinkedInIcon } from './svg/linkedin-icon'
 
 export const Profile = () => {
   return (
@@ -36,15 +32,22 @@ export const Profile = () => {
           className="gap-1"
           render={<a href="mailto:anshoriacc@gmail.com" />}
         >
-          <HugeiconsIcon icon={Mail01Icon} strokeWidth={2} />
+          <MailIcon className="size-4" />
           Mail
         </Button>
         <Button
           variant="secondary"
           className="gap-1"
-          render={<a href="https://github.com/anshoriacc" target="_blank" />}
+          render={
+            <a
+              href="https://github.com/anshoriacc"
+              target="_blank"
+              rel="noreferrer"
+              className="cursor-external-link"
+            />
+          }
         >
-          <HugeiconsIcon icon={GithubIcon} strokeWidth={2} />
+          <GithubIcon className="size-4" />
           GitHub
         </Button>
         <Button
@@ -54,10 +57,12 @@ export const Profile = () => {
             <a
               href="https://www.linkedin.com/in/achmad-anshori"
               target="_blank"
+              rel="noreferrer"
+              className="cursor-external-link"
             />
           }
         >
-          <HugeiconsIcon icon={Linkedin02Icon} strokeWidth={2} />
+          <LinkedInIcon className="size-4" />
           LinkedIn
         </Button>
       </div>

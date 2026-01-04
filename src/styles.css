@@ -129,3 +129,13 @@
     @apply font-sans;
   }
 }
+
+@layer utilities {
+  .cursor-external-link {
+    cursor: url('/cursors/external.svg') 4 2, pointer;
+  }
+
+  .dark .cursor-external-link {
+    cursor: url('/cursors/external-dark.svg') 4 2, pointer;
+  }
+}

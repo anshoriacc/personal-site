@@ -14,13 +14,14 @@ export const GitHubContributions = () => {
   const githubContributionsQuery = useGetGithubContributionsQuery()
 
   const today = dayjs()
+  const endOfToday = today.endOf('day')
   const oneYearAgo = today.subtract(365, 'day')
 
   const contributions =
     githubContributionsQuery.data?.contributions
       ?.filter((contribution) => {
         const date = dayjs(contribution.date)
-        return date.isAfter(oneYearAgo) && date.isBefore(today.add(1, 'day'))
+        return date.isAfter(oneYearAgo) && date.isBefore(endOfToday)
       })
       .sort((a, b) => dayjs(a.date).diff(dayjs(b.date))) || []
 
@@ -79,7 +80,7 @@ export const GitHubContributions = () => {
                 ))}
               </div>
 
-              <TooltipProvider>
+              <TooltipProvider delay={100}>
                 <div
                   className="grid grid-rows-7 grid-flow-col gap-0.5 pb-2"
                   style={{
@@ -88,7 +89,11 @@ export const GitHubContributions = () => {
                 >
                   {lastYearContributions.map((contribution, index) =>
                     contribution ? (
-                      <Tooltip key={contribution.date} disableHoverablePopup>
+                      <Tooltip
+                        key={contribution.date}
+                        disableHoverablePopup
+                        withoutProviders
+                      >
                         <TooltipTrigger
                           render={
                             <span

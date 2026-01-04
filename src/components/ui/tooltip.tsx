@@ -15,7 +15,14 @@ function TooltipProvider({
   )
 }
 
-function Tooltip({ ...props }: TooltipPrimitive.Root.Props) {
+function Tooltip({
+  withoutProviders,
+  ...props
+}: TooltipPrimitive.Root.Props & { withoutProviders?: boolean }) {
+  if (withoutProviders) {
+    return <TooltipPrimitive.Root data-slot="tooltip" {...props} />
+  }
+
   return (
     <TooltipProvider>
       <TooltipPrimitive.Root data-slot="tooltip" {...props} />

@@ -23,7 +23,7 @@ function HomeLayout() {
           className="absolute inset-0 dark:hidden"
           style={{
             background:
-              'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(50, 50, 50, 0.15), transparent 66%), transparent',
+              'radial-gradient(ellipse 60% 30% at 50% 0%, rgba(50, 50, 50, 0.15), transparent 66%), transparent',
           }}
         />
 
@@ -31,7 +31,7 @@ function HomeLayout() {
           className="absolute inset-0 hidden dark:block"
           style={{
             background:
-              'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(200, 200, 200, 0.05), transparent 66%), transparent',
+              'radial-gradient(ellipse 60% 30% at 50% 0%, rgba(200, 200, 200, 0.05), transparent 66%), transparent',
           }}
         />
       </motion.div>
