@@ -9,10 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as HealthRouteImport } from './routes/health'
 import { Route as homeLayoutRouteImport } from './routes/(home)/_layout'
 import { Route as homeLayoutIndexRouteImport } from './routes/(home)/_layout.index'
 import { Route as homeLayoutProjectsRouteImport } from './routes/(home)/_layout.projects'
 
+const HealthRoute = HealthRouteImport.update({
+  id: '/health',
+  path: '/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const homeLayoutRoute = homeLayoutRouteImport.update({
   id: '/(home)/_layout',
   getParentRoute: () => rootRouteImport,
@@ -29,37 +35,49 @@ const homeLayoutProjectsRoute = homeLayoutProjectsRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/health': typeof HealthRoute
   '/projects': typeof homeLayoutProjectsRoute
   '/': typeof homeLayoutIndexRoute
 }
 export interface FileRoutesByTo {
+  '/health': typeof HealthRoute
   '/projects': typeof homeLayoutProjectsRoute
   '/': typeof homeLayoutIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/health': typeof HealthRoute
   '/(home)/_layout': typeof homeLayoutRouteWithChildren
   '/(home)/_layout/projects': typeof homeLayoutProjectsRoute
   '/(home)/_layout/': typeof homeLayoutIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/projects' | '/'
+  fullPaths: '/health' | '/projects' | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/projects' | '/'
+  to: '/health' | '/projects' | '/'
   id:
     | '__root__'
+    | '/health'
     | '/(home)/_layout'
     | '/(home)/_layout/projects'
     | '/(home)/_layout/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  HealthRoute: typeof HealthRoute
   homeLayoutRoute: typeof homeLayoutRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/health': {
+      id: '/health'
+      path: '/health'
+      fullPath: '/health'
+      preLoaderRoute: typeof HealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/(home)/_layout': {
       id: '/(home)/_layout'
       path: ''
@@ -99,6 +117,7 @@ const homeLayoutRouteWithChildren = homeLayoutRoute._addFileChildren(
 )
 
 const rootRouteChildren: RootRouteChildren = {
+  HealthRoute: HealthRoute,
   homeLayoutRoute: homeLayoutRouteWithChildren,
 }
 export const routeTree = rootRouteImport
