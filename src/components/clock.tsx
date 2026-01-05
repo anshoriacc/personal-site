@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 import { cn } from '@/lib/utils'
 import {
@@ -17,34 +17,29 @@ export const Clock = ({ className }: Props) => {
   const isNight = useIsNightTime()
   const hourRotation = useHourRotation()
   const minuteRotation = useMinuteRotation()
-  const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {
-    // Update immediately on mount to sync with current time
     updateTime()
-    setIsClient(true)
-    
+
     const timer = setInterval(() => updateTime(), 10)
     return () => clearInterval(timer)
   }, [updateTime])
 
   return (
     <>
-      <svg viewBox="0 0 100 100" className={cn('size-7', className)}>
-        <circle
-          id="clock-circle"
-          cx="50"
-          cy="50"
-          r="50"
+      <svg
+        viewBox="0 0 100 100"
+        className={cn('size-7 overflow-hidden rounded-md', className)}
+      >
+        <rect
+          id="clock"
+          x="0"
+          y="0"
+          width="100"
+          height="100"
           fill="currentColor"
-          className={cn(
-            isClient && (
-              isNight
-              ? 'fill-sky-400 dark:fill-sky-600'
-              : 'fill-amber-400 dark:fill-amber-500'
-            ),
-          )}
-          />
+          className={cn(isNight ? 'fill-sky-500' : 'fill-amber-500')}
+        />
         <circle cx="50" cy="50" r="2" fill="currentColor" />
         <line
           id="hour-hand"
@@ -56,7 +51,12 @@ export const Clock = ({ className }: Props) => {
           strokeWidth="3"
           strokeLinecap="round"
           transform={`rotate(${hourRotation}, 50, 50)`}
-          />
+          // className={cn(
+          //   isNight
+          //     ? 'stroke-sky-800 dark:stroke-sky-900'
+          //     : 'stroke-amber-800 dark:stroke-amber-900',
+          // )}
+        />
         <line
           id="minute-hand"
           x1="50"
@@ -67,7 +67,12 @@ export const Clock = ({ className }: Props) => {
           strokeWidth="2"
           strokeLinecap="round"
           transform={`rotate(${minuteRotation}, 50, 50)`}
-          />
+          // className={cn(
+          //   isNight
+          //     ? 'stroke-sky-300 dark:stroke-sky-200'
+          //     : 'stroke-amber-300 dark:stroke-amber-200',
+          // )}
+        />
       </svg>
 
       <ClockScript />
@@ -87,7 +92,7 @@ export const ClockScript = () => (
 
         const hourEl = document.getElementById('hour-hand')
         const minuteEl = document.getElementById('minute-hand')
-        const clockCircle = document.getElementById('clock-circle')
+        const clockCircle = document.getElementById('clock')
 
         if (hourEl) {
           const hr = h * 30 + m * 0.5
@@ -101,14 +106,7 @@ export const ClockScript = () => (
 
         if (clockCircle) {
           const isNight = fullHours >= 18 || fullHours < 4
-          const isDark = document.documentElement.classList.contains('dark')
-          const colorClass = isNight
-            ? isDark
-              ? 'fill-sky-600'
-              : 'fill-sky-400'
-            : isDark
-              ? 'fill-amber-500'
-              : 'fill-amber-400'
+          const colorClass = isNight ? 'fill-sky-500' : 'fill-amber-500'
           clockCircle.setAttribute('class', colorClass)
         }
       }).toString()})()`,

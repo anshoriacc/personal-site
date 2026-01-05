@@ -122,29 +122,29 @@ export const Header = ({ constraintsRef }: Props) => {
   const renderContent = (viewState: ViewState) => {
     if (viewState === 'idle') {
       return (
-        <div className="flex items-center gap-2 h-full p-1.5">
+        <div className="flex h-full items-center gap-2 p-1.5">
           <Clock />
-          <span className="font-semibold mr-1.5">anshori</span>
+          <span className="mr-1.5 font-semibold">anshori</span>
         </div>
       )
     }
 
     return (
-      <div className="flex flex-col w-50">
-        <div className="flex items-center justify-between gap-4 p-3 border-b border-b-white/20">
+      <div className="flex w-50 flex-col">
+        <div className="flex items-center justify-between gap-4 border-b border-b-white/20 p-1.5">
           <div className="flex items-center gap-2">
-            <Clock className="size-6" />
+            <Clock />
             <span className="font-semibold">anshori</span>
           </div>
 
-          <ThemeToggle className="dark" />
+          <ThemeToggle />
         </div>
 
         {/* below is for the menu */}
         <div
           className={cn(
-            'text-sm p-1.5  space-y-1 dark',
-            '*:flex *:items-center *:gap-2 *:px-3 *:py-1.5 *:rounded-[18px]',
+            'space-y-1 p-1.5 text-sm',
+            '*:flex *:items-center *:gap-2 *:rounded-md *:px-2.5 *:py-1.5',
           )}
         >
           <Link
@@ -175,7 +175,7 @@ export const Header = ({ constraintsRef }: Props) => {
 
   return (
     <MotionConfig transition={{ type: 'spring', bounce: 0.2, duration: 0.3 }}>
-      <motion.div className="pointer-events-none select-none fixed top-6 left-0 z-1 flex w-full group cursor-default">
+      <motion.div className="dark group pointer-events-none fixed top-6 left-0 z-1 flex w-full cursor-default select-none">
         <motion.header
           ref={headerRef}
           // drag // for development purpose
@@ -192,10 +192,10 @@ export const Header = ({ constraintsRef }: Props) => {
             type: 'spring',
             bounce: BOUNCE_VARIANTS[variantKey] ?? 0.35,
           }}
-          style={{ borderRadius: 21 }}
+          style={{ borderRadius: 14 }}
           className={cn(
-            'pointer-events-auto mx-auto flex min-h-10 w-fit gap-4 bg-black text-neutral-50 shadow-md overflow-hidden',
-            'border-white/5 border box-border bg-clip-padding backdrop-blur-md backdrop-saturate-100 backdrop-brightness-100',
+            'pointer-events-auto mx-auto flex min-h-10 w-fit gap-4 overflow-hidden bg-black text-neutral-50 shadow-md',
+            'box-border border border-white/5 bg-clip-padding backdrop-blur-md backdrop-brightness-100 backdrop-saturate-100',
           )}
         >
           <motion.div

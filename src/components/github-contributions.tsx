@@ -13,30 +13,11 @@ import {
 export const GitHubContributions = () => {
   const githubContributionsQuery = useGetGithubContributionsQuery()
 
-  const today = dayjs()
-  const endOfToday = today.endOf('day')
-  const oneYearAgo = today.subtract(365, 'day')
-
-  const contributions =
-    githubContributionsQuery.data?.contributions
-      ?.filter((contribution) => {
-        const date = dayjs(contribution.date)
-        return date.isAfter(oneYearAgo) && date.isBefore(endOfToday)
-      })
-      .sort((a, b) => dayjs(a.date).diff(dayjs(b.date))) || []
-
-  const firstDate = contributions[0]?.date
-  const firstDayOfWeek = firstDate ? dayjs(firstDate).day() : 0 // 0 = Sunday
-  const emptyDays = firstDayOfWeek
-
-  const lastYearContributions = [
-    ...Array(emptyDays).fill(null),
-    ...contributions,
-  ]
+  const contributions = githubContributionsQuery.data?.contributions ?? []
 
   const monthLabels: Array<{ month: string; columnIndex: number }> = []
 
-  lastYearContributions.forEach((contribution, index) => {
+  contributions.forEach((contribution, index) => {
     if (contribution) {
       const date = dayjs(contribution.date)
 
@@ -49,7 +30,7 @@ export const GitHubContributions = () => {
   })
 
   return (
-    <section className="flex flex-col gap-2 w-full group relative">
+    <section className="group relative flex w-full flex-col gap-2">
       <h2 className="text-sm font-medium">GitHub Contributions</h2>
 
       {githubContributionsQuery.data ? (
@@ -62,11 +43,11 @@ export const GitHubContributions = () => {
           </div> */}
 
           <ScrollArea className="w-full">
-            <div className="flex flex-col min-w-max">
+            <div className="flex min-w-max flex-col">
               <div
-                className="grid gap-0.5 text-xs text-muted-foreground mb-1"
+                className="text-muted-foreground mb-1 grid gap-0.5 text-xs"
                 style={{
-                  gridTemplateColumns: `repeat(${Math.ceil(lastYearContributions.length / 7)}, 0.5rem)`,
+                  gridTemplateColumns: `repeat(${Math.ceil(contributions.length / 7)}, 0.5rem)`,
                 }}
               >
                 {monthLabels.map(({ month, columnIndex }) => (
@@ -82,12 +63,12 @@ export const GitHubContributions = () => {
 
               <TooltipProvider delay={100}>
                 <div
-                  className="grid grid-rows-7 grid-flow-col gap-0.5 pb-2"
+                  className="grid grid-flow-col grid-rows-7 gap-0.5 pb-2"
                   style={{
-                    gridTemplateColumns: `repeat(${Math.ceil(lastYearContributions.length / 7)}, 0.5rem)`,
+                    gridTemplateColumns: `repeat(${Math.ceil(contributions.length / 7)}, 0.5rem)`,
                   }}
                 >
-                  {lastYearContributions.map((contribution, index) =>
+                  {contributions.map((contribution, index) =>
                     contribution ? (
                       <Tooltip
                         key={contribution.date}
@@ -150,16 +131,16 @@ export const GitHubContributions = () => {
         >
           <div className="flex flex-col gap-1">
             {/* Simulated Month Labels */}
-            <div className="flex gap-8 ml-1">
+            <div className="ml-1 flex gap-8">
               {Array.from({ length: 12 }).map((_, i) => (
                 <div key={i} className="h-4 w-8 rounded-xs" />
               ))}
             </div>
 
             {/* Simulated Grid */}
-            <div className="grid grid-rows-7 grid-flow-col gap-0.5 pb-2">
+            <div className="grid grid-flow-col grid-rows-7 gap-0.5 pb-2">
               {Array.from({ length: 371 }).map((_, i) => (
-                <div key={i} className="size-2 rounded-xs bg-muted" />
+                <div key={i} className="bg-muted size-2 rounded-xs" />
               ))}
             </div>
           </div>

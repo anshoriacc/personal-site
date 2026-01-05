@@ -32,6 +32,7 @@ export const Spotify = () => {
         target="_blank"
         rel="noopener noreferrer"
         title="go to my spotify profile"
+        className="cursor-external-link"
       >
         <svg viewBox="0 0 32 32" className="size-6">
           <path
@@ -43,7 +44,7 @@ export const Spotify = () => {
 
       {song && artists && artistsName ? (
         <div className="flex flex-col">
-          <span className="text-muted-foreground text-sm h-6 flex items-center">
+          <span className="text-muted-foreground flex h-6 items-center text-sm">
             {isCurrentlyPlaying
               ? 'Currently Playing'
               : 'Offline. Recently Played'}
@@ -54,7 +55,7 @@ export const Spotify = () => {
             target="_blank"
             rel="noopener noreferrer"
             title={`open ${song?.name} by ${artistsName} in spotify web player`}
-            className="line-clamp-1 w-fit"
+            className="cursor-external-link line-clamp-1 w-fit"
           >
             <span>{song?.name}</span>
 
@@ -70,7 +71,7 @@ export const Spotify = () => {
             currentlyPlayingQuery.isLoading && '*:animate-pulse *:blur-sm',
           )}
         >
-          <span className="line-clamp-1 text-muted-foreground text-sm h-6 flex items-center">
+          <span className="text-muted-foreground line-clamp-1 flex h-6 items-center text-sm">
             Spotify
           </span>
           <span className="line-clamp-1">Not currently playing</span>

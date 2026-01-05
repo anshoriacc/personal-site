@@ -8,15 +8,15 @@ export const Profile = () => {
   return (
     <section className="space-y-6">
       <div>
-        <h1 className="sm:text-lg font-semibold">Achmad Anshori</h1>
-        <p className="text-sm sm:text-base text-muted-foreground">
+        <h1 className="font-semibold sm:text-lg">Achmad Anshori</h1>
+        <p className="text-muted-foreground text-sm sm:text-base">
           Software Engineer
         </p>
       </div>
 
       <p
         className={cn(
-          'z-1 text-muted-foreground',
+          'text-muted-foreground z-1',
           '[&_span:hover]:text-foreground',
         )}
       >
@@ -26,7 +26,7 @@ export const Profile = () => {
         <span>Jakarta, Indonesia</span>.
       </p>
 
-      <div className="flex gap-2 flex-wrap">
+      <div className="flex flex-wrap gap-2">
         <Button
           variant="secondary"
           className="gap-1"

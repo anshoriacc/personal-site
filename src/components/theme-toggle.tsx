@@ -25,7 +25,7 @@ export const ThemeToggle = ({ className }: Props) => {
       render={
         <motion.div
           className={cn(
-            'p-0 aspect-square rounded-full! size-6 h-fit border-0 text-muted-foreground hover:text-foreground',
+            'text-muted-foreground hover:text-foreground aspect-square size-7 h-fit rounded-md border-0 p-0',
             className,
           )}
         />
@@ -43,7 +43,7 @@ export const ThemeToggle = ({ className }: Props) => {
         <HugeiconsIcon
           icon={theme === 'dark' ? Moon02Icon : SunIcon}
           strokeWidth={2}
-          className="size-6"
+          className="size-5"
         />
       </motion.span>
       <span className="sr-only">Toggle theme</span>
