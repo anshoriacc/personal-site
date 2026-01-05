@@ -51,11 +51,6 @@ export const Clock = ({ className }: Props) => {
           strokeWidth="3"
           strokeLinecap="round"
           transform={`rotate(${hourRotation}, 50, 50)`}
-          // className={cn(
-          //   isNight
-          //     ? 'stroke-sky-800 dark:stroke-sky-900'
-          //     : 'stroke-amber-800 dark:stroke-amber-900',
-          // )}
         />
         <line
           id="minute-hand"
@@ -67,11 +62,6 @@ export const Clock = ({ className }: Props) => {
           strokeWidth="2"
           strokeLinecap="round"
           transform={`rotate(${minuteRotation}, 50, 50)`}
-          // className={cn(
-          //   isNight
-          //     ? 'stroke-sky-300 dark:stroke-sky-200'
-          //     : 'stroke-amber-300 dark:stroke-amber-200',
-          // )}
         />
       </svg>
 
