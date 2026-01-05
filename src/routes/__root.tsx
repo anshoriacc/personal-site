@@ -12,6 +12,7 @@ import { type QueryClient } from '@tanstack/react-query'
 import { Providers } from '../components/providers'
 import { getThemeServerFn } from '../server/theme'
 import { Header } from '@/components/header'
+import { ClientOnly } from '@/components/client-only'
 import appCss from '../styles.css?url'
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
@@ -60,7 +61,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 
       <body ref={constraintsRef}>
         <Providers theme={theme}>
-          <Header constraintsRef={constraintsRef} />
+          <ClientOnly>
+            {() => <Header constraintsRef={constraintsRef} />}
+          </ClientOnly>
 
           {children}
 
