@@ -144,7 +144,7 @@ export const Header = ({ constraintsRef }: Props) => {
         <div
           className={cn(
             'space-y-1 p-1.5 text-sm',
-            '*:flex *:items-center *:gap-2 *:rounded-md *:px-2.5 *:py-1.5',
+            '*:flex *:items-center *:gap-2 *:rounded-md *:p-1.5',
           )}
         >
           <Link
