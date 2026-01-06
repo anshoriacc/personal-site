@@ -22,6 +22,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         {
           title: 'Achmad Anshori',
         },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { name: 'description', content: 'Achmad Anshori Personal Website' },
         { property: 'og:title', content: 'Achmad Anshori' },
         {

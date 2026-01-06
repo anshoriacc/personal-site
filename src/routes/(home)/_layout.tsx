@@ -12,7 +12,7 @@ function HomeLayout() {
   return (
     <div
       ref={constraintsRef}
-      className="relative min-h-dvh w-dvw cursor-default overflow-x-hidden overflow-y-visible select-none"
+      className="relative w-screen cursor-default overflow-x-hidden overflow-y-visible select-none"
     >
       {/* Gradient Background */}
       <motion.div
@@ -39,7 +39,7 @@ function HomeLayout() {
         />
       </motion.div>
 
-      <div className="mx-auto flex size-full max-w-xl flex-col p-4 pt-22">
+      <div className="mx-auto flex min-h-dvh w-full max-w-xl flex-col p-4 pt-22">
         <div className="flex-1">
           <Outlet />
         </div>
