@@ -12,7 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as HealthRouteImport } from './routes/health'
 import { Route as homeLayoutRouteImport } from './routes/(home)/_layout'
 import { Route as homeLayoutIndexRouteImport } from './routes/(home)/_layout.index'
-import { Route as homeLayoutProjectsRouteImport } from './routes/(home)/_layout.projects'
+import { Route as homeLayoutWorkRouteImport } from './routes/(home)/_layout.work'
 
 const HealthRoute = HealthRouteImport.update({
   id: '/health',
@@ -28,39 +28,39 @@ const homeLayoutIndexRoute = homeLayoutIndexRouteImport.update({
   path: '/',
   getParentRoute: () => homeLayoutRoute,
 } as any)
-const homeLayoutProjectsRoute = homeLayoutProjectsRouteImport.update({
-  id: '/projects',
-  path: '/projects',
+const homeLayoutWorkRoute = homeLayoutWorkRouteImport.update({
+  id: '/work',
+  path: '/work',
   getParentRoute: () => homeLayoutRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/health': typeof HealthRoute
-  '/projects': typeof homeLayoutProjectsRoute
+  '/work': typeof homeLayoutWorkRoute
   '/': typeof homeLayoutIndexRoute
 }
 export interface FileRoutesByTo {
   '/health': typeof HealthRoute
-  '/projects': typeof homeLayoutProjectsRoute
+  '/work': typeof homeLayoutWorkRoute
   '/': typeof homeLayoutIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/health': typeof HealthRoute
   '/(home)/_layout': typeof homeLayoutRouteWithChildren
-  '/(home)/_layout/projects': typeof homeLayoutProjectsRoute
+  '/(home)/_layout/work': typeof homeLayoutWorkRoute
   '/(home)/_layout/': typeof homeLayoutIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/health' | '/projects' | '/'
+  fullPaths: '/health' | '/work' | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/health' | '/projects' | '/'
+  to: '/health' | '/work' | '/'
   id:
     | '__root__'
     | '/health'
     | '/(home)/_layout'
-    | '/(home)/_layout/projects'
+    | '/(home)/_layout/work'
     | '/(home)/_layout/'
   fileRoutesById: FileRoutesById
 }
@@ -92,23 +92,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof homeLayoutIndexRouteImport
       parentRoute: typeof homeLayoutRoute
     }
-    '/(home)/_layout/projects': {
-      id: '/(home)/_layout/projects'
-      path: '/projects'
-      fullPath: '/projects'
-      preLoaderRoute: typeof homeLayoutProjectsRouteImport
+    '/(home)/_layout/work': {
+      id: '/(home)/_layout/work'
+      path: '/work'
+      fullPath: '/work'
+      preLoaderRoute: typeof homeLayoutWorkRouteImport
       parentRoute: typeof homeLayoutRoute
     }
   }
 }
 
 interface homeLayoutRouteChildren {
-  homeLayoutProjectsRoute: typeof homeLayoutProjectsRoute
+  homeLayoutWorkRoute: typeof homeLayoutWorkRoute
   homeLayoutIndexRoute: typeof homeLayoutIndexRoute
 }
 
 const homeLayoutRouteChildren: homeLayoutRouteChildren = {
-  homeLayoutProjectsRoute: homeLayoutProjectsRoute,
+  homeLayoutWorkRoute: homeLayoutWorkRoute,
   homeLayoutIndexRoute: homeLayoutIndexRoute,
 }
 

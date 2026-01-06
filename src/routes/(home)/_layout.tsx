@@ -2,17 +2,26 @@ import React from 'react'
 import { Outlet, createFileRoute } from '@tanstack/react-router'
 import { motion } from 'motion/react'
 
+import { cn } from '@/lib/utils'
+import { useIsNightTime } from '@/stores/time.store'
+
 export const Route = createFileRoute('/(home)/_layout')({
   component: HomeLayout,
 })
 
 function HomeLayout() {
   const constraintsRef = React.useRef<HTMLDivElement>(null!)
+  const isNight = useIsNightTime()
 
   return (
     <div
       ref={constraintsRef}
-      className="relative w-screen cursor-default overflow-x-hidden overflow-y-visible select-none"
+      className={cn(
+        'relative w-screen cursor-default overflow-x-hidden overflow-y-visible',
+        !isNight
+          ? 'selection:bg-amber-200 selection:text-amber-900 dark:selection:bg-amber-900 dark:selection:text-amber-200'
+          : 'selection:bg-sky-900 selection:text-sky-200 dark:selection:bg-sky-900 dark:selection:text-sky-200',
+      )}
     >
       {/* Gradient Background */}
       <motion.div

@@ -1,9 +1,11 @@
-import { motion } from 'motion/react'
 import { createFileRoute } from '@tanstack/react-router'
 
 import { getCurrentlyPlayingQueryOptions } from '@/hooks/api/spotify'
 import { getGithubContributionsQueryOptions } from '@/hooks/api/github-contributions'
 import { GitHubContributions } from '@/components/github-contributions'
+import { Container } from '@/components/motion-container'
+import { Experience } from '@/components/experience'
+import { Section } from '@/components/motion-section'
 import { Profile } from '@/components/profile'
 import { Spotify } from '@/components/spotify'
 
@@ -17,40 +19,24 @@ export const Route = createFileRoute('/(home)/_layout/')({
   },
 })
 
-const container = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-}
-
-const item = {
-  hidden: { opacity: 0, y: 10, filter: 'blur(5px)' },
-  show: { opacity: 1, y: 0, filter: 'blur(0px)' },
-}
-
 function HomePage() {
   return (
-    <motion.main
-      variants={container}
-      initial="hidden"
-      animate="show"
-      className="flex flex-col space-y-12"
-    >
-      <motion.div variants={item}>
+    <Container>
+      <Section>
         <Profile />
-      </motion.div>
+      </Section>
 
-      <motion.div variants={item}>
+      <Section>
         <GitHubContributions />
-      </motion.div>
+      </Section>
 
-      <motion.div variants={item}>
+      <Section>
+        <Experience simplified />
+      </Section>
+
+      <Section>
         <Spotify />
-      </motion.div>
-    </motion.main>
+      </Section>
+    </Container>
   )
 }

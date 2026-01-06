@@ -31,7 +31,7 @@ export const GitHubContributions = () => {
 
   return (
     <section className="group relative flex w-full flex-col gap-2">
-      <h2 className="text-sm font-medium">GitHub Contributions</h2>
+      <h2 className="font-medium">GitHub Contributions</h2>
 
       {githubContributionsQuery.data ? (
         <div className="relative w-full">

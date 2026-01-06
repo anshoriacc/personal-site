@@ -1,17 +1,13 @@
 import React from 'react'
-import {
-  motion,
-  MotionConfig,
-  // AnimatePresence
-} from 'motion/react'
+import { motion, MotionConfig } from 'motion/react'
+import { Link } from '@tanstack/react-router'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { CodeFolderIcon, Home11Icon } from '@hugeicons/core-free-icons'
 
 import { cn } from '@/lib/utils'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { ThemeToggle } from './theme-toggle'
 import { Clock } from './clock'
-import { Link } from '@tanstack/react-router'
-import { HugeiconsIcon } from '@hugeicons/react'
-import { CodeFolderIcon, Home11Icon } from '@hugeicons/core-free-icons'
 
 type Props = {
   constraintsRef?: React.RefObject<HTMLDivElement | HTMLBodyElement>
@@ -159,14 +155,14 @@ export const Header = ({ constraintsRef }: Props) => {
           </Link>
 
           <Link
-            to="/projects"
+            to="/work"
             activeProps={{ className: 'text-foreground bg-muted' }}
             inactiveProps={{
               className: 'hover:text-foreground text-muted-foreground',
             }}
           >
             <HugeiconsIcon icon={CodeFolderIcon} className="size-4" />
-            Projects
+            Work
           </Link>
         </div>
       </div>
