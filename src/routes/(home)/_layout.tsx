@@ -1,5 +1,5 @@
 import React from 'react'
-import { createFileRoute, Outlet } from '@tanstack/react-router'
+import { Outlet, createFileRoute } from '@tanstack/react-router'
 import { motion } from 'motion/react'
 
 export const Route = createFileRoute('/(home)/_layout')({
@@ -10,14 +10,17 @@ function HomeLayout() {
   const constraintsRef = React.useRef<HTMLDivElement>(null!)
 
   return (
-    <div ref={constraintsRef} className="relative cursor-default select-none">
+    <div
+      ref={constraintsRef}
+      className="relative min-h-dvh w-dvw cursor-default overflow-x-hidden overflow-y-visible select-none"
+    >
       {/* Gradient Background */}
       <motion.div
         initial={{ scale: 0.6, y: '-100%', opacity: 0 }}
         animate={{ scale: 1, y: 0, opacity: 1 }}
         transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
         style={{ transformOrigin: 'top center' }}
-        className="absolute inset-0 z-0 pointer-events-none"
+        className="pointer-events-none absolute inset-0 z-0"
       >
         <div
           className="absolute inset-0 dark:hidden"
@@ -36,7 +39,7 @@ function HomeLayout() {
         />
       </motion.div>
 
-      <div className="mx-auto min-h-dvh w-full max-w-xl p-4 pt-22 flex flex-col">
+      <div className="mx-auto flex size-full max-w-xl flex-col p-4 pt-22">
         <div className="flex-1">
           <Outlet />
         </div>
