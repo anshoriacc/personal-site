@@ -94,9 +94,6 @@ export const Experience = ({ simplified }: Props) => {
                   className={cn(
                     'text-muted-foreground mt-2 space-y-0.5 pl-4',
                     '*:relative *:before:absolute *:before:-left-4 *:before:content-["▪︎"]',
-                    !isNight
-                      ? '*:before:text-amber-200 dark:*:before:text-amber-900'
-                      : '*:before:text-sky-200 dark:*:before:text-sky-900',
                   )}
                 >
                   {exp.responsibilities.map((resp, respIndex) => (
@@ -106,7 +103,6 @@ export const Experience = ({ simplified }: Props) => {
               )}
             </div>
 
-            {/* <div className="border-b last:hidden" /> */}
             <div className="text-muted-foreground text-center last:hidden">
               〰︎〰︎〰︎〰︎〰︎
             </div>

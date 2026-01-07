@@ -1,8 +1,8 @@
 import React from 'react'
-import { motion, MotionConfig } from 'motion/react'
+import { MotionConfig, motion } from 'motion/react'
 import { Link } from '@tanstack/react-router'
-import { HugeiconsIcon } from '@hugeicons/react'
 import { CodeFolderIcon, Home11Icon } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
 
 import { cn } from '@/lib/utils'
 import { useIsMobile } from '@/hooks/use-mobile'
@@ -15,39 +15,12 @@ type Props = {
 
 type ViewState = 'idle' | 'expanded'
 
-// Animation variants for different transitions
-// const ANIMATION_VARIANTS: Record<
-//   string,
-//   { scale?: number; scaleX?: number; y?: number }
-// > = {
-//   'expanded-idle': {
-//     scale: 0.9,
-//     scaleX: 0.9,
-//   },
-//   'idle-expanded': {
-//     scale: 1.1,
-//     y: 2,
-//   },
-// }
-
-// Bounce values for different states
 const BOUNCE_VARIANTS: Record<string, number> = {
   idle: 0.5,
   expanded: 0.35,
   'expanded-idle': 0.5,
   'idle-expanded': 0.35,
 }
-
-// Exit animation variants
-// const exitVariants = {
-//   exit: (transition: any) => {
-//     return {
-//       ...transition,
-//       opacity: [1, 0],
-//       filter: 'blur(5px)',
-//     }
-//   },
-// }
 
 export const Header = ({ constraintsRef }: Props) => {
   const [view, setView] = React.useState<ViewState>('idle')
@@ -221,37 +194,6 @@ export const Header = ({ constraintsRef }: Props) => {
             {renderContent(view)}
           </motion.div>
         </motion.header>
-
-        {/* Absolute positioned wrapper for exit animations */}
-        {/* <div className="pointer-events-none absolute left-1/2 top-0 flex h-[200px] w-[400px] -translate-x-1/2 items-start justify-center overflow-hidden pt-6">
-          <AnimatePresence
-            custom={ANIMATION_VARIANTS[variantKey]}
-            mode="popLayout"
-          >
-            {lastView !== view && (
-              <motion.div
-                variants={exitVariants}
-                initial={{
-                  opacity: 0,
-                }}
-                exit="exit"
-                custom={ANIMATION_VARIANTS[variantKey]}
-                transition={{
-                  type: 'spring',
-                  bounce: BOUNCE_VARIANTS[variantKey] ?? 0.35,
-                }}
-                key={lastView}
-                style={{ borderRadius: 24 }}
-                className={cn(
-                  'flex min-h-10 w-fit gap-4 bg-black p-1.5 text-neutral-50 shadow-md',
-                  'border-white/5 border box-border bg-clip-padding backdrop-blur-md backdrop-saturate-100 backdrop-brightness-100',
-                )}
-              >
-                {renderContent(lastView)}
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div> */}
       </motion.div>
     </MotionConfig>
   )
