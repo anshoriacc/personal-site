@@ -31,17 +31,13 @@ const calculateState = (time: Date) => {
 }
 
 export const useTimeStore = create<TimeStore>((set) => {
-  const initialTime = typeof window === 'undefined' ? new Date(0) : new Date()
+  const initialTime = new Date()
 
   return {
     ...calculateState(initialTime),
     updateTime: () => set(calculateState(new Date())),
   }
 })
-
-if (typeof window !== 'undefined') {
-  useTimeStore.getState().updateTime()
-}
 
 export const useIsNightTime = () => useTimeStore((state) => state.isNightTime)
 export const useHourRotation = () => useTimeStore((state) => state.hourRotation)

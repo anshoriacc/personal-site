@@ -20,7 +20,7 @@ function HomeLayout() {
         'relative w-screen cursor-default overflow-x-hidden overflow-y-visible',
         !isNight
           ? 'selection:bg-amber-200 selection:text-amber-900 dark:selection:bg-amber-900 dark:selection:text-amber-200'
-          : 'selection:bg-sky-900 selection:text-sky-200 dark:selection:bg-sky-900 dark:selection:text-sky-200',
+          : 'selection:bg-sky-200 selection:text-sky-900 dark:selection:bg-sky-900 dark:selection:text-sky-200',
       )}
     >
       {/* Gradient Background */}

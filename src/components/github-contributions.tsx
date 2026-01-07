@@ -95,7 +95,7 @@ export const GitHubContributions = () => {
                         />
 
                         <TooltipContent className="select-none">
-                          <p className="text-xs">
+                          <p>
                             {contribution.count} contribution
                             {contribution.count !== 1 ? 's' : ''} on{' '}
                             {dayjs(contribution.date).format('MMM D, YYYY')}

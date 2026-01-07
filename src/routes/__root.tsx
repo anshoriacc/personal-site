@@ -51,7 +51,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   const theme = Route.useLoaderData()
-  const constraintsRef = React.useRef<HTMLBodyElement>(null!)
 
   return (
     <html lang="en" className={theme} suppressHydrationWarning>
@@ -59,9 +58,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
 
-      <body ref={constraintsRef}>
+      <body>
         <Providers theme={theme}>
-          <Header constraintsRef={constraintsRef} />
+          <Header />
 
           {children}
 

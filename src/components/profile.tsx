@@ -3,6 +3,7 @@ import { Button } from './ui/button'
 import { MailIcon } from './svg/mail-icon'
 import { GithubIcon } from './svg/github-icon'
 import { LinkedInIcon } from './svg/linkedin-icon'
+import { FileTextIcon } from './svg/file-text-icon'
 
 export const Profile = () => {
   return (
@@ -20,10 +21,10 @@ export const Profile = () => {
           '[&_span:hover]:text-foreground',
         )}
       >
-        I'm a <span>software engineer</span> with more than 3 years of
-        experience. I craft delightful user experiences with <span>React</span>{' '}
-        and modern <span>JavaScript</span>. Currently based in{' '}
-        <span>Jakarta, Indonesia</span>.
+        I'm a <span>software engineer</span> with over 4 years in software
+        engineering. I develop intuitive, user-friendly experiences with{' '}
+        <span>React</span> and modern <span>JavaScript</span>. Currently based
+        in <span>Jakarta, Indonesia</span>.
       </p>
 
       <div className="flex flex-wrap gap-2">
@@ -35,6 +36,23 @@ export const Profile = () => {
           <MailIcon className="size-4" />
           Mail
         </Button>
+
+        <Button
+          variant="secondary"
+          className="gap-1"
+          render={
+            <a
+              href="https://resume.anshori.com"
+              target="_blank"
+              rel="noreferrer"
+              className="cursor-external-link"
+            />
+          }
+        >
+          <FileTextIcon className="size-4" />
+          Resume
+        </Button>
+
         <Button
           variant="secondary"
           className="gap-1"
@@ -50,6 +68,7 @@ export const Profile = () => {
           <GithubIcon className="size-4" />
           GitHub
         </Button>
+
         <Button
           variant="secondary"
           className="gap-1"

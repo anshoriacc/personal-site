@@ -26,7 +26,7 @@ export const Spotify = () => {
         .join(', ')
 
   return (
-    <section className="grid grid-cols-[1.5rem_1fr] gap-3">
+    <section className="grid grid-cols-[1.5rem_1fr] gap-3 select-none">
       <a
         href="https://open.spotify.com/user/312wkcarckpr64ibtf3jvgnvpnyi"
         target="_blank"

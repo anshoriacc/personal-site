@@ -2,6 +2,8 @@ import { cn } from '@/lib/utils'
 import { experiences } from '@/data/experience'
 import { useIsNightTime } from '@/stores/time.store'
 import { Badge } from './ui/badge'
+import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip'
+import React from 'react'
 
 type Props = {
   simplified?: boolean
@@ -14,16 +16,36 @@ export const Experience = ({ simplified }: Props) => {
     <section className="space-y-6">
       <h2 className="font-medium">Experience</h2>
 
-      <div className="space-y-6">
+      <div className="space-y-3">
         {experiences.map((exp, index) => (
-          <>
-            <div key={index} className="space-y-0.5">
+          <React.Fragment key={index}>
+            <div className="space-y-0.5">
               <h3 className="flex items-center gap-2">
                 {exp.endDate === 'Present' && (
-                  <span className="relative flex size-2">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-75"></span>
-                    <span className="relative inline-flex size-2 rounded-full bg-amber-500"></span>
-                  </span>
+                  <Tooltip disableHoverablePopup>
+                    <TooltipTrigger
+                      render={
+                        <span className="relative flex size-3 overflow-visible">
+                          <span
+                            className={cn(
+                              'absolute inline-flex h-full w-full animate-ping rounded-full opacity-75',
+                              !isNight ? 'bg-amber-400' : 'bg-sky-400',
+                            )}
+                          />
+                          <span
+                            className={cn(
+                              'relative inline-flex size-3 rounded-full',
+                              !isNight ? 'bg-amber-500' : 'bg-sky-500',
+                            )}
+                          />
+                        </span>
+                      }
+                    />
+
+                    <TooltipContent className="select-none">
+                      Currently working here
+                    </TooltipContent>
+                  </Tooltip>
                 )}
 
                 <span className="font-medium">
@@ -70,10 +92,11 @@ export const Experience = ({ simplified }: Props) => {
                 <ul
                   role="list"
                   className={cn(
-                    'text-muted-foreground mt-2 list-disc space-y-0.5 pl-5',
+                    'text-muted-foreground mt-2 space-y-0.5 pl-4',
+                    '*:relative *:before:absolute *:before:-left-4 *:before:content-["▪︎"]',
                     !isNight
-                      ? 'marker:text-amber-200 dark:marker:text-amber-900'
-                      : 'marker:text-sky-200 dark:marker:text-sky-900',
+                      ? '*:before:text-amber-200 dark:*:before:text-amber-900'
+                      : '*:before:text-sky-200 dark:*:before:text-sky-900',
                   )}
                 >
                   {exp.responsibilities.map((resp, respIndex) => (
@@ -87,7 +110,7 @@ export const Experience = ({ simplified }: Props) => {
             <div className="text-muted-foreground text-center last:hidden">
               〰︎〰︎〰︎〰︎〰︎
             </div>
-          </>
+          </React.Fragment>
         ))}
       </div>
     </section>
