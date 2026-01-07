@@ -39,10 +39,6 @@ export const useTimeStore = create<TimeStore>((set) => {
   }
 })
 
-if (typeof window !== 'undefined') {
-  useTimeStore.getState().updateTime()
-}
-
 export const useIsNightTime = () => useTimeStore((state) => state.isNightTime)
 export const useHourRotation = () => useTimeStore((state) => state.hourRotation)
 export const useMinuteRotation = () =>
