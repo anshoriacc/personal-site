@@ -1,9 +1,9 @@
+import React from 'react'
 import { cn } from '@/lib/utils'
 import { experiences } from '@/data/experience'
 import { useIsNightTime } from '@/stores/time.store'
-import { Badge } from './ui/badge'
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip'
-import React from 'react'
+import { Badge } from './ui/badge'
 
 type Props = {
   simplified?: boolean
