@@ -79,14 +79,22 @@ export const Header = ({ constraintsRef }: Props) => {
       }
     }
 
+    const handleScroll = () => {
+      if (isMobile) {
+        handleViewChange('idle')
+      }
+    }
+
     document.addEventListener('click', handleClickOutside, true)
+    window.addEventListener('scroll', handleScroll, { passive: true })
     return () => {
       document.removeEventListener('click', handleClickOutside, true)
+      window.removeEventListener('scroll', handleScroll)
       if (hoverTimeoutRef.current) {
         clearTimeout(hoverTimeoutRef.current)
       }
     }
-  }, [view, handleViewChange])
+  }, [view, handleViewChange, isMobile])
 
   const renderContent = (viewState: ViewState) => {
     if (viewState === 'idle') {
