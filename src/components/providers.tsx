@@ -1,40 +1,15 @@
-"use client";
+import { type PropsWithChildren, useEffect } from 'react'
+import { useThemeStore } from '@/stores/theme.store'
+import { useTimeStore } from '@/stores/time.store'
+import { type TTheme } from '@/server/theme'
 
-import {
-  isServer,
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+type Props = PropsWithChildren<{ theme: TTheme }>
 
-function makeQueryClient() {
-  return new QueryClient({
-    defaultOptions: {
-      queries: {
-        // staleTime: 60 * 1000,
-      },
-    },
-  });
-}
+export function Providers({ children, theme }: Props) {
+  useEffect(() => {
+    useThemeStore.getState().initTheme(theme)
+    useTimeStore.getState().updateTime()
+  }, [theme])
 
-let browserQueryClient: QueryClient | undefined = undefined;
-
-function getQueryClient() {
-  if (isServer) {
-    return makeQueryClient();
-  } else {
-    if (!browserQueryClient) browserQueryClient = makeQueryClient();
-    return browserQueryClient;
-  }
-}
-
-export default function Providers({ children }: { children: React.ReactNode }) {
-  const queryClient = getQueryClient();
-
-  return (
-    <QueryClientProvider client={queryClient}>
-      {children}
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
-  );
+  return <>{children}</>
 }

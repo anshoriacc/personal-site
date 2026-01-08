@@ -1,33 +1,90 @@
-import React from "react";
-import { Card } from "./ui/card-home";
-import { cn } from "@/lib/utils";
-import { BackgroundBeams } from "./ui/background-beams";
+import { cn } from '@/lib/utils'
+import { Button } from './ui/button'
+import { MailIcon } from './svg/mail-icon'
+import { GithubIcon } from './svg/github-icon'
+import { LinkedInIcon } from './svg/linkedin-icon'
+import { FileTextIcon } from './svg/file-text-icon'
 
 export const Profile = () => {
   return (
-    <Card className="h-48 w-full gap-1 sm:w-[calc(100%-216px)]">
-      <div className="z-1 flex flex-col">
-        <h1 className="text-xl font-bold">Achmad Anshori</h1>
-        <h2>
-          <span className="text-lg font-semibold text-neutral-500">
-            Software Engineer, Frontend
-          </span>
-        </h2>
+    <section className="space-y-6">
+      <div>
+        <h1 className="font-semibold sm:text-lg">Achmad Anshori</h1>
+        <p className="text-muted-foreground text-sm sm:text-base">
+          Software Engineer
+        </p>
       </div>
-
-      <div className="z-1 h-[1px] bg-neutral-800" />
 
       <p
         className={cn(
-          "z-1 text-neutral-500",
-          "[&_span:hover]:text-neutral-50 [&_span:hover]:transition-all [&_span:hover]:duration-300",
-        )}>
-        a <span>software engineer</span> with{" "}
-        <span>3 years of hands on experience</span>. Interested in{" "}
-        <span>react</span>, <span>next.js</span>, and <span>node.js</span>.
+          'text-muted-foreground z-1',
+          '[&_span:hover]:text-foreground',
+        )}
+      >
+        I'm a <span>software engineer</span> with over 4 years in software
+        engineering. I develop intuitive, user-friendly experiences with{' '}
+        <span>React</span> and modern <span>JavaScript</span>. Currently based
+        in <span>Jakarta, Indonesia</span>.
       </p>
 
-      <BackgroundBeams className="z-0" />
-    </Card>
-  );
-};
+      <div className="flex flex-wrap gap-2">
+        <Button
+          variant="secondary"
+          className="gap-1"
+          render={<a href="mailto:anshoriacc@gmail.com" />}
+        >
+          <MailIcon className="size-4" />
+          Mail
+        </Button>
+
+        <Button
+          variant="secondary"
+          className="gap-1"
+          render={
+            <a
+              href="https://resume.anshori.com"
+              target="_blank"
+              rel="noreferrer"
+              className="cursor-external-link"
+            />
+          }
+        >
+          <FileTextIcon className="size-4" />
+          Resume
+        </Button>
+
+        <Button
+          variant="secondary"
+          className="gap-1"
+          render={
+            <a
+              href="https://github.com/anshoriacc"
+              target="_blank"
+              rel="noreferrer"
+              className="cursor-external-link"
+            />
+          }
+        >
+          <GithubIcon className="size-4" />
+          GitHub
+        </Button>
+
+        <Button
+          variant="secondary"
+          className="gap-1"
+          render={
+            <a
+              href="https://www.linkedin.com/in/achmad-anshori"
+              target="_blank"
+              rel="noreferrer"
+              className="cursor-external-link"
+            />
+          }
+        >
+          <LinkedInIcon className="size-4" />
+          LinkedIn
+        </Button>
+      </div>
+    </section>
+  )
+}
