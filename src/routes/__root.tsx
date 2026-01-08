@@ -11,7 +11,6 @@ import { type QueryClient } from '@tanstack/react-query'
 
 import { Providers } from '../components/providers'
 import { getThemeServerFn } from '../server/theme'
-import { Header } from '@/components/header'
 import appCss from '../styles.css?url'
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
@@ -60,7 +59,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 
       <body>
         <Providers theme={theme}>
-          <Header />
 
           {children}
 

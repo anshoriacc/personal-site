@@ -11,8 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as HealthRouteImport } from './routes/health'
 import { Route as homeLayoutRouteImport } from './routes/(home)/_layout'
-import { Route as homeLayoutIndexRouteImport } from './routes/(home)/_layout.index'
-import { Route as homeLayoutWorkRouteImport } from './routes/(home)/_layout.work'
+import { Route as homeLayoutIndexRouteImport } from './routes/(home)/_layout/index'
+import { Route as homeLayoutWorkRouteImport } from './routes/(home)/_layout/work'
 
 const HealthRoute = HealthRouteImport.update({
   id: '/health',

@@ -4,6 +4,7 @@ import { motion } from 'motion/react'
 
 import { cn } from '@/lib/utils'
 import { useIsNightTime } from '@/stores/time.store'
+import { Header } from "@/components/header"
 
 export const Route = createFileRoute('/(home)/_layout')({
   component: HomeLayout,
@@ -23,6 +24,8 @@ function HomeLayout() {
           : 'selection:bg-sky-200 selection:text-sky-900 dark:selection:bg-sky-900 dark:selection:text-sky-200',
       )}
     >
+      <Header />
+
       {/* Gradient Background */}
       <motion.div
         initial={{ scale: 0.6, y: '-100%', opacity: 0 }}
