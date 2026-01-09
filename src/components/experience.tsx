@@ -27,12 +27,14 @@ export const Experience = ({ simplified }: Props) => {
                       render={
                         <span className="relative flex size-3 overflow-visible">
                           <span
+                            id="exp-indicator-ping"
                             className={cn(
                               'absolute inline-flex h-full w-full animate-ping rounded-full opacity-75',
                               !isNight ? 'bg-amber-400' : 'bg-sky-400',
                             )}
                           />
                           <span
+                            id="exp-indicator-dot"
                             className={cn(
                               'relative inline-flex size-3 rounded-full',
                               !isNight ? 'bg-amber-500' : 'bg-sky-500',
@@ -109,6 +111,33 @@ export const Experience = ({ simplified }: Props) => {
           </React.Fragment>
         ))}
       </div>
+
+      <ExperienceIndicatorScript />
     </section>
   )
 }
+
+export const ExperienceIndicatorScript = () => (
+  <script
+    dangerouslySetInnerHTML={{
+      __html: `(${(() => {
+        const t = new Date()
+        const fullHours = t.getHours()
+        const isNight = fullHours >= 18 || fullHours < 4
+
+        const pingEl = document.getElementById('exp-indicator-ping')
+        const dotEl = document.getElementById('exp-indicator-dot')
+
+        if (pingEl) {
+          const pingClass = isNight ? 'bg-sky-400' : 'bg-amber-400'
+          pingEl.className = pingEl.className.replace(/bg-(sky|amber)-400/, pingClass)
+        }
+
+        if (dotEl) {
+          const dotClass = isNight ? 'bg-sky-500' : 'bg-amber-500'
+          dotEl.className = dotEl.className.replace(/bg-(sky|amber)-500/, dotClass)
+        }
+      }).toString()})()`,
+    }}
+  />
+)
