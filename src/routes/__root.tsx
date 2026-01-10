@@ -36,7 +36,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         },
         {
           property: 'og:image',
-          content: '/api/og',
+          content: `${SITE_URL}/api/og`,
         },
         { name: 'twitter:card', content: 'summary_large_image' },
         { name: 'twitter:title', content: 'Achmad Anshori' },
@@ -50,7 +50,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         },
         {
           name: 'twitter:image',
-          content: '/api/og',
+          content: `${SITE_URL}/api/og`,
         },
       ],
       links: [
