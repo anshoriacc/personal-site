@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as HealthRouteImport } from './routes/health'
+import { Route as ApiOgRouteImport } from './routes/api/og'
 import { Route as homeLayoutRouteImport } from './routes/(home)/_layout'
 import { Route as homeLayoutIndexRouteImport } from './routes/(home)/_layout/index'
 import { Route as homeLayoutWorkRouteImport } from './routes/(home)/_layout/work'
@@ -17,6 +18,11 @@ import { Route as homeLayoutWorkRouteImport } from './routes/(home)/_layout/work
 const HealthRoute = HealthRouteImport.update({
   id: '/health',
   path: '/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiOgRoute = ApiOgRouteImport.update({
+  id: '/api/og',
+  path: '/api/og',
   getParentRoute: () => rootRouteImport,
 } as any)
 const homeLayoutRoute = homeLayoutRouteImport.update({
@@ -36,11 +42,13 @@ const homeLayoutWorkRoute = homeLayoutWorkRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/health': typeof HealthRoute
+  '/api/og': typeof ApiOgRoute
   '/work': typeof homeLayoutWorkRoute
   '/': typeof homeLayoutIndexRoute
 }
 export interface FileRoutesByTo {
   '/health': typeof HealthRoute
+  '/api/og': typeof ApiOgRoute
   '/work': typeof homeLayoutWorkRoute
   '/': typeof homeLayoutIndexRoute
 }
@@ -48,18 +56,20 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/health': typeof HealthRoute
   '/(home)/_layout': typeof homeLayoutRouteWithChildren
+  '/api/og': typeof ApiOgRoute
   '/(home)/_layout/work': typeof homeLayoutWorkRoute
   '/(home)/_layout/': typeof homeLayoutIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/health' | '/work' | '/'
+  fullPaths: '/health' | '/api/og' | '/work' | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/health' | '/work' | '/'
+  to: '/health' | '/api/og' | '/work' | '/'
   id:
     | '__root__'
     | '/health'
     | '/(home)/_layout'
+    | '/api/og'
     | '/(home)/_layout/work'
     | '/(home)/_layout/'
   fileRoutesById: FileRoutesById
@@ -67,6 +77,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   HealthRoute: typeof HealthRoute
   homeLayoutRoute: typeof homeLayoutRouteWithChildren
+  ApiOgRoute: typeof ApiOgRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -76,6 +87,13 @@ declare module '@tanstack/react-router' {
       path: '/health'
       fullPath: '/health'
       preLoaderRoute: typeof HealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/og': {
+      id: '/api/og'
+      path: '/api/og'
+      fullPath: '/api/og'
+      preLoaderRoute: typeof ApiOgRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(home)/_layout': {
@@ -119,6 +137,7 @@ const homeLayoutRouteWithChildren = homeLayoutRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   HealthRoute: HealthRoute,
   homeLayoutRoute: homeLayoutRouteWithChildren,
+  ApiOgRoute: ApiOgRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

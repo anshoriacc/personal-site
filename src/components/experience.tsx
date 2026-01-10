@@ -21,7 +21,7 @@ export const Experience = ({ simplified }: Props) => {
           <React.Fragment key={index}>
             <div className="space-y-0.5">
               <h3 className="flex items-center gap-2">
-                {exp.endDate === 'Present' && (
+                {exp.endDate === 'present' && (
                   <Tooltip disableHoverablePopup>
                     <TooltipTrigger
                       render={

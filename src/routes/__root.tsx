@@ -12,6 +12,7 @@ import { type QueryClient } from '@tanstack/react-query'
 import { Providers } from '../components/providers'
 import { getThemeServerFn } from '../server/theme'
 import appCss from '../styles.css?url'
+import { SITE_URL } from '../constants/env'
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {
@@ -29,10 +30,27 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           content: 'Achmad Anshori Personal Website',
         },
         { property: 'og:type', content: 'website' },
-        { property: 'og:url', content: 'https://anshori.com' },
+        {
+          property: 'og:url',
+          content: SITE_URL,
+        },
         {
           property: 'og:image',
-          content: 'https://anshori.com/og-image.png',
+          content: '/api/og',
+        },
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:title', content: 'Achmad Anshori' },
+        {
+          name: 'twitter:description',
+          content: 'Achmad Anshori Personal Website',
+        },
+        {
+          name: 'twitter:url',
+          content: SITE_URL,
+        },
+        {
+          name: 'twitter:image',
+          content: '/api/og',
         },
       ],
       links: [
@@ -59,7 +77,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 
       <body>
         <Providers theme={theme}>
-
           {children}
 
           <TanStackDevtools

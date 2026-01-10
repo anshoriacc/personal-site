@@ -4,7 +4,7 @@ export type Experience = {
   type?: string
   location?: string
   startDate: string
-  endDate: string | 'Present'
+  endDate: string | 'present'
   description?: string
   responsibilities?: Array<string>
   technologies?: Array<string>
@@ -18,7 +18,7 @@ export const experiences: Array<Experience> = [
     url: 'https://www.linkedin.com/company/travelio-com',
     type: 'Fulltime',
     startDate: 'Dec 2025',
-    endDate: 'Present',
+    endDate: 'present',
     description: 'Worked on Travelio, an online home rental operator web app.',
     responsibilities: [
       'Developed features for Travelio Property Management web app.',
