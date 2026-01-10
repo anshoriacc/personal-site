@@ -49,6 +49,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           content: SITE_URL,
         },
         {
+          name: 'twitter:creator:id',
+          content: '@20arik_',
+        },
+        {
           name: 'twitter:image',
           content: `${SITE_URL}/api/og`,
         },

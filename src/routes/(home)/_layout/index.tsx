@@ -12,10 +12,14 @@ import { Spotify } from '@/components/spotify'
 export const Route = createFileRoute('/(home)/_layout/')({
   component: HomePage,
   loader: async ({ context }) => {
-    await context.queryClient.ensureQueryData(
-      getGithubContributionsQueryOptions,
-    )
-    await context.queryClient.ensureQueryData(getCurrentlyPlayingQueryOptions)
+    try {
+      await Promise.all([
+        context.queryClient.ensureQueryData(getGithubContributionsQueryOptions),
+        context.queryClient.ensureQueryData(getCurrentlyPlayingQueryOptions),
+      ])
+    } catch (error) {
+      console.error('Error prefetching data in HomePage loader:', error)
+    }
   },
 })
 
