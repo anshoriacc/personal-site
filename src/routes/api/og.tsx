@@ -8,7 +8,6 @@ export const Route = createFileRoute('/api/og')({
         const url = new URL(request.url)
         const title = url.searchParams.get('title')
         const subtitle = url.searchParams.get('subtitle')
-        const baseUrl = url.origin
 
         return new ImageResponse(
           <div tw="flex p-4 bg-white w-full h-full">
@@ -22,7 +21,7 @@ export const Route = createFileRoute('/api/og')({
             >
               {title && (
                 <div tw="flex flex-col items-center justify-center text-center w-full">
-                  <span tw="text-white text-6xl">{title}</span>
+                  <span tw="text-white text-6xl font-semibold">{title}</span>
                   {subtitle && (
                     <span tw="text-neutral-300 text-2xl mt-4">{subtitle}</span>
                   )}
@@ -30,16 +29,10 @@ export const Route = createFileRoute('/api/og')({
               )}
 
               <div tw="absolute bottom-8 right-8 flex items-center">
-                <div tw="flex flex-col text-neutral-300 justify-center items-end mr-2">
+                <div tw="flex flex-col text-neutral-300 justify-center items-end">
                   <span tw="text-white text-5xl">anshori</span>
                   <span tw="text-4xl">Software Engineer</span>
                 </div>
-                <img
-                  src={`${baseUrl}/logo192.png`}
-                  alt="icon"
-                  width={80}
-                  height={80}
-                />
               </div>
 
               <div
@@ -62,50 +55,3 @@ export const Route = createFileRoute('/api/og')({
     },
   },
 })
-
-// import { createFileRoute } from '@tanstack/react-router'
-// import { ImageResponse } from '@vercel/og'
-
-// export const Route = createFileRoute('/api/og')({
-//   server: {
-//     handlers: {
-//       GET: ({ request }) => {
-//         const url = new URL(request.url)
-//         const title = url.searchParams.get('title')
-//         const subtitle = url.searchParams.get('subtitle')
-//         console.log(url)
-//         const baseUrl = url.origin
-
-//         return new ImageResponse(
-//           <div tw="flex relative p-4 flex-col bg-black w-full h-full items-center justify-center">
-//             {title && (
-//               <div tw="flex flex-col items-center justify-center text-center">
-//                 <span tw="text-white text-6xl">{title}</span>
-//                 {subtitle && (
-//                   <span tw="text-neutral-500 text-2xl mt-4">{subtitle}</span>
-//                 )}
-//               </div>
-//             )}
-
-//             <img
-//               src={`${baseUrl}/logo192.png`}
-//               alt="icon"
-//               width={title ? 64 : 256}
-//               height={title ? 64 : 256}
-//               tw={title ? 'absolute top-8 right-8' : ''}
-//             />
-
-//             <div tw="absolute bottom-8 left-8 flex flex-col text-neutral-500">
-//               <span tw="text-white text-5xl">anshori</span>
-//               <span tw="text-4xl">Software Engineer</span>
-//             </div>
-//           </div>,
-//           {
-//             width: 1200,
-//             height: 630,
-//           },
-//         )
-//       },
-//     },
-//   },
-// })
