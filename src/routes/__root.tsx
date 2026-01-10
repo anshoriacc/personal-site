@@ -64,6 +64,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           href: appCss,
         },
       ],
+      scripts: [
+        {
+          defer: true,
+          src: 'https://umami.anshori.com/script.js',
+          'data-website-id': 'a35702fc-4b2e-4e45-b6c7-a93b8d273540',
+        },
+      ],
     }),
     shellComponent: RootDocument,
     notFoundComponent: () => <div>404 Not Found</div>,
