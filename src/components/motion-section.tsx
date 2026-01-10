@@ -6,8 +6,12 @@ const variants = {
   show: { opacity: 1, y: 0, filter: 'blur(0px)' },
 }
 
-type Props = PropsWithChildren<{}>
+type Props = PropsWithChildren<{ className?: string }>
 
-export const Section = ({ children }: Props) => {
-  return <motion.div variants={variants}>{children}</motion.div>
+export const Section = ({ children, className }: Props) => {
+  return (
+    <motion.div variants={variants} className={className}>
+      {children}
+    </motion.div>
+  )
 }

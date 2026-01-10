@@ -4,9 +4,8 @@ import { motion } from 'motion/react'
 import { cn } from '@/lib/utils'
 
 const variants = {
-  hidden: { opacity: 0 },
+  hidden: {},
   show: {
-    opacity: 1,
     transition: {
       staggerChildren: 0.1,
     },

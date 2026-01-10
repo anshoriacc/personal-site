@@ -13,6 +13,9 @@ import { Providers } from '../components/providers'
 import { getThemeServerFn } from '../server/theme'
 import appCss from '../styles.css?url'
 import { SITE_URL } from '../constants/env'
+import { cn } from '@/lib/utils'
+import { useIsNightTime } from '@/stores/time.store'
+import { NotFound } from '@/components/not-found'
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {
@@ -73,12 +76,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       ],
     }),
     shellComponent: RootDocument,
-    notFoundComponent: () => <div>404 Not Found</div>,
+    notFoundComponent: () => <NotFound />,
   },
 )
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   const theme = Route.useLoaderData()
+  const isNight = useIsNightTime()
 
   return (
     <html lang="en" className={theme} suppressHydrationWarning>
@@ -86,7 +90,14 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
 
-      <body>
+      <body
+        className={cn(
+          'relative w-screen cursor-default overflow-x-hidden overflow-y-visible',
+          !isNight
+            ? 'selection:bg-amber-200 selection:text-amber-900 dark:selection:bg-amber-900 dark:selection:text-amber-200'
+            : 'selection:bg-sky-200 selection:text-sky-900 dark:selection:bg-sky-900 dark:selection:text-sky-200',
+        )}
+      >
         <Providers theme={theme}>
           {children}
 

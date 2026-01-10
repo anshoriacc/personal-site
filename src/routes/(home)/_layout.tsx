@@ -2,9 +2,7 @@ import React from 'react'
 import { Outlet, createFileRoute } from '@tanstack/react-router'
 import { motion } from 'motion/react'
 
-import { cn } from '@/lib/utils'
-import { useIsNightTime } from '@/stores/time.store'
-import { Header } from "@/components/header"
+import { Header } from '@/components/header'
 
 export const Route = createFileRoute('/(home)/_layout')({
   component: HomeLayout,
@@ -12,18 +10,9 @@ export const Route = createFileRoute('/(home)/_layout')({
 
 function HomeLayout() {
   const constraintsRef = React.useRef<HTMLDivElement>(null!)
-  const isNight = useIsNightTime()
 
   return (
-    <div
-      ref={constraintsRef}
-      className={cn(
-        'relative w-screen cursor-default overflow-x-hidden overflow-y-visible',
-        !isNight
-          ? 'selection:bg-amber-200 selection:text-amber-900 dark:selection:bg-amber-900 dark:selection:text-amber-200'
-          : 'selection:bg-sky-200 selection:text-sky-900 dark:selection:bg-sky-900 dark:selection:text-sky-200',
-      )}
-    >
+    <div ref={constraintsRef}>
       <Header />
 
       {/* Gradient Background */}
