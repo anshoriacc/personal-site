@@ -1,36 +1,38 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { ImageResponse } from '@vercel/og'
+import sharp from 'sharp'
 
 export const Route = createFileRoute('/api/og')({
   server: {
     handlers: {
-      GET: ({ request }) => {
+      GET: async ({ request }) => {
         const url = new URL(request.url)
         const title = url.searchParams.get('title')
         const subtitle = url.searchParams.get('subtitle')
 
-        return new ImageResponse(
-          <div tw="flex p-2 bg-white w-full h-full">
+        const imageResponse = new ImageResponse(
+          <div tw="flex p-4 bg-white w-full h-full">
             <div
               style={{
                 background:
-                  'radial-gradient(ellipse at 10% 10%, #666 0%, #000 100%)',
+                  'radial-gradient(ellipse 1200px 630px at 10% 10%, #aaa 0%, #000 90%)',
+                backdropFilter: 'blur(4px)',
               }}
-              tw="relative flex w-full h-full rounded-3xl p-2"
+              tw="relative flex w-full h-full rounded-3xl p-4"
             >
               {title && (
                 <div tw="flex flex-col items-center justify-center text-center w-full">
-                  <span tw="text-white text-4xl font-semibold">{title}</span>
+                  <span tw="text-white text-6xl font-semibold">{title}</span>
                   {subtitle && (
-                    <span tw="text-neutral-300 text-2xl mt-2">{subtitle}</span>
+                    <span tw="text-neutral-300 text-2xl mt-4">{subtitle}</span>
                   )}
                 </div>
               )}
 
               <div tw="absolute bottom-8 right-8 flex items-center">
                 <div tw="flex flex-col text-neutral-300 justify-center items-end">
-                  <span tw="text-white text-3xl">anshori</span>
-                  <span tw="text-xl">Software Engineer</span>
+                  <span tw="text-white text-5xl">anshori</span>
+                  <span tw="text-4xl">Software Engineer</span>
                 </div>
               </div>
 
@@ -45,10 +47,25 @@ export const Route = createFileRoute('/api/og')({
             </div>
           </div>,
           {
-            width: 800,
-            height: 420,
+            width: 1200,
+            height: 630,
           },
         )
+
+        // Convert ImageResponse to ArrayBuffer
+        const arrayBuffer = await imageResponse.arrayBuffer()
+
+        // Compress with Sharp: convert to JPEG at 75% quality
+        const compressedImage = await sharp(Buffer.from(arrayBuffer))
+          .jpeg({ quality: 95 })
+          .toBuffer()
+
+        return new Response(new Uint8Array(compressedImage), {
+          headers: {
+            'Content-Type': 'image/jpeg',
+            'Cache-Control': 'public, max-age=31536000, immutable',
+          },
+        })
       },
     },
   },
