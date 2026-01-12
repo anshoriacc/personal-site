@@ -111,6 +111,39 @@ export const Experience = ({ simplified }: Props) => {
           </React.Fragment>
         ))}
       </div>
+
+      <ExperienceIndicatorScript />
     </section>
   )
 }
+
+export const ExperienceIndicatorScript = () => (
+  <script
+    dangerouslySetInnerHTML={{
+      __html: `(${(() => {
+        const t = new Date()
+        const fullHours = t.getHours()
+        const isNight = fullHours >= 18 || fullHours < 4
+
+        const pingEl = document.getElementById('exp-indicator-ping')
+        const dotEl = document.getElementById('exp-indicator-dot')
+
+        if (pingEl) {
+          const pingClass = isNight ? 'bg-sky-400' : 'bg-amber-400'
+          pingEl.className = pingEl.className.replace(
+            /bg-(sky|amber)-400/,
+            pingClass,
+          )
+        }
+
+        if (dotEl) {
+          const dotClass = isNight ? 'bg-sky-500' : 'bg-amber-500'
+          dotEl.className = dotEl.className.replace(
+            /bg-(sky|amber)-500/,
+            dotClass,
+          )
+        }
+      }).toString()})()`,
+    }}
+  />
+)

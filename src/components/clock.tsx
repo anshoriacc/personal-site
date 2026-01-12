@@ -62,6 +62,42 @@ export const Clock = ({ className }: Props) => {
         strokeLinecap="round"
         transform={`rotate(${minuteRotation}, 50, 50)`}
       />
+
+      <ClockScript />
     </svg>
   )
 }
+
+export const ClockScript = () => (
+  <script
+    dangerouslySetInnerHTML={{
+      __html: `(${(() => {
+        const t = new Date()
+        const h = t.getHours() % 12
+        const m = t.getMinutes()
+        const s = t.getSeconds()
+        const fullHours = t.getHours()
+
+        const hourEl = document.getElementById('hour-hand')
+        const minuteEl = document.getElementById('minute-hand')
+        const clockCircle = document.getElementById('clock')
+
+        if (hourEl) {
+          const hr = h * 30 + m * 0.5
+          hourEl.setAttribute('transform', 'rotate(' + hr + ', 50, 50)')
+        }
+
+        if (minuteEl) {
+          const mr = m * 6 + s * 0.1
+          minuteEl.setAttribute('transform', 'rotate(' + mr + ', 50, 50)')
+        }
+
+        if (clockCircle) {
+          const isNight = fullHours >= 18 || fullHours < 4
+          const colorClass = isNight ? 'fill-sky-500' : 'fill-amber-500'
+          clockCircle.setAttribute('class', colorClass)
+        }
+      }).toString()})()`,
+    }}
+  />
+)
