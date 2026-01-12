@@ -52,10 +52,8 @@ export const Route = createFileRoute('/api/og')({
           },
         )
 
-        // Convert ImageResponse to ArrayBuffer
         const arrayBuffer = await imageResponse.arrayBuffer()
 
-        // Compress with Sharp: convert to JPEG at 75% quality
         const compressedImage = await sharp(Buffer.from(arrayBuffer))
           .jpeg({ quality: 95 })
           .toBuffer()
