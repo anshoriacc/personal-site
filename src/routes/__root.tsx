@@ -26,11 +26,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           title: 'Achmad Anshori',
         },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: 'Achmad Anshori Personal Website' },
         { property: 'og:title', content: 'Achmad Anshori' },
         {
+          name: 'description',
+          content: 'Software Engineer based in Jakarta, Indonesia.',
+        },
+        {
           property: 'og:description',
-          content: 'Achmad Anshori Personal Website',
+          content: 'Software Engineer based in Jakarta, Indonesia.',
         },
         { property: 'og:type', content: 'website' },
         {
@@ -45,7 +48,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { name: 'twitter:title', content: 'Achmad Anshori' },
         {
           name: 'twitter:description',
-          content: 'Achmad Anshori Personal Website',
+          content: 'Software Engineer based in Jakarta, Indonesia.',
         },
         {
           name: 'twitter:url',

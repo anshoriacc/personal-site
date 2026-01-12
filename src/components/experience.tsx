@@ -105,7 +105,7 @@ export const Experience = ({ simplified }: Props) => {
               )}
             </div>
 
-            <div className="text-muted-foreground text-center last:hidden">
+            <div className="text-muted-foreground text-center select-none last:hidden">
               〰︎〰︎〰︎〰︎〰︎
             </div>
           </React.Fragment>
@@ -130,12 +130,18 @@ export const ExperienceIndicatorScript = () => (
 
         if (pingEl) {
           const pingClass = isNight ? 'bg-sky-400' : 'bg-amber-400'
-          pingEl.className = pingEl.className.replace(/bg-(sky|amber)-400/, pingClass)
+          pingEl.className = pingEl.className.replace(
+            /bg-(sky|amber)-400/,
+            pingClass,
+          )
         }
 
         if (dotEl) {
           const dotClass = isNight ? 'bg-sky-500' : 'bg-amber-500'
-          dotEl.className = dotEl.className.replace(/bg-(sky|amber)-500/, dotClass)
+          dotEl.className = dotEl.className.replace(
+            /bg-(sky|amber)-500/,
+            dotClass,
+          )
         }
       }).toString()})()`,
     }}

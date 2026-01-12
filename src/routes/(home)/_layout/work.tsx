@@ -9,8 +9,8 @@ export const Route = createFileRoute('/(home)/_layout/work')({
   head: () => ({
     meta: [
       { title: 'Work - Achmad Anshori' },
-      { name: 'description', content: 'Achmad Anshori Work Experience' },
       { property: 'og:title', content: 'Work - Achmad Anshori' },
+      { name: 'twitter:title', content: 'Work - Achmad Anshori' },
     ],
   }),
 })

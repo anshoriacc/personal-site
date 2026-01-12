@@ -4,8 +4,8 @@ import { getCurrentlyPlayingQueryOptions } from '@/hooks/api/spotify'
 import { getGithubContributionsQueryOptions } from '@/hooks/api/github-contributions'
 import { GitHubContributions } from '@/components/github-contributions'
 import { Container } from '@/components/motion-container'
-import { Experience } from '@/components/experience'
 import { Section } from '@/components/motion-section'
+import { Experience } from '@/components/experience'
 import { Profile } from '@/components/profile'
 import { Spotify } from '@/components/spotify'
 
@@ -31,11 +31,11 @@ function HomePage() {
       </Section>
 
       <Section>
-        <GitHubContributions />
+        <Experience simplified />
       </Section>
 
       <Section>
-        <Experience simplified />
+        <GitHubContributions />
       </Section>
 
       <Section>

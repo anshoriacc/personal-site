@@ -152,7 +152,7 @@ export const Header = ({ constraintsRef }: Props) => {
 
   return (
     <MotionConfig transition={{ type: 'spring', bounce: 0.2, duration: 0.3 }}>
-      <motion.div className="dark group pointer-events-none fixed top-6 left-0 z-1 flex w-full cursor-default select-none">
+      <motion.div className="dark group pointer-events-none fixed top-6 left-0 z-10 flex w-full cursor-default select-none">
         <motion.header
           ref={headerRef}
           // drag // for development purpose
