@@ -13,12 +13,12 @@ function ElltyPage() {
 
         <QuickFormStyling />
 
-        <div className="flex flex-col space-y-4 text-sm">
+        <div className="flex flex-col space-y-4">
           <h3>Explanation</h3>
 
-          <div className="text-muted-foreground space-y-4">
+          <div className="text-muted-foreground space-y-4 text-sm">
             <div className="space-y-2">
-              <h4>Checkbox</h4>
+              <h4 className="text-foreground">Checkbox</h4>
               <ul className="space-y-2">
                 <li>
                   State 1: not-checked default - border:{' '}
@@ -72,7 +72,7 @@ function ElltyPage() {
             </div>
 
             <div className="space-y-2">
-              <h4>Button</h4>
+              <h4 className="text-foreground">Button</h4>
               <ul className="space-y-2">
                 <li>State 1: default - bg: #FFCE22</li>
                 <li>State 2: hover - bg: #FFD84D</li>
