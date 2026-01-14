@@ -41,7 +41,7 @@ function HomeLayout() {
       </motion.div>
 
       <div className="mx-auto flex min-h-dvh w-full max-w-xl flex-col p-4 pt-22">
-        <div className="flex-1">
+        <div className="flex-1 flex flex-col">
           <Outlet />
         </div>
       </div>

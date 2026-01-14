@@ -14,6 +14,7 @@ import { Route as ApiOgRouteImport } from './routes/api/og'
 import { Route as homeLayoutRouteImport } from './routes/(home)/_layout'
 import { Route as homeLayoutIndexRouteImport } from './routes/(home)/_layout/index'
 import { Route as homeLayoutWorkRouteImport } from './routes/(home)/_layout/work'
+import { Route as homeLayoutVaultElltyIndexRouteImport } from './routes/(home)/_layout/vault/ellty/index'
 
 const HealthRoute = HealthRouteImport.update({
   id: '/health',
@@ -39,18 +40,26 @@ const homeLayoutWorkRoute = homeLayoutWorkRouteImport.update({
   path: '/work',
   getParentRoute: () => homeLayoutRoute,
 } as any)
+const homeLayoutVaultElltyIndexRoute =
+  homeLayoutVaultElltyIndexRouteImport.update({
+    id: '/vault/ellty/',
+    path: '/vault/ellty/',
+    getParentRoute: () => homeLayoutRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/health': typeof HealthRoute
   '/api/og': typeof ApiOgRoute
   '/work': typeof homeLayoutWorkRoute
   '/': typeof homeLayoutIndexRoute
+  '/vault/ellty': typeof homeLayoutVaultElltyIndexRoute
 }
 export interface FileRoutesByTo {
   '/health': typeof HealthRoute
   '/api/og': typeof ApiOgRoute
   '/work': typeof homeLayoutWorkRoute
   '/': typeof homeLayoutIndexRoute
+  '/vault/ellty': typeof homeLayoutVaultElltyIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -59,12 +68,13 @@ export interface FileRoutesById {
   '/api/og': typeof ApiOgRoute
   '/(home)/_layout/work': typeof homeLayoutWorkRoute
   '/(home)/_layout/': typeof homeLayoutIndexRoute
+  '/(home)/_layout/vault/ellty/': typeof homeLayoutVaultElltyIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/health' | '/api/og' | '/work' | '/'
+  fullPaths: '/health' | '/api/og' | '/work' | '/' | '/vault/ellty'
   fileRoutesByTo: FileRoutesByTo
-  to: '/health' | '/api/og' | '/work' | '/'
+  to: '/health' | '/api/og' | '/work' | '/' | '/vault/ellty'
   id:
     | '__root__'
     | '/health'
@@ -72,6 +82,7 @@ export interface FileRouteTypes {
     | '/api/og'
     | '/(home)/_layout/work'
     | '/(home)/_layout/'
+    | '/(home)/_layout/vault/ellty/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -117,17 +128,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof homeLayoutWorkRouteImport
       parentRoute: typeof homeLayoutRoute
     }
+    '/(home)/_layout/vault/ellty/': {
+      id: '/(home)/_layout/vault/ellty/'
+      path: '/vault/ellty'
+      fullPath: '/vault/ellty'
+      preLoaderRoute: typeof homeLayoutVaultElltyIndexRouteImport
+      parentRoute: typeof homeLayoutRoute
+    }
   }
 }
 
 interface homeLayoutRouteChildren {
   homeLayoutWorkRoute: typeof homeLayoutWorkRoute
   homeLayoutIndexRoute: typeof homeLayoutIndexRoute
+  homeLayoutVaultElltyIndexRoute: typeof homeLayoutVaultElltyIndexRoute
 }
 
 const homeLayoutRouteChildren: homeLayoutRouteChildren = {
   homeLayoutWorkRoute: homeLayoutWorkRoute,
   homeLayoutIndexRoute: homeLayoutIndexRoute,
+  homeLayoutVaultElltyIndexRoute: homeLayoutVaultElltyIndexRoute,
 }
 
 const homeLayoutRouteWithChildren = homeLayoutRoute._addFileChildren(
