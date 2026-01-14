@@ -3,6 +3,8 @@ import dayjs from 'dayjs'
 import { cn } from '@/lib/utils'
 import { useGetGithubContributionsQuery } from '@/hooks/api/github-contributions'
 import { ScrollArea, ScrollBar } from './ui/scroll-area'
+import { GithubIcon } from './svg/github-icon'
+import { Button } from './ui/button'
 import {
   Tooltip,
   TooltipContent,
@@ -31,7 +33,25 @@ export const GitHubContributions = () => {
 
   return (
     <section className="group relative flex w-full flex-col gap-2">
-      <h2 className="font-medium">GitHub Contributions</h2>
+      <div className="flex items-center gap-2">
+        <h2 className="font-medium">GitHub Contributions</h2>
+        <Button
+          variant="secondary"
+          size="xs"
+          className="gap-1"
+          render={
+            <a
+              href="https://github.com/anshoriacc"
+              target="_blank"
+              rel="noreferrer"
+              className="cursor-external-link"
+            />
+          }
+        >
+          <GithubIcon className="size-3.5" />
+          GitHub
+        </Button>
+      </div>
 
       {githubContributionsQuery.data ? (
         <div className="relative w-full">

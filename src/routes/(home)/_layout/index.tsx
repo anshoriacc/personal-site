@@ -8,6 +8,7 @@ import { Section } from '@/components/motion-section'
 import { Experience } from '@/components/experience'
 import { Profile } from '@/components/profile'
 import { Spotify } from '@/components/spotify'
+import { Location } from '@/components/location'
 
 export const Route = createFileRoute('/(home)/_layout/')({
   component: HomePage,
@@ -40,6 +41,10 @@ function HomePage() {
 
       <Section>
         <Spotify />
+      </Section>
+
+      <Section>
+        <Location />
       </Section>
     </Container>
   )

@@ -1,9 +1,11 @@
 import React from 'react'
+import { Link } from '@tanstack/react-router'
 import { cn } from '@/lib/utils'
 import { experiences } from '@/data/experience'
 import { useIsNightTime } from '@/stores/time.store'
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip'
 import { Badge } from './ui/badge'
+import { Button } from './ui/button'
 
 type Props = {
   simplified?: boolean
@@ -12,12 +14,15 @@ type Props = {
 export const Experience = ({ simplified }: Props) => {
   const isNight = useIsNightTime()
 
+  const displayedExperiences = experiences.slice(0, 3)
+  const hasMore = experiences.length > 3
+
   return (
     <section className="space-y-6">
       <h2 className="font-medium">Experience</h2>
 
       <div className="space-y-3">
-        {experiences.map((exp, index) => (
+        {displayedExperiences.map((exp, index) => (
           <React.Fragment key={index}>
             <div className="space-y-0.5">
               <h3 className="flex items-center gap-2">
@@ -111,6 +116,14 @@ export const Experience = ({ simplified }: Props) => {
           </React.Fragment>
         ))}
       </div>
+
+      {hasMore && simplified && (
+        <div className="flex justify-center">
+          <Button variant="secondary" size="xs" render={<Link to="/work" />}>
+            Show more experiences
+          </Button>
+        </div>
+      )}
 
       <ExperienceIndicatorScript />
     </section>
