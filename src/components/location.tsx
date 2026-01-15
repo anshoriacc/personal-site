@@ -22,24 +22,6 @@ const locationToAngles = (lat: number, long: number): [number, number] => {
   ]
 }
 
-// Convert CSS color to RGB array for Cobe (values 0-1)
-const getCSSVariableRGB = (variable: string): [number, number, number] => {
-  const root = document.documentElement
-  const value = getComputedStyle(root).getPropertyValue(variable).trim()
-
-  // Handle oklch format: oklch(L C H)
-  if (value.startsWith('oklch')) {
-    const match = value.match(/oklch\(([\d.]+)\s+([\d.]+)\s+([\d.]+)\)/)
-    if (match) {
-      const lightness = parseFloat(match[1])
-      return [lightness, lightness, lightness]
-    }
-  }
-
-  // Fallback
-  return [0.5, 0.5, 0.5]
-}
-
 export const Location = ({ className }: Props) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const pointerInteracting = useRef<number | null>(null)
@@ -82,10 +64,8 @@ export const Location = ({ className }: Props) => {
       ? [0.22, 0.66, 0.9] // sky-500
       : [0.96, 0.59, 0.11] // amber-500
 
-    const backgroundRGB = getCSSVariableRGB('--muted-foreground')
-
-    const glowColor: [number, number, number] =
-      theme === 'dark' ? [0.2, 0.2, 0.2] : [0.8, 0.8, 0.8]
+    const color: [number, number, number] =
+      theme === 'dark' ? [0.1, 0.1, 0.1] : [0.9, 0.9, 0.9]
 
     const globe = createGlobe(canvasRef.current, {
       devicePixelRatio: 1,
@@ -99,9 +79,9 @@ export const Location = ({ className }: Props) => {
       offset: [0, canvasSize.width / 4.5],
       mapSamples: 60000,
       mapBrightness: 3,
-      baseColor: backgroundRGB,
+      baseColor: color,
+      glowColor: color,
       markerColor,
-      glowColor,
       markers: [{ location: [JAKARTA_LAT, JAKARTA_LONG], size: 0.1 }],
       opacity: 1,
       onRender: (state) => {
@@ -172,7 +152,7 @@ export const Location = ({ className }: Props) => {
     <div
       className={cn(
         'relative w-full overflow-hidden',
-        'opacity-30 transition-opacity duration-300 hover:opacity-100',
+        'opacity-50 transition-opacity duration-300 hover:opacity-100',
         className,
       )}
     >
