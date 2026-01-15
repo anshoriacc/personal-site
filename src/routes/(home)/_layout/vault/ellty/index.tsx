@@ -1,5 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { QuickFormStyling } from './-components/quick-form-styling'
+import { Container } from '@/components/motion-container'
+import { Section } from '@/components/motion-section'
 
 export const Route = createFileRoute('/(home)/_layout/vault/ellty/')({
   component: ElltyPage,
@@ -7,16 +9,16 @@ export const Route = createFileRoute('/(home)/_layout/vault/ellty/')({
 
 function ElltyPage() {
   return (
-    <main className="flex flex-1 flex-col space-y-12">
-      <section className="flex flex-col space-y-6">
-        <h2 className="font-medium">Quick Form Styling</h2>
+    <Container>
+      <Section className="flex flex-col space-y-6">
+        <h1 className="font-medium sm:text-lg">Quick Form Styling</h1>
 
         <QuickFormStyling />
 
         <div className="flex flex-col space-y-4">
-          <h3>Explanation</h3>
+          <h2 className="font-medium">Explanation</h2>
 
-          <div className="text-muted-foreground space-y-4 text-sm">
+          <div className="text-muted-foreground space-y-4">
             <div className="space-y-2">
               <h4 className="text-foreground">Checkbox</h4>
               <ul className="space-y-2">
@@ -74,14 +76,26 @@ function ElltyPage() {
             <div className="space-y-2">
               <h4 className="text-foreground">Button</h4>
               <ul className="space-y-2">
-                <li>State 1: default - bg: #FFCE22</li>
-                <li>State 2: hover - bg: #FFD84D</li>
-                <li>State 3: active - bg: #FFCE22</li>
+                <li>
+                  State 1: default - bg:{' '}
+                  <span className="inline-block size-3 rounded-full bg-[#FFCE22]" />
+                  #FFCE22
+                </li>
+                <li>
+                  State 2: hover - bg:{' '}
+                  <span className="inline-block size-3 rounded-full bg-[#FFD84D]" />
+                  #FFD84D
+                </li>
+                <li>
+                  State 3: active - bg:{' '}
+                  <span className="inline-block size-3 rounded-full bg-[#FFCE22]" />
+                  #FFCE22
+                </li>
               </ul>
             </div>
           </div>
         </div>
-      </section>
-    </main>
+      </Section>
+    </Container>
   )
 }

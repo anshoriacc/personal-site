@@ -14,6 +14,7 @@ import { Route as ApiOgRouteImport } from './routes/api/og'
 import { Route as homeLayoutRouteImport } from './routes/(home)/_layout'
 import { Route as homeLayoutIndexRouteImport } from './routes/(home)/_layout/index'
 import { Route as homeLayoutWorkRouteImport } from './routes/(home)/_layout/work'
+import { Route as homeLayoutVaultEllty2IndexRouteImport } from './routes/(home)/_layout/vault/ellty2/index'
 import { Route as homeLayoutVaultElltyIndexRouteImport } from './routes/(home)/_layout/vault/ellty/index'
 
 const HealthRoute = HealthRouteImport.update({
@@ -40,6 +41,12 @@ const homeLayoutWorkRoute = homeLayoutWorkRouteImport.update({
   path: '/work',
   getParentRoute: () => homeLayoutRoute,
 } as any)
+const homeLayoutVaultEllty2IndexRoute =
+  homeLayoutVaultEllty2IndexRouteImport.update({
+    id: '/vault/ellty2/',
+    path: '/vault/ellty2/',
+    getParentRoute: () => homeLayoutRoute,
+  } as any)
 const homeLayoutVaultElltyIndexRoute =
   homeLayoutVaultElltyIndexRouteImport.update({
     id: '/vault/ellty/',
@@ -53,6 +60,7 @@ export interface FileRoutesByFullPath {
   '/work': typeof homeLayoutWorkRoute
   '/': typeof homeLayoutIndexRoute
   '/vault/ellty': typeof homeLayoutVaultElltyIndexRoute
+  '/vault/ellty2': typeof homeLayoutVaultEllty2IndexRoute
 }
 export interface FileRoutesByTo {
   '/health': typeof HealthRoute
@@ -60,6 +68,7 @@ export interface FileRoutesByTo {
   '/work': typeof homeLayoutWorkRoute
   '/': typeof homeLayoutIndexRoute
   '/vault/ellty': typeof homeLayoutVaultElltyIndexRoute
+  '/vault/ellty2': typeof homeLayoutVaultEllty2IndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -69,12 +78,19 @@ export interface FileRoutesById {
   '/(home)/_layout/work': typeof homeLayoutWorkRoute
   '/(home)/_layout/': typeof homeLayoutIndexRoute
   '/(home)/_layout/vault/ellty/': typeof homeLayoutVaultElltyIndexRoute
+  '/(home)/_layout/vault/ellty2/': typeof homeLayoutVaultEllty2IndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/health' | '/api/og' | '/work' | '/' | '/vault/ellty'
+  fullPaths:
+    | '/health'
+    | '/api/og'
+    | '/work'
+    | '/'
+    | '/vault/ellty'
+    | '/vault/ellty2'
   fileRoutesByTo: FileRoutesByTo
-  to: '/health' | '/api/og' | '/work' | '/' | '/vault/ellty'
+  to: '/health' | '/api/og' | '/work' | '/' | '/vault/ellty' | '/vault/ellty2'
   id:
     | '__root__'
     | '/health'
@@ -83,6 +99,7 @@ export interface FileRouteTypes {
     | '/(home)/_layout/work'
     | '/(home)/_layout/'
     | '/(home)/_layout/vault/ellty/'
+    | '/(home)/_layout/vault/ellty2/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -128,6 +145,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof homeLayoutWorkRouteImport
       parentRoute: typeof homeLayoutRoute
     }
+    '/(home)/_layout/vault/ellty2/': {
+      id: '/(home)/_layout/vault/ellty2/'
+      path: '/vault/ellty2'
+      fullPath: '/vault/ellty2'
+      preLoaderRoute: typeof homeLayoutVaultEllty2IndexRouteImport
+      parentRoute: typeof homeLayoutRoute
+    }
     '/(home)/_layout/vault/ellty/': {
       id: '/(home)/_layout/vault/ellty/'
       path: '/vault/ellty'
@@ -142,12 +166,14 @@ interface homeLayoutRouteChildren {
   homeLayoutWorkRoute: typeof homeLayoutWorkRoute
   homeLayoutIndexRoute: typeof homeLayoutIndexRoute
   homeLayoutVaultElltyIndexRoute: typeof homeLayoutVaultElltyIndexRoute
+  homeLayoutVaultEllty2IndexRoute: typeof homeLayoutVaultEllty2IndexRoute
 }
 
 const homeLayoutRouteChildren: homeLayoutRouteChildren = {
   homeLayoutWorkRoute: homeLayoutWorkRoute,
   homeLayoutIndexRoute: homeLayoutIndexRoute,
   homeLayoutVaultElltyIndexRoute: homeLayoutVaultElltyIndexRoute,
+  homeLayoutVaultEllty2IndexRoute: homeLayoutVaultEllty2IndexRoute,
 }
 
 const homeLayoutRouteWithChildren = homeLayoutRoute._addFileChildren(
