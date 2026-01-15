@@ -1,55 +1,115 @@
-import { useState } from 'react'
+import React from 'react'
+import { useForm } from '@tanstack/react-form'
+import * as z from 'zod'
+
+import { useSessionQuery } from '../-hooks/auth'
+import { useCreateDiscussionMutation } from '../-hooks/discussion'
+import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { useCreateDiscussionMutation } from '../-hooks/discussion'
-import { useSessionQuery } from '../-hooks/auth'
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from '@/components/ui/field'
+
+const discussionSchema = z.object({
+  startingNumber: z
+    .string()
+    .min(1, 'Starting number is required')
+    .refine((val) => !isNaN(parseFloat(val)), {
+      message: 'Please enter a valid number',
+    }),
+})
 
 export function NewDiscussionForm() {
   const { data: session } = useSessionQuery()
   const createMutation = useCreateDiscussionMutation()
-  const [startingNumber, setStartingNumber] = useState('')
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = React.useState<string | null>(null)
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError(null)
+  const form = useForm({
+    defaultValues: {
+      startingNumber: '',
+    },
+    validators: {
+      onSubmit: discussionSchema,
+    },
+    onSubmit: async ({ value }) => {
+      setError(null)
 
-    const number = parseFloat(startingNumber)
-    if (isNaN(number)) {
-      setError('Please enter a valid number')
-      return
-    }
-
-    try {
-      await createMutation.mutateAsync({ startingNumber: number })
-      setStartingNumber('')
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create discussion')
-    }
-  }
+      try {
+        await createMutation.mutateAsync({
+          startingNumber: parseFloat(value.startingNumber),
+        })
+        form.reset()
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : 'Failed to create discussion',
+        )
+      }
+    },
+  })
 
   if (!session) {
     return null
   }
 
   return (
-    <div className="rounded-lg border border-border bg-card p-4">
-      <h3 className="mb-3 text-sm font-medium">Start a New Discussion</h3>
-      <form onSubmit={handleSubmit} className="flex gap-2">
-        <Input
-          type="number"
-          step="any"
-          placeholder="Enter a starting number..."
-          value={startingNumber}
-          onChange={(e) => setStartingNumber(e.target.value)}
-          required
-          className="flex-1"
-        />
-        <Button type="submit" disabled={createMutation.isPending}>
-          {createMutation.isPending ? 'Creating...' : 'Create'}
-        </Button>
-      </form>
-      {error && <p className="mt-2 text-xs text-destructive">{error}</p>}
-    </div>
+    <Card>
+      <CardContent>
+        <h3 className="mb-3 text-sm font-medium">Start a New Discussion</h3>
+        <form
+          id="discussion-form"
+          onSubmit={(e) => {
+            e.preventDefault()
+            form.handleSubmit()
+          }}
+        >
+          <FieldGroup>
+            <form.Field
+              name="startingNumber"
+              children={(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor="startingNumber">
+                      Starting Number
+                    </FieldLabel>
+                    <div className="flex gap-2">
+                      <Input
+                        id="startingNumber"
+                        type="number"
+                        step="any"
+                        name={field.name}
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        aria-invalid={isInvalid}
+                        placeholder="Enter a starting number..."
+                        className="flex-1"
+                      />
+                      <Button
+                        type="submit"
+                        form="discussion-form"
+                        disabled={createMutation.isPending}
+                      >
+                        {createMutation.isPending ? 'Creating...' : 'Create'}
+                      </Button>
+                    </div>
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                )
+              }}
+            />
+          </FieldGroup>
+
+          {error && <p className="text-destructive mt-2 text-xs">{error}</p>}
+        </form>
+      </CardContent>
+    </Card>
   )
 }
