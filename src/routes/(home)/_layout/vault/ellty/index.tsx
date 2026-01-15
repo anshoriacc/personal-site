@@ -5,6 +5,9 @@ import { Section } from '@/components/motion-section'
 
 export const Route = createFileRoute('/(home)/_layout/vault/ellty/')({
   component: ElltyPage,
+  head: () => ({
+    meta: [{ title: 'Quick Form Styling - Achmad Anshori' }],
+  }),
 })
 
 function ElltyPage() {

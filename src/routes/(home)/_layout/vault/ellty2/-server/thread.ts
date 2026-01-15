@@ -3,10 +3,10 @@ import { getCookie } from '@tanstack/react-start/server'
 import { z } from 'zod'
 import { eq, isNull, asc, desc, and } from 'drizzle-orm'
 import { db } from './db'
-import { discussions, operations, treeUsers } from './schema'
+import { threads, operations, treeUsers } from './schema'
 import type { Session } from './auth'
 
-const createDiscussionSchema = z.object({
+const createThreadSchema = z.object({
   startingNumber: z.number(),
 })
 export type OperationNode = {
@@ -22,7 +22,7 @@ export type OperationNode = {
   childOperations: OperationNode[]
 }
 
-export type DiscussionWithOperations = {
+export type ThreadWithOperations = {
   id: string
   startingNumber: number
   author: {
@@ -33,9 +33,9 @@ export type DiscussionWithOperations = {
   operations: OperationNode[]
 }
 
-export const getDiscussions = createServerFn().handler(async () => {
+export const getThreads = createServerFn().handler(async () => {
   const buildOperationTree = async (
-    discussionId: string,
+    threadId: string,
     parentId: string | null,
   ): Promise<OperationNode[]> => {
     const ops = await db
@@ -52,7 +52,7 @@ export const getDiscussions = createServerFn().handler(async () => {
       .innerJoin(treeUsers, eq(operations.authorId, treeUsers.id))
       .where(
         and(
-          eq(operations.discussionId, discussionId),
+          eq(operations.threadId, threadId),
           parentId === null
             ? isNull(operations.parentOperationId)
             : eq(operations.parentOperationId, parentId)
@@ -62,7 +62,7 @@ export const getDiscussions = createServerFn().handler(async () => {
 
     const result: OperationNode[] = []
     for (const op of ops) {
-      const childOperations = await buildOperationTree(discussionId, op.id)
+      const childOperations = await buildOperationTree(threadId, op.id)
       result.push({
         id: op.id,
         type: op.type,
@@ -79,28 +79,28 @@ export const getDiscussions = createServerFn().handler(async () => {
     return result
   }
 
-  const allDiscussions = await db
+  const allThreads = await db
     .select({
-      id: discussions.id,
-      startingNumber: discussions.startingNumber,
-      createdAt: discussions.createdAt,
+      id: threads.id,
+      startingNumber: threads.startingNumber,
+      createdAt: threads.createdAt,
       authorId: treeUsers.id,
       authorUsername: treeUsers.username,
     })
-    .from(discussions)
-    .innerJoin(treeUsers, eq(discussions.authorId, treeUsers.id))
-    .orderBy(desc(discussions.createdAt))
+    .from(threads)
+    .innerJoin(treeUsers, eq(threads.authorId, treeUsers.id))
+    .orderBy(desc(threads.createdAt))
 
-  const result: DiscussionWithOperations[] = []
-  for (const d of allDiscussions) {
-    const ops = await buildOperationTree(d.id, null)
+  const result: ThreadWithOperations[] = []
+  for (const t of allThreads) {
+    const ops = await buildOperationTree(t.id, null)
     result.push({
-      id: d.id,
-      startingNumber: d.startingNumber,
-      createdAt: d.createdAt,
+      id: t.id,
+      startingNumber: t.startingNumber,
+      createdAt: t.createdAt,
       author: {
-        id: d.authorId,
-        username: d.authorUsername,
+        id: t.authorId,
+        username: t.authorUsername,
       },
       operations: ops,
     })
@@ -109,8 +109,8 @@ export const getDiscussions = createServerFn().handler(async () => {
   return result
 })
 
-export const createDiscussion = createServerFn({ method: 'POST' })
-  .inputValidator(createDiscussionSchema)
+export const createThread = createServerFn({ method: 'POST' })
+  .inputValidator(createThreadSchema)
   .handler(async ({ data }) => {
     const sessionData = getCookie('tree-arithmetic-auth-session')
     let session: Session = null
@@ -123,8 +123,8 @@ export const createDiscussion = createServerFn({ method: 'POST' })
 
     if (!session) throw new Error('Unauthorized')
 
-    const [discussion] = await db
-      .insert(discussions)
+    const [thread] = await db
+      .insert(threads)
       .values({
         startingNumber: data.startingNumber,
         authorId: session.userId,
@@ -136,7 +136,7 @@ export const createDiscussion = createServerFn({ method: 'POST' })
     })
 
     return {
-      ...discussion,
+      ...thread,
       author: {
         id: author!.id,
         username: author!.username,

@@ -3,11 +3,11 @@ import { getCookie } from '@tanstack/react-start/server'
 import { z } from 'zod'
 import { eq } from 'drizzle-orm'
 import { db } from './db'
-import { operations, discussions, treeUsers, type OperationType } from './schema'
+import { operations, threads, treeUsers, type OperationType } from './schema'
 import type { Session } from './auth'
 
 const addOperationSchema = z.object({
-  discussionId: z.string(),
+  threadId: z.string(),
   parentOperationId: z.string().nullable(),
   type: z.enum(['ADD', 'SUBTRACT', 'MULTIPLY', 'DIVIDE']),
   rightArgument: z.number(),
@@ -36,7 +36,7 @@ export const addOperation = createServerFn({ method: 'POST' })
       throw new Error('Invalid operation type')
     }
 
-    const { discussionId, parentOperationId, type, rightArgument } = data
+    const { threadId, parentOperationId, type, rightArgument } = data
 
     let leftArgument: number
 
@@ -47,18 +47,18 @@ export const addOperation = createServerFn({ method: 'POST' })
       if (!parent) throw new Error('Parent operation not found')
       leftArgument = parent.result
     } else {
-      const discussion = await db.query.discussions.findFirst({
-        where: eq(discussions.id, discussionId),
+      const thread = await db.query.threads.findFirst({
+        where: eq(threads.id, threadId),
       })
-      if (!discussion) throw new Error('Discussion not found')
-      leftArgument = discussion.startingNumber
+      if (!thread) throw new Error('Thread not found')
+      leftArgument = thread.startingNumber
     }
 
     const result = calculateResult(leftArgument, type, rightArgument)
     const [operation] = await db
       .insert(operations)
       .values({
-        discussionId,
+        threadId,
         parentOperationId,
         type,
         rightArgument,

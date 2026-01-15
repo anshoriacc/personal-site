@@ -14,7 +14,7 @@ import { Route as ApiOgRouteImport } from './routes/api/og'
 import { Route as homeLayoutRouteImport } from './routes/(home)/_layout'
 import { Route as homeLayoutIndexRouteImport } from './routes/(home)/_layout/index'
 import { Route as homeLayoutWorkRouteImport } from './routes/(home)/_layout/work'
-import { Route as homeLayoutVaultEllty2IndexRouteImport } from './routes/(home)/_layout/vault/ellty2/index'
+import { Route as homeLayoutVaultTreeArithmeticIndexRouteImport } from './routes/(home)/_layout/vault/tree-arithmetic/index'
 import { Route as homeLayoutVaultElltyIndexRouteImport } from './routes/(home)/_layout/vault/ellty/index'
 
 const HealthRoute = HealthRouteImport.update({
@@ -41,10 +41,10 @@ const homeLayoutWorkRoute = homeLayoutWorkRouteImport.update({
   path: '/work',
   getParentRoute: () => homeLayoutRoute,
 } as any)
-const homeLayoutVaultEllty2IndexRoute =
-  homeLayoutVaultEllty2IndexRouteImport.update({
-    id: '/vault/ellty2/',
-    path: '/vault/ellty2/',
+const homeLayoutVaultTreeArithmeticIndexRoute =
+  homeLayoutVaultTreeArithmeticIndexRouteImport.update({
+    id: '/vault/tree-arithmetic/',
+    path: '/vault/tree-arithmetic/',
     getParentRoute: () => homeLayoutRoute,
   } as any)
 const homeLayoutVaultElltyIndexRoute =
@@ -60,7 +60,7 @@ export interface FileRoutesByFullPath {
   '/work': typeof homeLayoutWorkRoute
   '/': typeof homeLayoutIndexRoute
   '/vault/ellty': typeof homeLayoutVaultElltyIndexRoute
-  '/vault/ellty2': typeof homeLayoutVaultEllty2IndexRoute
+  '/vault/tree-arithmetic': typeof homeLayoutVaultTreeArithmeticIndexRoute
 }
 export interface FileRoutesByTo {
   '/health': typeof HealthRoute
@@ -68,7 +68,7 @@ export interface FileRoutesByTo {
   '/work': typeof homeLayoutWorkRoute
   '/': typeof homeLayoutIndexRoute
   '/vault/ellty': typeof homeLayoutVaultElltyIndexRoute
-  '/vault/ellty2': typeof homeLayoutVaultEllty2IndexRoute
+  '/vault/tree-arithmetic': typeof homeLayoutVaultTreeArithmeticIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -78,7 +78,7 @@ export interface FileRoutesById {
   '/(home)/_layout/work': typeof homeLayoutWorkRoute
   '/(home)/_layout/': typeof homeLayoutIndexRoute
   '/(home)/_layout/vault/ellty/': typeof homeLayoutVaultElltyIndexRoute
-  '/(home)/_layout/vault/ellty2/': typeof homeLayoutVaultEllty2IndexRoute
+  '/(home)/_layout/vault/tree-arithmetic/': typeof homeLayoutVaultTreeArithmeticIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -88,9 +88,15 @@ export interface FileRouteTypes {
     | '/work'
     | '/'
     | '/vault/ellty'
-    | '/vault/ellty2'
+    | '/vault/tree-arithmetic'
   fileRoutesByTo: FileRoutesByTo
-  to: '/health' | '/api/og' | '/work' | '/' | '/vault/ellty' | '/vault/ellty2'
+  to:
+    | '/health'
+    | '/api/og'
+    | '/work'
+    | '/'
+    | '/vault/ellty'
+    | '/vault/tree-arithmetic'
   id:
     | '__root__'
     | '/health'
@@ -99,7 +105,7 @@ export interface FileRouteTypes {
     | '/(home)/_layout/work'
     | '/(home)/_layout/'
     | '/(home)/_layout/vault/ellty/'
-    | '/(home)/_layout/vault/ellty2/'
+    | '/(home)/_layout/vault/tree-arithmetic/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -145,11 +151,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof homeLayoutWorkRouteImport
       parentRoute: typeof homeLayoutRoute
     }
-    '/(home)/_layout/vault/ellty2/': {
-      id: '/(home)/_layout/vault/ellty2/'
-      path: '/vault/ellty2'
-      fullPath: '/vault/ellty2'
-      preLoaderRoute: typeof homeLayoutVaultEllty2IndexRouteImport
+    '/(home)/_layout/vault/tree-arithmetic/': {
+      id: '/(home)/_layout/vault/tree-arithmetic/'
+      path: '/vault/tree-arithmetic'
+      fullPath: '/vault/tree-arithmetic'
+      preLoaderRoute: typeof homeLayoutVaultTreeArithmeticIndexRouteImport
       parentRoute: typeof homeLayoutRoute
     }
     '/(home)/_layout/vault/ellty/': {
@@ -166,14 +172,15 @@ interface homeLayoutRouteChildren {
   homeLayoutWorkRoute: typeof homeLayoutWorkRoute
   homeLayoutIndexRoute: typeof homeLayoutIndexRoute
   homeLayoutVaultElltyIndexRoute: typeof homeLayoutVaultElltyIndexRoute
-  homeLayoutVaultEllty2IndexRoute: typeof homeLayoutVaultEllty2IndexRoute
+  homeLayoutVaultTreeArithmeticIndexRoute: typeof homeLayoutVaultTreeArithmeticIndexRoute
 }
 
 const homeLayoutRouteChildren: homeLayoutRouteChildren = {
   homeLayoutWorkRoute: homeLayoutWorkRoute,
   homeLayoutIndexRoute: homeLayoutIndexRoute,
   homeLayoutVaultElltyIndexRoute: homeLayoutVaultElltyIndexRoute,
-  homeLayoutVaultEllty2IndexRoute: homeLayoutVaultEllty2IndexRoute,
+  homeLayoutVaultTreeArithmeticIndexRoute:
+    homeLayoutVaultTreeArithmeticIndexRoute,
 }
 
 const homeLayoutRouteWithChildren = homeLayoutRoute._addFileChildren(

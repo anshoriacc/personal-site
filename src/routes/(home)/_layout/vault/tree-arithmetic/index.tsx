@@ -1,3 +1,7 @@
+import { createFileRoute } from '@tanstack/react-router'
+import { ChevronRight, Info } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
+
 import { Container } from '@/components/motion-container'
 import { Section } from '@/components/motion-section'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -7,16 +11,16 @@ import {
   CollapsibleTrigger,
 } from '@/components/ui/collapsible'
 import { Button } from '@/components/ui/button'
-import { createFileRoute } from '@tanstack/react-router'
 import { AuthPanel } from './-components/auth-panel'
-import { NewDiscussionForm } from './-components/new-discussion-form'
-import { DiscussionList } from './-components/discussion-list'
+import { NewThreadForm } from './-components/new-thread-form'
+import { ThreadList } from './-components/thread-list'
 import { useSessionQuery } from './-hooks/auth'
-import { HugeiconsIcon } from '@hugeicons/react'
-import { ChevronRight, Info } from '@hugeicons/core-free-icons'
 
-export const Route = createFileRoute('/(home)/_layout/vault/ellty2/')({
+export const Route = createFileRoute('/(home)/_layout/vault/tree-arithmetic/')({
   component: Ellty2Page,
+  head: () => ({
+    meta: [{ title: 'Tree Arithmetic - Achmad Anshori' }],
+  }),
 })
 
 function Ellty2Page() {
@@ -27,7 +31,7 @@ function Ellty2Page() {
       <Section>
         <h1 className="font-medium sm:text-lg">Tree Arithmetic</h1>
         <p className="text-muted-foreground mt-1 text-sm">
-          A number discussion app where you communicate through math operations
+          A number thread app where you communicate through math operations
         </p>
       </Section>
 
@@ -99,19 +103,19 @@ function Ellty2Page() {
             <HugeiconsIcon icon={Info} className="size-4" />
 
             <AlertDescription>
-              Login to start or reply to discussions.
+              Login to start or reply to threads.
             </AlertDescription>
           </Alert>
         )}
         <AuthPanel />
       </Section>
 
-      <Section>{session && <NewDiscussionForm />}</Section>
+      <Section>{session && <NewThreadForm />}</Section>
 
       <Section className="space-y-4">
-        <h2 className="font-medium">Discussions</h2>
+        <h2 className="font-medium">Threads</h2>
 
-        <DiscussionList />
+        <ThreadList />
       </Section>
     </Container>
   )

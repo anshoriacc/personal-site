@@ -3,7 +3,7 @@ import { useForm } from '@tanstack/react-form'
 import * as z from 'zod'
 
 import { useSessionQuery } from '../-hooks/auth'
-import { useCreateDiscussionMutation } from '../-hooks/discussion'
+import { useCreateThreadMutation } from '../-hooks/thread'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -14,7 +14,7 @@ import {
   FieldLabel,
 } from '@/components/ui/field'
 
-const discussionSchema = z.object({
+const threadSchema = z.object({
   startingNumber: z
     .string()
     .min(1, 'Starting number is required')
@@ -23,9 +23,9 @@ const discussionSchema = z.object({
     }),
 })
 
-export function NewDiscussionForm() {
+export function NewThreadForm() {
   const { data: session } = useSessionQuery()
-  const createMutation = useCreateDiscussionMutation()
+  const createMutation = useCreateThreadMutation()
   const [error, setError] = React.useState<string | null>(null)
 
   const form = useForm({
@@ -33,7 +33,7 @@ export function NewDiscussionForm() {
       startingNumber: '',
     },
     validators: {
-      onSubmit: discussionSchema,
+      onSubmit: threadSchema,
     },
     onSubmit: async ({ value }) => {
       setError(null)
@@ -45,7 +45,7 @@ export function NewDiscussionForm() {
         form.reset()
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : 'Failed to create discussion',
+          err instanceof Error ? err.message : 'Failed to create thread',
         )
       }
     },
@@ -58,9 +58,9 @@ export function NewDiscussionForm() {
   return (
     <Card>
       <CardContent>
-        <h3 className="mb-3 text-sm font-medium">Start a New Discussion</h3>
+        <h3 className="mb-3 text-sm font-medium">Start a New Thread</h3>
         <form
-          id="discussion-form"
+          id="thread-form"
           onSubmit={(e) => {
             e.preventDefault()
             form.handleSubmit()
@@ -92,7 +92,7 @@ export function NewDiscussionForm() {
                       />
                       <Button
                         type="submit"
-                        form="discussion-form"
+                        form="thread-form"
                         disabled={createMutation.isPending}
                       >
                         {createMutation.isPending ? 'Creating...' : 'Create'}

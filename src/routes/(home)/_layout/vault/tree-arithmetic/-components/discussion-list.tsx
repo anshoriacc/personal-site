@@ -1,17 +1,17 @@
 import React from 'react'
 
 import { useSessionQuery } from '../-hooks/auth'
-import { useDiscussionsQuery } from '../-hooks/discussion'
+import { useThreadsQuery } from '../-hooks/thread'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { NewOperationForm } from './new-operation-form'
 import { Skeleton } from '@/components/ui/skeleton'
 import { OperationTree } from './operation-tree'
 import { Button } from '@/components/ui/button'
 
-export function DiscussionList() {
+export function ThreadList() {
   const { data: session } = useSessionQuery()
 
-  const { data: discussions, isLoading, error } = useDiscussionsQuery()
+  const { data: threads, isLoading, error } = useThreadsQuery()
   const [expanded, setExpanded] = React.useState<Set<string>>(new Set())
   const [replyForms, setReplyForms] = React.useState<Set<string>>(new Set())
 
@@ -53,17 +53,17 @@ export function DiscussionList() {
   if (error) {
     return (
       <Card>
-        <p className="text-destructive text-sm">Failed to load discussions</p>
+        <p className="text-destructive text-sm">Failed to load threads</p>
       </Card>
     )
   }
 
-  if (!discussions || discussions.length === 0) {
+  if (!threads || threads.length === 0) {
     return (
       <Card>
         <CardContent>
           <p className="text-muted-foreground text-sm">
-            No discussions yet. Be the first to start one!
+            No threads yet. Be the first to start one!
           </p>
         </CardContent>
       </Card>
@@ -73,24 +73,24 @@ export function DiscussionList() {
   return (
     <section>
       <div className="space-y-4">
-        {discussions.map((discussion) => {
-          const isExpanded = expanded.has(discussion.id)
-          const showReplyForm = replyForms.has(discussion.id)
-          const hasOperations = discussion.operations.length > 0
+        {threads.map((thread) => {
+          const isExpanded = expanded.has(thread.id)
+          const showReplyForm = replyForms.has(thread.id)
+          const hasOperations = thread.operations.length > 0
 
           return (
-            <Card key={discussion.id}>
+            <Card key={thread.id}>
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <CardTitle className="text-base">
                       Starting Number:{' '}
                       <span className="font-mono">
-                        {discussion.startingNumber}
+                        {thread.startingNumber}
                       </span>
                     </CardTitle>
                     <span className="text-muted-foreground text-xs">
-                      by {discussion.author.username}
+                      by {thread.author.username}
                     </span>
                   </div>
                   <div className="flex items-center gap-1">
@@ -99,11 +99,11 @@ export function DiscussionList() {
                         variant="ghost"
                         size="xs"
                         onClick={() =>
-                          toggle(discussion.id, expanded, setExpanded)
+                          toggle(thread.id, expanded, setExpanded)
                         }
                       >
                         {isExpanded ? 'Collapse' : 'Expand'} (
-                        {discussion.operations.length})
+                        {thread.operations.length})
                       </Button>
                     )}
 
@@ -112,7 +112,7 @@ export function DiscussionList() {
                         variant="outline"
                         size="xs"
                         onClick={() =>
-                          toggle(discussion.id, replyForms, setReplyForms)
+                          toggle(thread.id, replyForms, setReplyForms)
                         }
                       >
                         {showReplyForm ? 'Cancel' : 'Reply'}
@@ -127,11 +127,11 @@ export function DiscussionList() {
                   {showReplyForm && (
                     <div className="mb-4">
                       <NewOperationForm
-                        discussionId={discussion.id}
+                        threadId={thread.id}
                         parentOperationId={null}
-                        leftArgument={discussion.startingNumber}
+                        leftArgument={thread.startingNumber}
                         onSuccess={() =>
-                          toggle(discussion.id, replyForms, setReplyForms)
+                          toggle(thread.id, replyForms, setReplyForms)
                         }
                       />
                     </div>
@@ -139,12 +139,12 @@ export function DiscussionList() {
 
                   {hasOperations && isExpanded && (
                     <div className="space-y-2">
-                      {discussion.operations.map((operation) => (
+                      {thread.operations.map((operation) => (
                         <OperationTree
                           key={operation.id}
                           operation={operation}
-                          discussionId={discussion.id}
-                          leftArgument={discussion.startingNumber}
+                          threadId={thread.id}
+                          leftArgument={thread.startingNumber}
                         />
                       ))}
                     </div>

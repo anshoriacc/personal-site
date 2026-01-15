@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import { useSessionQuery } from '../-hooks/auth'
-import type { OperationNode } from '../-server/discussion'
+import type { OperationNode } from '../-server/thread'
 import { Card, CardContent } from '@/components/ui/card'
 import { NewOperationForm } from './new-operation-form'
 import { Button } from '@/components/ui/button'
@@ -10,13 +10,13 @@ const SYMBOLS = { ADD: '+', SUBTRACT: '−', MULTIPLY: '×', DIVIDE: '÷' } as c
 
 type Props = {
   operation: OperationNode
-  discussionId: string
+  threadId: string
   leftArgument: number
 }
 
 export function OperationTree({
   operation,
-  discussionId,
+  threadId,
   leftArgument,
 }: Props) {
   const { data: session } = useSessionQuery()
@@ -68,7 +68,7 @@ export function OperationTree({
           {showReplyForm && (
             <div className="mt-3">
               <NewOperationForm
-                discussionId={discussionId}
+                threadId={threadId}
                 parentOperationId={operation.id}
                 leftArgument={operation.result}
                 onSuccess={() => setShowReplyForm(false)}
@@ -84,7 +84,7 @@ export function OperationTree({
             <OperationTree
               key={child.id}
               operation={child}
-              discussionId={discussionId}
+              threadId={threadId}
               leftArgument={operation.result}
             />
           ))}

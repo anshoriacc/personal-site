@@ -24,7 +24,7 @@ const OPERATIONS = [
 ]
 
 type Props = {
-  discussionId: string
+  threadId: string
   parentOperationId: string | null
   leftArgument: number
   onSuccess?: () => void
@@ -40,7 +40,7 @@ const operationSchema = z.object({
 })
 
 export function NewOperationForm({
-  discussionId,
+  threadId,
   parentOperationId,
   leftArgument,
   onSuccess,
@@ -75,7 +75,7 @@ export function NewOperationForm({
 
       try {
         await addMutation.mutateAsync({
-          discussionId,
+          threadId,
           parentOperationId,
           type,
           rightArgument: parseFloat(value.rightArgument),
@@ -96,7 +96,7 @@ export function NewOperationForm({
     <Card className="bg-card/50">
       <CardContent>
         <form
-          id={`operation-form-${discussionId}-${parentOperationId ?? 'root'}`}
+          id={`operation-form-${threadId}-${parentOperationId ?? 'root'}`}
           onSubmit={(e) => {
             e.preventDefault()
             form.handleSubmit()
@@ -149,7 +149,7 @@ export function NewOperationForm({
                       />
                       <Button
                         type="submit"
-                        form={`operation-form-${discussionId}-${parentOperationId ?? 'root'}`}
+                        form={`operation-form-${threadId}-${parentOperationId ?? 'root'}`}
                         size="sm"
                         disabled={addMutation.isPending}
                       >

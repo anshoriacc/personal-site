@@ -5,13 +5,13 @@ export const useAddOperationMutation = () => {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (data: {
-      discussionId: string
+      threadId: string
       parentOperationId: string | null
       type: 'ADD' | 'SUBTRACT' | 'MULTIPLY' | 'DIVIDE'
       rightArgument: number
     }) => addOperation({ data }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tree-arithmetic-discussions'] })
+      queryClient.invalidateQueries({ queryKey: ['tree-arithmetic-threads'] })
     },
   })
 }
