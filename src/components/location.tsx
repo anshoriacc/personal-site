@@ -5,6 +5,8 @@ import { animate, MotionValue, motionValue } from 'motion/react'
 import { cn } from '@/lib/utils'
 import { useTheme } from '@/stores/theme.store'
 import { useIsNightTime } from '@/stores/time.store'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { MapPin } from '@hugeicons/core-free-icons'
 
 type Props = {
   className?: string
@@ -149,10 +151,10 @@ export const Location = ({ className }: Props) => {
   }
 
   return (
-    <div
+    <section
       className={cn(
         'relative w-full overflow-hidden',
-        'opacity-50 transition-opacity duration-300 hover:opacity-100',
+        'opacity-50 transition-opacity duration-500 hover:opacity-100',
         className,
       )}
     >
@@ -171,11 +173,15 @@ export const Location = ({ className }: Props) => {
         onPointerOut={handlePointerOut}
       />
       <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-2/5"
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-1 h-2/5"
         style={{
           background: `linear-gradient(to bottom, transparent 0%, var(--background) 100%)`,
         }}
       />
-    </div>
+      <div className="pointer-events-none absolute bottom-0 z-2 flex w-full items-center justify-center gap-1 text-sm">
+        <HugeiconsIcon icon={MapPin} className="text-muted-foreground size-4" />
+        <span>Jakarta, Indonesia</span>
+      </div>
+    </section>
   )
 }

@@ -1,11 +1,12 @@
 import React from 'react'
 import { Link } from '@tanstack/react-router'
+
 import { cn } from '@/lib/utils'
 import { experiences } from '@/data/experience'
 import { useIsNightTime } from '@/stores/time.store'
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip'
-import { Badge } from './ui/badge'
 import { Button } from './ui/button'
+import { Badge } from './ui/badge'
 
 type Props = {
   simplified?: boolean
@@ -14,12 +15,23 @@ type Props = {
 export const Experience = ({ simplified }: Props) => {
   const isNight = useIsNightTime()
 
-  const displayedExperiences = experiences.slice(0, 3)
+  const displayedExperiences = simplified
+    ? experiences.slice(0, 3)
+    : experiences
   const hasMore = experiences.length > 3
 
   return (
     <section className="space-y-6">
-      <h2 className="font-medium">Experience</h2>
+      <div className="flex items-center justify-between gap-2">
+        <h2 className="font-medium">Experience</h2>
+        {hasMore && simplified && (
+          <div className="flex justify-center">
+            <Button variant="link" size="xs" render={<Link to="/work" />}>
+              Show More
+            </Button>
+          </div>
+        )}
+      </div>
 
       <div className="space-y-3">
         {displayedExperiences.map((exp, index) => (
@@ -116,14 +128,6 @@ export const Experience = ({ simplified }: Props) => {
           </React.Fragment>
         ))}
       </div>
-
-      {hasMore && simplified && (
-        <div className="flex justify-center">
-          <Button variant="secondary" size="xs" render={<Link to="/work" />}>
-            Show more experiences
-          </Button>
-        </div>
-      )}
 
       <ExperienceIndicatorScript />
     </section>
