@@ -12,7 +12,4 @@ count.txt
 .vinxi
 todos.json
 .github
-
-# Prisma generated client for tree-arithmetic
-prisma/generated/
-src/routes/(home)/_layout/vault/ellty2/-generated/
+.vscode
