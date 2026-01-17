@@ -6,8 +6,7 @@ export const Route = createFileRoute('/sitemap.xml')({
       GET: () => {
         const baseUrl = process.env.SITE_URL || 'https://anshori.com'
 
-        const sitemap = `
-        <?xml version="1.0" encoding="UTF-8"?>
+        const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
         <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
         <url>
             <loc>${baseUrl}/</loc>
@@ -25,8 +24,7 @@ export const Route = createFileRoute('/sitemap.xml')({
             <loc>${baseUrl}/vault/tree-arithmetic</loc>
             <priority>0.7</priority>
         </url>
-        </urlset>
-        `
+        </urlset>`
 
         return new Response(sitemap, {
           headers: {
