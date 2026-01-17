@@ -22,20 +22,31 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     loader: () => getThemeServerFn(),
     head: () => ({
       meta: [
+        { charSet: 'UTF-8' },
         {
           title: 'Achmad Anshori',
         },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { property: 'og:title', content: 'Achmad Anshori' },
         {
           name: 'description',
-          content: 'Software Engineer based in Jakarta, Indonesia.',
+          content:
+            'Software Engineer based in Jakarta, Indonesia. Building modern web applications with React ecosystem.',
         },
+        { name: 'author', content: 'Achmad Anshori' },
+        {
+          name: 'keywords',
+          content:
+            'Achmad Anshori, Software Engineer, Web Developer, React, TypeScript, TanStack, Jakarta, Indonesia, Full Stack Developer',
+        },
+        { name: 'theme-color', content: '#000000' },
+        { property: 'og:title', content: 'Achmad Anshori' },
         {
           property: 'og:description',
-          content: 'Software Engineer based in Jakarta, Indonesia.',
+          content:
+            'Software Engineer based in Jakarta, Indonesia. Building modern web applications with React ecosystem.',
         },
         { property: 'og:type', content: 'website' },
+        { property: 'og:locale', content: 'en_US' },
         {
           property: 'og:url',
           content: SITE_URL,
@@ -44,18 +55,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           property: 'og:image',
           content: `${SITE_URL}/api/og`,
         },
+        { property: 'og:image:width', content: '1200' },
+        { property: 'og:image:height', content: '630' },
         { name: 'twitter:card', content: 'summary_large_image' },
         { name: 'twitter:title', content: 'Achmad Anshori' },
         {
           name: 'twitter:description',
-          content: 'Software Engineer based in Jakarta, Indonesia.',
+          content:
+            'Software Engineer based in Jakarta, Indonesia. Building modern web applications with React ecosystem.',
         },
         {
           name: 'twitter:url',
           content: SITE_URL,
         },
         {
-          name: 'twitter:creator:id',
+          name: 'twitter:creator',
           content: '@20arik_',
         },
         {
@@ -65,6 +79,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       ],
       links: [
         { rel: 'icon', href: '/logo192.png' },
+        { rel: 'apple-touch-icon', href: '/logo192.png' },
+        { rel: 'canonical', href: SITE_URL },
+        { rel: 'preconnect', href: 'https://umami.anshori.com' },
+        { rel: 'dns-prefetch', href: 'https://umami.anshori.com' },
         {
           rel: 'stylesheet',
           href: appCss,
@@ -75,6 +93,28 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           defer: true,
           src: 'https://umami.anshori.com/script.js',
           'data-website-id': 'a35702fc-4b2e-4e45-b6c7-a93b8d273540',
+        },
+        {
+          type: 'application/ld+json',
+          children: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Person',
+            name: 'Achmad Anshori',
+            url: SITE_URL,
+            jobTitle: 'Software Engineer',
+            description:
+              'Software Engineer based in Jakarta, Indonesia. Building modern web applications with React ecosystem.',
+            address: {
+              '@type': 'PostalAddress',
+              addressLocality: 'Jakarta',
+              addressCountry: 'Indonesia',
+            },
+            sameAs: [
+              'https://github.com/anshoriacc',
+              'https://linkedin.com/in/achmad-anshori',
+              'https://x.com/20arik_',
+            ],
+          }),
         },
       ],
     }),
