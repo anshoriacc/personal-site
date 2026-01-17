@@ -19,7 +19,32 @@ import { useSessionQuery } from './-hooks/auth'
 export const Route = createFileRoute('/(home)/_layout/vault/tree-arithmetic/')({
   component: Ellty2Page,
   head: () => ({
-    meta: [{ title: 'Tree Arithmetic - Achmad Anshori' }],
+    meta: [
+      { title: 'Tree Arithmetic - Achmad Anshori' },
+      {
+        name: 'description',
+        content:
+          'A number thread app where you communicate through math operations. Built with Drizzle ORM, and PostgreSQL.',
+      },
+      { property: 'og:title', content: 'Tree Arithmetic - Achmad Anshori' },
+      {
+        property: 'og:description',
+        content:
+          'A number thread app where you communicate through math operations. Built with Drizzle ORM, and PostgreSQL.',
+      },
+      { name: 'twitter:title', content: 'Tree Arithmetic - Achmad Anshori' },
+      {
+        name: 'twitter:description',
+        content:
+          'A number thread app where you communicate through math operations. Built with Drizzle ORM, and PostgreSQL.',
+      },
+    ],
+    links: [
+      {
+        rel: 'canonical',
+        href: `${process.env.SITE_URL || 'https://anshori.com'}/vault/tree-arithmetic`,
+      },
+    ],
   }),
 })
 
