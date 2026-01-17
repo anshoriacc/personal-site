@@ -67,7 +67,7 @@ export const Location = ({ className }: Props) => {
       : [0.96, 0.59, 0.11] // amber-500
 
     const color: [number, number, number] =
-      theme === 'dark' ? [0.1, 0.1, 0.1] : [0.9, 0.9, 0.9]
+      theme === 'dark' ? [0.2, 0.2, 0.2] : [0.8, 0.8, 0.8]
 
     const globe = createGlobe(canvasRef.current, {
       devicePixelRatio: 1,

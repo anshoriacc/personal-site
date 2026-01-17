@@ -7,10 +7,11 @@ import { Experience } from '@/components/experience'
 export const Route = createFileRoute('/(home)/_layout/work')({
   component: WorksPage,
   head: () => ({
-    meta: [
-      { title: 'Work - Achmad Anshori' },
-      { property: 'og:title', content: 'Work - Achmad Anshori' },
-      { name: 'twitter:title', content: 'Work - Achmad Anshori' },
+    links: [
+      {
+        rel: 'canonical',
+        href: `${process.env.SITE_URL || 'https://anshori.com'}/work`,
+      },
     ],
   }),
 })

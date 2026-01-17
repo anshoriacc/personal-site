@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as HealthRouteImport } from './routes/health'
 import { Route as ApiOgRouteImport } from './routes/api/og'
 import { Route as homeLayoutRouteImport } from './routes/(home)/_layout'
@@ -17,6 +18,11 @@ import { Route as homeLayoutWorkRouteImport } from './routes/(home)/_layout/work
 import { Route as homeLayoutVaultTreeArithmeticIndexRouteImport } from './routes/(home)/_layout/vault/tree-arithmetic/index'
 import { Route as homeLayoutVaultElltyIndexRouteImport } from './routes/(home)/_layout/vault/ellty/index'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HealthRoute = HealthRouteImport.update({
   id: '/health',
   path: '/health',
@@ -56,6 +62,7 @@ const homeLayoutVaultElltyIndexRoute =
 
 export interface FileRoutesByFullPath {
   '/health': typeof HealthRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/og': typeof ApiOgRoute
   '/work': typeof homeLayoutWorkRoute
   '/': typeof homeLayoutIndexRoute
@@ -64,6 +71,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/health': typeof HealthRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/og': typeof ApiOgRoute
   '/work': typeof homeLayoutWorkRoute
   '/': typeof homeLayoutIndexRoute
@@ -73,6 +81,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/health': typeof HealthRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/(home)/_layout': typeof homeLayoutRouteWithChildren
   '/api/og': typeof ApiOgRoute
   '/(home)/_layout/work': typeof homeLayoutWorkRoute
@@ -84,6 +93,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/health'
+    | '/sitemap.xml'
     | '/api/og'
     | '/work'
     | '/'
@@ -92,6 +102,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/health'
+    | '/sitemap.xml'
     | '/api/og'
     | '/work'
     | '/'
@@ -100,6 +111,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/health'
+    | '/sitemap.xml'
     | '/(home)/_layout'
     | '/api/og'
     | '/(home)/_layout/work'
@@ -110,12 +122,20 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   HealthRoute: typeof HealthRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   homeLayoutRoute: typeof homeLayoutRouteWithChildren
   ApiOgRoute: typeof ApiOgRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/health': {
       id: '/health'
       path: '/health'
@@ -189,6 +209,7 @@ const homeLayoutRouteWithChildren = homeLayoutRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   HealthRoute: HealthRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   homeLayoutRoute: homeLayoutRouteWithChildren,
   ApiOgRoute: ApiOgRoute,
 }

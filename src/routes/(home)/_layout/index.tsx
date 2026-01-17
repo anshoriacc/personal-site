@@ -22,6 +22,14 @@ export const Route = createFileRoute('/(home)/_layout/')({
       console.error('Error prefetching data in HomePage loader:', error)
     }
   },
+  head: () => ({
+    links: [
+      {
+        rel: 'canonical',
+        href: `${process.env.SITE_URL || 'https://anshori.com'}/`,
+      },
+    ],
+  }),
 })
 
 function HomePage() {
