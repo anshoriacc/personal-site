@@ -114,55 +114,55 @@ export const Header = ({ constraintsRef }: Props) => {
     }
   }, [view, handleViewChange, isMobile])
 
-  const renderContent = React.useCallback(
-    (viewState: ViewState, routerStatus: 'pending' | 'idle') => {
-      if (viewState === 'idle') {
-        return (
-          <div className="flex h-full items-center gap-2 p-1.5">
-            <Clock />
-            <span className="mr-1.5">
-              <LoadingText isPending={routerStatus === 'pending'} />
-            </span>
-          </div>
-        )
-      }
-
+  const renderContent = (
+    viewState: ViewState,
+    routerStatus: 'pending' | 'idle',
+  ) => {
+    if (viewState === 'idle') {
       return (
-        <div className="flex w-50 flex-col">
-          <div className="flex items-center justify-between gap-4 border-b border-b-white/20 p-1.5">
-            <div className="flex items-center gap-2">
-              <Clock />
-              <LoadingText isPending={routerStatus === 'pending'} />
-            </div>
-
-            <ThemeToggle />
-          </div>
-
-          <nav
-            className={cn(
-              'space-y-1 p-1.5 text-sm',
-              '*:flex *:items-center *:gap-2 *:rounded-md *:p-1.5',
-            )}
-          >
-            {MENU_ITEMS.map(({ to, label, icon }) => (
-              <Link
-                key={to}
-                to={to}
-                activeProps={{ className: 'text-foreground bg-muted' }}
-                inactiveProps={{
-                  className: 'hover:text-foreground text-muted-foreground',
-                }}
-              >
-                <HugeiconsIcon icon={icon} className="size-4" />
-                {label}
-              </Link>
-            ))}
-          </nav>
+        <div className="flex h-full items-center gap-2 p-1.5">
+          <Clock />
+          <span className="mr-1.5">
+            <LoadingText isPending={routerStatus === 'pending'} />
+          </span>
         </div>
       )
-    },
-    [],
-  )
+    }
+
+    return (
+      <div className="flex w-50 flex-col">
+        <div className="flex items-center justify-between gap-4 border-b border-b-white/20 p-1.5">
+          <div className="flex items-center gap-2">
+            <Clock />
+            <LoadingText isPending={routerStatus === 'pending'} />
+          </div>
+
+          <ThemeToggle />
+        </div>
+
+        <nav
+          className={cn(
+            'space-y-1 p-1.5 text-sm',
+            '*:flex *:items-center *:gap-2 *:rounded-md *:p-1.5',
+          )}
+        >
+          {MENU_ITEMS.map(({ to, label, icon }) => (
+            <Link
+              key={to}
+              to={to}
+              activeProps={{ className: 'text-foreground bg-muted' }}
+              inactiveProps={{
+                className: 'hover:text-foreground text-muted-foreground',
+              }}
+            >
+              <HugeiconsIcon icon={icon} className="size-4" />
+              {label}
+            </Link>
+          ))}
+        </nav>
+      </div>
+    )
+  }
 
   const handleBackClick = React.useCallback(() => {
     router.history.back()
