@@ -265,16 +265,23 @@ export const Header = ({ constraintsRef }: Props) => {
 const LoadingText = ({ isPending }: { isPending: boolean }) => {
   return (
     <span className="relative font-semibold">
-      {/* Background text (muted) */}
       <span className="text-muted-foreground">anshori</span>
-      {/* Foreground text (animated fill) */}
+
       <motion.span
+        initial={false}
         className="text-foreground absolute inset-0"
         animate={{
-          clipPath: isPending ? 'inset(0 80% 0 0)' : 'inset(0 0% 0 0)',
+          clipPath: isPending
+            ? 'inset(0 80% 0 0)'
+            : [
+                'inset(0 60% 0 0)',
+                'inset(0 40% 0 0)',
+                'inset(0 20% 0 0)',
+                'inset(0 0% 0 0)',
+              ],
         }}
         transition={{
-          duration: isPending ? 2 : 0.2,
+          duration: isPending ? 0 : 0.2,
           ease: isPending ? 'easeOut' : 'easeIn',
         }}
       >

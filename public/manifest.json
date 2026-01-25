@@ -1,22 +1,22 @@
 {
-  "short_name": "Anshori",
+  "short_name": "anshori",
   "name": "Achmad Anshori - Software Engineer",
   "description": "Portfolio of Achmad Anshori, Software Engineer based in Jakarta, Indonesia",
   "icons": [
     {
-      "src": "logo.png",
+      "src": "/dark800.png",
       "sizes": "800x800",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "logo192.png",
+      "src": "/dark192.png",
       "type": "image/png",
       "sizes": "192x192",
       "purpose": "any maskable"
     },
     {
-      "src": "logo512.png",
+      "src": "/dark512.png",
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "any maskable"
