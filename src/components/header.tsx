@@ -271,14 +271,7 @@ const LoadingText = ({ isPending }: { isPending: boolean }) => {
         initial={false}
         className="text-foreground absolute inset-0"
         animate={{
-          clipPath: isPending
-            ? 'inset(0 80% 0 0)'
-            : [
-                'inset(0 60% 0 0)',
-                'inset(0 40% 0 0)',
-                'inset(0 20% 0 0)',
-                'inset(0 0% 0 0)',
-              ],
+          clipPath: isPending ? 'inset(0 80% 0 0)' : 'inset(0 0% 0 0)',
         }}
         transition={{
           duration: isPending ? 0 : 0.2,

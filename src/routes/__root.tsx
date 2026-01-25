@@ -29,8 +29,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         {
           name: 'description',
-          content:
-            'Software Engineer based in Jakarta, Indonesia. Building modern web applications with React ecosystem.',
+          content: 'Software Engineer based in Jakarta, Indonesia.',
         },
         { name: 'author', content: 'Achmad Anshori' },
         {
@@ -42,8 +41,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { property: 'og:title', content: 'Achmad Anshori' },
         {
           property: 'og:description',
-          content:
-            'Software Engineer based in Jakarta, Indonesia. Building modern web applications with React ecosystem.',
+          content: 'Software Engineer based in Jakarta, Indonesia.',
         },
         { property: 'og:type', content: 'website' },
         { property: 'og:locale', content: 'en_US' },
@@ -61,8 +59,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { name: 'twitter:title', content: 'Achmad Anshori' },
         {
           name: 'twitter:description',
-          content:
-            'Software Engineer based in Jakarta, Indonesia. Building modern web applications with React ecosystem.',
+          content: 'Software Engineer based in Jakarta, Indonesia.',
         },
         {
           name: 'twitter:url',
@@ -102,8 +99,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
             name: 'Achmad Anshori',
             url: SITE_URL,
             jobTitle: 'Software Engineer',
-            description:
-              'Software Engineer based in Jakarta, Indonesia. Building modern web applications with React ecosystem.',
+            description: 'Software Engineer based in Jakarta, Indonesia.',
             address: {
               '@type': 'PostalAddress',
               addressLocality: 'Jakarta',
