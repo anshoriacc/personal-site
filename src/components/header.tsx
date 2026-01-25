@@ -1,6 +1,11 @@
 import React from 'react'
 import { AnimatePresence, MotionConfig, motion } from 'motion/react'
-import { Link, useCanGoBack, useRouter } from '@tanstack/react-router'
+import {
+  Link,
+  useCanGoBack,
+  useRouter,
+  useRouterState,
+} from '@tanstack/react-router'
 import { HugeiconsIcon } from '@hugeicons/react'
 import {
   CodeFolderIcon,
@@ -34,6 +39,7 @@ const MENU_ITEMS = [
 export const Header = ({ constraintsRef }: Props) => {
   const canGoBack = useCanGoBack()
   const router = useRouter()
+  const routerStatus = useRouterState({ select: (state) => state.status })
 
   const [view, setView] = React.useState<ViewState>('idle')
   const [variantKey, setVariantKey] = React.useState<string>('idle')
@@ -108,12 +114,17 @@ export const Header = ({ constraintsRef }: Props) => {
     }
   }, [view, handleViewChange, isMobile])
 
-  const renderContent = React.useCallback((viewState: ViewState) => {
+  const renderContent = (
+    viewState: ViewState,
+    routerStatus: 'pending' | 'idle',
+  ) => {
     if (viewState === 'idle') {
       return (
         <div className="flex h-full items-center gap-2 p-1.5">
           <Clock />
-          <span className="mr-1.5 font-semibold">anshori</span>
+          <span className="mr-1.5">
+            <LoadingText isPending={routerStatus === 'pending'} />
+          </span>
         </div>
       )
     }
@@ -123,7 +134,7 @@ export const Header = ({ constraintsRef }: Props) => {
         <div className="flex items-center justify-between gap-4 border-b border-b-white/20 p-1.5">
           <div className="flex items-center gap-2">
             <Clock />
-            <span className="font-semibold">anshori</span>
+            <LoadingText isPending={routerStatus === 'pending'} />
           </div>
 
           <ThemeToggle />
@@ -151,7 +162,7 @@ export const Header = ({ constraintsRef }: Props) => {
         </nav>
       </div>
     )
-  }, [])
+  }
 
   const handleBackClick = React.useCallback(() => {
     router.history.back()
@@ -168,7 +179,7 @@ export const Header = ({ constraintsRef }: Props) => {
       <motion.div className="dark group pointer-events-none fixed top-6 left-0 z-10 flex w-full cursor-default select-none">
         <div className="mx-auto flex">
           <AnimatePresence mode="popLayout" initial={false}>
-            {canGoBack && view ==='idle'  && (
+            {canGoBack && view === 'idle' && (
               <motion.div
                 initial={{ width: 0, opacity: 0 }}
                 animate={{ width: 42, opacity: 1 }}
@@ -242,11 +253,33 @@ export const Header = ({ constraintsRef }: Props) => {
               }}
               key={view}
             >
-              {renderContent(view)}
+              {renderContent(view, routerStatus)}
             </motion.div>
           </motion.header>
         </div>
       </motion.div>
     </MotionConfig>
+  )
+}
+
+const LoadingText = ({ isPending }: { isPending: boolean }) => {
+  return (
+    <span className="relative font-semibold">
+      <span className="text-muted-foreground">anshori</span>
+
+      <motion.span
+        initial={false}
+        className="text-foreground absolute inset-0"
+        animate={{
+          clipPath: isPending ? 'inset(0 80% 0 0)' : 'inset(0 0% 0 0)',
+        }}
+        transition={{
+          duration: isPending ? 0 : 0.2,
+          ease: isPending ? 'easeOut' : 'easeIn',
+        }}
+      >
+        anshori
+      </motion.span>
+    </span>
   )
 }
