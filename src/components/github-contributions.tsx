@@ -47,6 +47,7 @@ export const GitHubContributions = () => {
               className="cursor-external-link"
             />
           }
+          nativeButton={false}
         >
           <GithubIcon className="size-3.5" />
           GitHub

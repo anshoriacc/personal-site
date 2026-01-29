@@ -20,12 +20,11 @@ export const NotFound = () => {
 
             <Button
               variant="secondary"
-              render={
-                <Link to="/" className="w-fit">
-                  Return Home
-                </Link>
-              }
-            ></Button>
+              render={<Link to="/" className="w-fit" />}
+              nativeButton={false}
+            >
+              Return Home
+            </Button>
           </Section>
         </Container>
       </div>

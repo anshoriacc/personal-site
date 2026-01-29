@@ -23,7 +23,7 @@ export const ThemeToggle = ({ className }: Props) => {
       variant="ghost"
       onClick={toggleTheme}
       render={
-        <motion.div
+        <motion.button
           className={cn(
             'text-muted-foreground hover:text-foreground aspect-square size-7 h-fit rounded-md border-0 p-0',
             className,
