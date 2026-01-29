@@ -32,6 +32,7 @@ export const Profile = () => {
           variant="secondary"
           className="gap-1"
           render={<a href="mailto:anshoriacc@gmail.com" />}
+          nativeButton={false}
         >
           <MailIcon className="size-4" />
           Mail
@@ -48,6 +49,7 @@ export const Profile = () => {
               className="cursor-external-link"
             />
           }
+          nativeButton={false}
         >
           <FileTextIcon className="size-4" />
           Resume
@@ -64,6 +66,7 @@ export const Profile = () => {
               className="cursor-external-link"
             />
           }
+          nativeButton={false}
         >
           <GithubIcon className="size-4" />
           GitHub
@@ -80,6 +83,7 @@ export const Profile = () => {
               className="cursor-external-link"
             />
           }
+          nativeButton={false}
         >
           <LinkedInIcon className="size-4" />
           LinkedIn

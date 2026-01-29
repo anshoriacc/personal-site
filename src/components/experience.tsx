@@ -26,7 +26,12 @@ export const Experience = ({ simplified }: Props) => {
         <h2 className="font-medium">Experience</h2>
         {hasMore && simplified && (
           <div className="flex justify-center">
-            <Button variant="link" size="xs" render={<Link to="/work" />}>
+            <Button
+              variant="link"
+              size="xs"
+              render={<Link to="/work" />}
+              nativeButton={false}
+            >
               Show More
             </Button>
           </div>
