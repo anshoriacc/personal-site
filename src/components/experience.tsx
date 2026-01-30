@@ -3,6 +3,7 @@ import { Link } from '@tanstack/react-router'
 
 import { cn } from '@/lib/utils'
 import { experiences } from '@/data/experience'
+import { useMounted } from '@/hooks/use-mounted'
 import { useIsNightTime } from '@/stores/time.store'
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip'
 import { Button } from './ui/button'
@@ -13,12 +14,21 @@ type Props = {
 }
 
 export const Experience = ({ simplified }: Props) => {
+  const mounted = useMounted()
   const isNight = useIsNightTime()
 
   const displayedExperiences = simplified
     ? experiences.slice(0, 3)
     : experiences
   const hasMore = experiences.length > 3
+
+  // Use consistent neutral classes for SSR to avoid hydration mismatch
+  const pingClass = mounted
+    ? cn(!isNight ? 'bg-amber-400' : 'bg-sky-400')
+    : 'bg-neutral-400'
+  const dotClass = mounted
+    ? cn(!isNight ? 'bg-amber-500' : 'bg-sky-500')
+    : 'bg-neutral-500'
 
   return (
     <section className="space-y-6">
@@ -52,14 +62,14 @@ export const Experience = ({ simplified }: Props) => {
                             id="exp-indicator-ping"
                             className={cn(
                               'absolute inline-flex h-full w-full animate-ping rounded-full opacity-75',
-                              !isNight ? 'bg-amber-400' : 'bg-sky-400',
+                              pingClass,
                             )}
                           />
                           <span
                             id="exp-indicator-dot"
                             className={cn(
                               'relative inline-flex size-3 rounded-full',
-                              !isNight ? 'bg-amber-500' : 'bg-sky-500',
+                              dotClass,
                             )}
                           />
                         </span>
@@ -134,7 +144,7 @@ export const Experience = ({ simplified }: Props) => {
         ))}
       </div>
 
-      <ExperienceIndicatorScript />
+      {mounted && <ExperienceIndicatorScript />}
     </section>
   )
 }

@@ -14,6 +14,7 @@ import {
 } from '@hugeicons/core-free-icons'
 
 import { cn } from '@/lib/utils'
+import { useMounted } from '@/hooks/use-mounted'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { ThemeToggle } from './theme-toggle'
 import { Clock } from './clock'
@@ -43,7 +44,12 @@ export const Header = ({ constraintsRef }: Props) => {
 
   const [view, setView] = React.useState<ViewState>('idle')
   const [variantKey, setVariantKey] = React.useState<string>('idle')
+  const [isMounted, setIsMounted] = React.useState(false)
   const isMobile = useIsMobile()
+
+  React.useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   const headerRef = React.useRef<HTMLElement>(null)
   const hoverTimeoutRef = React.useRef<NodeJS.Timeout | null>(null)
@@ -179,7 +185,7 @@ export const Header = ({ constraintsRef }: Props) => {
       <motion.div className="dark group pointer-events-none fixed top-6 left-0 z-10 flex w-full cursor-default select-none">
         <div className="mx-auto flex">
           <AnimatePresence mode="popLayout" initial={false}>
-            {canGoBack && view === 'idle' && (
+            {isMounted && canGoBack && view === 'idle' && (
               <motion.div
                 initial={{ width: 0, opacity: 0 }}
                 animate={{ width: 42, opacity: 1 }}
@@ -263,23 +269,27 @@ export const Header = ({ constraintsRef }: Props) => {
 }
 
 const LoadingText = ({ isPending }: { isPending: boolean }) => {
+  const mounted = useMounted()
+
   return (
     <span className="relative font-semibold">
       <span className="text-muted-foreground">anshori</span>
 
-      <motion.span
-        initial={false}
-        className="text-foreground absolute inset-0"
-        animate={{
-          clipPath: isPending ? 'inset(0 80% 0 0)' : 'inset(0 0% 0 0)',
-        }}
-        transition={{
-          duration: isPending ? 0 : 0.2,
-          ease: isPending ? 'easeOut' : 'easeIn',
-        }}
-      >
-        anshori
-      </motion.span>
+      {mounted && (
+        <motion.span
+          initial={false}
+          className="text-foreground absolute inset-0"
+          animate={{
+            clipPath: isPending ? 'inset(0 80% 0 0)' : 'inset(0 0% 0 0)',
+          }}
+          transition={{
+            duration: isPending ? 0 : 0.2,
+            ease: isPending ? 'easeOut' : 'easeIn',
+          }}
+        >
+          anshori
+        </motion.span>
+      )}
     </span>
   )
 }
