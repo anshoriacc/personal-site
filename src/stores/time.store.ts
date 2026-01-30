@@ -30,14 +30,10 @@ const calculateState = (time: Date) => {
   }
 }
 
-export const useTimeStore = create<TimeStore>((set) => {
-  const initialTime = new Date()
-
-  return {
-    ...calculateState(initialTime),
-    updateTime: () => set(calculateState(new Date())),
-  }
-})
+export const useTimeStore = create<TimeStore>((set) => ({
+  ...calculateState(new Date()),
+  updateTime: () => set(calculateState(new Date())),
+}))
 
 export const useIsNightTime = () => useTimeStore((state) => state.isNightTime)
 export const useHourRotation = () => useTimeStore((state) => state.hourRotation)

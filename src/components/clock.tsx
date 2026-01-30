@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 
 import { cn } from '@/lib/utils'
+import { useMounted } from '@/hooks/use-mounted'
 import {
   useTimeStore,
   useIsNightTime,
@@ -13,6 +14,7 @@ type Props = {
 }
 
 export const Clock = ({ className }: Props) => {
+  const mounted = useMounted()
   const updateTime = useTimeStore((state) => state.updateTime)
   const isNight = useIsNightTime()
   const hourRotation = useHourRotation()
@@ -24,6 +26,11 @@ export const Clock = ({ className }: Props) => {
     const timer = setInterval(() => updateTime(), 10)
     return () => clearInterval(timer)
   }, [updateTime])
+
+  // Use consistent values for SSR to avoid hydration mismatch
+  const clockClass = mounted
+    ? cn(isNight ? 'fill-sky-500' : 'fill-amber-500')
+    : 'fill-neutral-500'
 
   return (
     <svg
@@ -37,7 +44,7 @@ export const Clock = ({ className }: Props) => {
         width="100"
         height="100"
         fill="currentColor"
-        className={cn(isNight ? 'fill-sky-500' : 'fill-amber-500')}
+        className={clockClass}
       />
       <circle cx="50" cy="50" r="2" fill="currentColor" />
       <line
@@ -49,7 +56,7 @@ export const Clock = ({ className }: Props) => {
         stroke="currentColor"
         strokeWidth="3"
         strokeLinecap="round"
-        transform={`rotate(${hourRotation}, 50, 50)`}
+        transform={mounted ? `rotate(${hourRotation}, 50, 50)` : undefined}
       />
       <line
         id="minute-hand"
@@ -60,10 +67,10 @@ export const Clock = ({ className }: Props) => {
         stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"
-        transform={`rotate(${minuteRotation}, 50, 50)`}
+        transform={mounted ? `rotate(${minuteRotation}, 50, 50)` : undefined}
       />
 
-      <ClockScript />
+      {mounted && <ClockScript />}
     </svg>
   )
 }

@@ -10,6 +10,7 @@ import { TanStackDevtools } from '@tanstack/react-devtools'
 import { type QueryClient } from '@tanstack/react-query'
 
 import { cn } from '@/lib/utils'
+import { useMounted } from '@/hooks/use-mounted'
 import { getThemeServerFn } from '../server/theme'
 import { useIsNightTime } from '@/stores/time.store'
 import { Providers } from '../components/providers'
@@ -120,8 +121,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 )
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+  const mounted = useMounted()
   const theme = Route.useLoaderData()
   const isNight = useIsNightTime()
+
+  // Use consistent selection classes for SSR to avoid hydration mismatch
+  const selectionClasses = mounted
+    ? !isNight
+      ? 'selection:bg-amber-200 selection:text-amber-900 dark:selection:bg-amber-900 dark:selection:text-amber-200'
+      : 'selection:bg-sky-200 selection:text-sky-900 dark:selection:bg-sky-900 dark:selection:text-sky-200'
+    : 'selection:bg-neutral-200 selection:text-neutral-900 dark:selection:bg-neutral-900 dark:selection:text-neutral-200'
 
   return (
     <html lang="en" className={theme} suppressHydrationWarning>
@@ -132,9 +141,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body
         className={cn(
           'relative w-screen cursor-default overflow-x-hidden overflow-y-visible',
-          !isNight
-            ? 'selection:bg-amber-200 selection:text-amber-900 dark:selection:bg-amber-900 dark:selection:text-amber-200'
-            : 'selection:bg-sky-200 selection:text-sky-900 dark:selection:bg-sky-900 dark:selection:text-sky-200',
+          selectionClasses,
         )}
       >
         <Providers theme={theme}>
@@ -155,7 +162,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           <ReactQueryDevtools buttonPosition="bottom-left" />
         </Providers>
 
-        <BodySelectionScript />
+        {mounted && <BodySelectionScript />}
 
         <Scripts />
       </body>
