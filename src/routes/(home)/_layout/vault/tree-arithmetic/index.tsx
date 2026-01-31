@@ -2,21 +2,24 @@ import { createFileRoute } from '@tanstack/react-router'
 import { ChevronRight, Info } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 
-import { Container } from '@/components/motion-container'
+import { sessionQueryOptions, useSessionQuery } from './-hooks/auth'
+import { NewThreadForm } from './-components/new-thread-form'
+import { ThreadList } from './-components/thread-list'
+import { AuthPanel } from './-components/auth-panel'
 import { Section } from '@/components/motion-section'
+import { Container } from '@/components/motion-container'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible'
-import { Button } from '@/components/ui/button'
-import { AuthPanel } from './-components/auth-panel'
-import { NewThreadForm } from './-components/new-thread-form'
-import { ThreadList } from './-components/thread-list'
-import { useSessionQuery } from './-hooks/auth'
 
 export const Route = createFileRoute('/(home)/_layout/vault/tree-arithmetic/')({
+  beforeLoad: async ({ context }) => {
+    await context.queryClient.ensureQueryData(sessionQueryOptions)
+  },
   component: Ellty2Page,
   head: () => ({
     meta: [
