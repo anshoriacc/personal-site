@@ -78,7 +78,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       links: [
         { rel: 'icon', href: '/dark192.png' },
         { rel: 'apple-touch-icon', href: '/dark192.png' },
-        { rel: 'canonical', href: SITE_URL },
         { rel: 'preconnect', href: 'https://umami.anshori.com' },
         { rel: 'dns-prefetch', href: 'https://umami.anshori.com' },
         {
@@ -125,7 +124,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
   const theme = Route.useLoaderData()
   const isNight = useIsNightTime()
 
-  // Use consistent selection classes for SSR to avoid hydration mismatch
   const selectionClasses = mounted
     ? !isNight
       ? 'selection:bg-amber-200 selection:text-amber-900 dark:selection:bg-amber-900 dark:selection:text-amber-200'

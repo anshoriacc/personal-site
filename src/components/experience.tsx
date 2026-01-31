@@ -22,7 +22,6 @@ export const Experience = ({ simplified }: Props) => {
     : experiences
   const hasMore = experiences.length > 3
 
-  // Use consistent neutral classes for SSR to avoid hydration mismatch
   const pingClass = mounted
     ? cn(!isNight ? 'bg-amber-400' : 'bg-sky-400')
     : 'bg-neutral-400'
