@@ -1,5 +1,5 @@
 # ---------- Build stage ----------
-FROM node:22-alpine AS builder
+FROM node:lts-alpine AS builder
 WORKDIR /app
 
 COPY package.json ./
@@ -9,7 +9,7 @@ COPY . .
 RUN npm run build
 
 # ---------- Runtime stage ----------
-FROM node:22-alpine
+FROM node:24-alpine
 WORKDIR /app
 ENV NODE_ENV=production
 
