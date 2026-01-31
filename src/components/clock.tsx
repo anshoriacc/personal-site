@@ -27,7 +27,6 @@ export const Clock = ({ className }: Props) => {
     return () => clearInterval(timer)
   }, [updateTime])
 
-  // Use consistent values for SSR to avoid hydration mismatch
   const clockClass = mounted
     ? cn(isNight ? 'fill-sky-500' : 'fill-amber-500')
     : 'fill-neutral-500'
