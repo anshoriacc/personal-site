@@ -2,22 +2,27 @@
 FROM node:lts-alpine AS builder
 WORKDIR /app
 
+# Install dependencies first (better layer caching)
 COPY package.json ./
 RUN npm install
 
+# Copy source and build
 COPY . .
 RUN npm run build
 
 # ---------- Runtime stage ----------
-FROM node:lts-alpine
+FROM node:lts-alpine AS runtime
 WORKDIR /app
 ENV NODE_ENV=production
 
-RUN apk add --no-cache dumb-init
+RUN apk add --no-cache dumb-init curl
 
 COPY --from=builder /app/package.json ./
 
 COPY --from=builder /app/.output ./.output
+
+# Copy Vercel OG font files to expected runtime location
+COPY --from=builder /app/node_modules/@vercel/og/dist/*.ttf ./.output/server/_chunks/_libs/@vercel/
 
 COPY --from=builder /app/node_modules ./node_modules
 
