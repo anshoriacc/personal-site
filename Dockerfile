@@ -21,8 +21,7 @@ COPY --from=builder /app/package.json ./
 
 COPY --from=builder /app/.output ./.output
 
-# Copy Vercel OG font files to expected runtime location
-COPY --from=builder /app/node_modules/@vercel/og/dist/*.ttf ./.output/server/_chunks/_libs/@vercel/
+COPY --from=builder /app/node_modules/@vercel/og/dist/ ./.output/server/_chunks/_libs/@vercel/
 
 COPY --from=builder /app/node_modules ./node_modules
 
