@@ -16,6 +16,10 @@ import { useIsNightTime } from '@/stores/time.store'
 import { Providers } from '../components/providers'
 import { NotFound } from '@/components/not-found'
 import { SITE_URL } from '../constants/env'
+import {
+  ThemeDetectionScript,
+  BodySelectionScript,
+} from '@/components/inline-scripts'
 import appCss from '../styles.css?url'
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
@@ -160,6 +164,8 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           <ReactQueryDevtools buttonPosition="bottom-left" />
         </Providers>
 
+        <ThemeDetectionScript />
+
         {mounted && <BodySelectionScript />}
 
         <Scripts />
@@ -167,23 +173,3 @@ function RootDocument({ children }: { children: React.ReactNode }) {
     </html>
   )
 }
-
-const BodySelectionScript = () => (
-  <script
-    dangerouslySetInnerHTML={{
-      __html: `(${(() => {
-        const t = new Date()
-        const fullHours = t.getHours()
-        const isNight = fullHours >= 18 || fullHours < 4
-
-        const baseClasses =
-          'relative w-screen cursor-default overflow-x-hidden overflow-y-visible'
-        const selectionClasses = isNight
-          ? 'selection:bg-sky-200 selection:text-sky-900 dark:selection:bg-sky-900 dark:selection:text-sky-200'
-          : 'selection:bg-amber-200 selection:text-amber-900 dark:selection:bg-amber-900 dark:selection:text-amber-200'
-
-        document.body.className = baseClasses + ' ' + selectionClasses
-      }).toString()})()`,
-    }}
-  />
-)

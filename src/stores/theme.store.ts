@@ -7,8 +7,17 @@ interface ThemeStore {
   initTheme: (theme: TTheme) => void
 }
 
+const getInitialTheme = (): TTheme => {
+  if (typeof document === 'undefined') return 'dark'
+  const htmlClass = document.documentElement.className
+  if (htmlClass === 'light' || htmlClass === 'dark') {
+    return htmlClass
+  }
+  return 'dark'
+}
+
 export const useThemeStore = create<ThemeStore>((set) => ({
-  theme: 'dark',
+  theme: getInitialTheme(),
 
   initTheme: (theme) => {
     set({ theme })
