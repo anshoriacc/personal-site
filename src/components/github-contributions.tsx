@@ -1,3 +1,4 @@
+import React from 'react'
 import dayjs from 'dayjs'
 
 import { cn } from '@/lib/utils'
@@ -12,24 +13,76 @@ import {
   TooltipTrigger,
 } from './ui/tooltip'
 
+// Memoized contribution cell to prevent unnecessary re-renders
+const ContributionCell = React.memo(
+  ({
+    contribution,
+  }: {
+    contribution: {
+      date: string
+      count: number
+      level: 0 | 1 | 2 | 3 | 4
+    }
+  }) => {
+    const levelClasses = [
+      'bg-muted',
+      'bg-neutral-300 dark:bg-neutral-600',
+      'bg-neutral-500 dark:bg-neutral-400',
+      'bg-neutral-700 dark:bg-neutral-200',
+      'bg-neutral-900 dark:bg-neutral-50',
+    ]
+
+    return (
+      <Tooltip key={contribution.date} disableHoverablePopup withoutProviders>
+        <TooltipTrigger
+          render={
+            <span
+              className={cn(
+                'size-2 rounded-xs',
+                levelClasses[contribution.level],
+              )}
+            />
+          }
+        />
+
+        <TooltipContent className="select-none">
+          <p>
+            {contribution.count} contribution
+            {contribution.count !== 1 ? 's' : ''} on{' '}
+            {dayjs(contribution.date).format('MMM D, YYYY')}
+          </p>
+        </TooltipContent>
+      </Tooltip>
+    )
+  },
+)
+
+ContributionCell.displayName = 'ContributionCell'
+
 export const GitHubContributions = () => {
   const githubContributionsQuery = useGetGithubContributionsQuery()
 
   const contributions = githubContributionsQuery.data?.contributions ?? []
 
-  const monthLabels: Array<{ month: string; columnIndex: number }> = []
+  const monthLabels = React.useMemo(
+    () =>
+      contributions.reduce<Array<{ month: string; columnIndex: number }>>(
+        (acc, contribution, index) => {
+          if (contribution) {
+            const date = dayjs(contribution.date)
 
-  contributions.forEach((contribution, index) => {
-    if (contribution) {
-      const date = dayjs(contribution.date)
-
-      if (date.date() === 1) {
-        const month = date.format('MMM')
-        const columnIndex = Math.floor(index / 7)
-        monthLabels.push({ month, columnIndex })
-      }
-    }
-  })
+            if (date.date() === 1) {
+              const month = date.format('MMM')
+              const columnIndex = Math.floor(index / 7)
+              acc.push({ month, columnIndex })
+            }
+          }
+          return acc
+        },
+        [],
+      ),
+    [contributions],
+  )
 
   return (
     <section className="group relative flex w-full flex-col gap-2">
@@ -56,13 +109,6 @@ export const GitHubContributions = () => {
 
       {githubContributionsQuery.data ? (
         <div className="relative w-full">
-          {/* Left day labels - Absolute */}
-          {/* <div className="absolute left-0 bottom-2 z-10 grid grid-rows-7 gap-0.5 text-xs text-muted-foreground leading-none select-none opacity-0 group-hover:opacity-100 transition-opacity bg-background/80 backdrop-blur-xs pr-1 pointer-events-none">
-            <div className="h-2 flex items-center row-start-2">Mon</div>
-            <div className="h-2 flex items-center row-start-4">Wed</div>
-            <div className="h-2 flex items-center row-start-6">Fri</div>
-          </div> */}
-
           <ScrollArea className="w-full">
             <div className="flex min-w-max flex-col">
               <div
@@ -135,13 +181,6 @@ export const GitHubContributions = () => {
               className="data-horizontal:h-2"
             />
           </ScrollArea>
-
-          {/* Right day labels - Absolute */}
-          {/* <div className="absolute right-0 bottom-2 z-10 grid grid-rows-7 gap-0.5 text-xs text-muted-foreground leading-none select-none opacity-0 group-hover:opacity-100 transition-opacity bg-background/80 backdrop-blur-xs pl-1 pointer-events-none">
-            <div className="h-2 flex items-center row-start-2">Mon</div>
-            <div className="h-2 flex items-center row-start-4">Wed</div>
-            <div className="h-2 flex items-center row-start-6">Fri</div>
-          </div> */}
         </div>
       ) : (
         <div
@@ -151,14 +190,12 @@ export const GitHubContributions = () => {
           )}
         >
           <div className="flex flex-col gap-1">
-            {/* Simulated Month Labels */}
             <div className="ml-1 flex gap-8">
               {Array.from({ length: 12 }).map((_, i) => (
                 <div key={i} className="h-4 w-8 rounded-xs" />
               ))}
             </div>
 
-            {/* Simulated Grid */}
             <div className="grid grid-flow-col grid-rows-7 gap-0.5 pb-2">
               {Array.from({ length: 371 }).map((_, i) => (
                 <div key={i} className="bg-muted size-2 rounded-xs" />
