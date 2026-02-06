@@ -1,6 +1,7 @@
 import { createServerFn } from '@tanstack/react-start'
 
 import { axiosApi } from '@/lib/axios'
+import { LRUCache } from '@/lib/lru-cache'
 import {
   SPOTIFY_CLIENT_ID,
   SPOTIFY_CLIENT_SECRET,
@@ -14,8 +15,25 @@ const BASIC_AUTH = Buffer.from(
   `${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`,
 ).toString('base64')
 
+// Cache currently playing data for 30 seconds
+const spotifyCache = new LRUCache<{
+  currentlyPlaying: TCurrentlyPlaying | null
+  recentlyPlayed: TRecentlyPlayed | null
+}>({
+  maxSize: 10,
+  defaultTTL: 30 * 1000, // 30 seconds
+})
+
 export const getCurrentlyPlaying = createServerFn().handler(async () => {
-  const requestToken = await axiosApi
+  const cacheKey = 'currently-playing'
+  const cached = spotifyCache.get(cacheKey)
+
+  if (cached) {
+    return cached
+  }
+
+  // Start token request immediately (don't await yet)
+  const tokenPromise = axiosApi
     .post(
       TOKEN_ENDPOINT,
       new URLSearchParams({
@@ -32,6 +50,9 @@ export const getCurrentlyPlaying = createServerFn().handler(async () => {
     .then((res) => res.data || null)
     .catch(() => null)
 
+  // Wait for token
+  const requestToken = await tokenPromise
+
   if (!requestToken) {
     return {
       currentlyPlaying: null,
@@ -41,28 +62,34 @@ export const getCurrentlyPlaying = createServerFn().handler(async () => {
 
   const { access_token } = requestToken
 
-  const currentlyPlaying = await axiosApi
-    .get<TCurrentlyPlaying | null>(CURRENTLY_PLAYING_ENDPOINT, {
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-      },
-    })
-    .then((res) => res.data || null)
-    .catch(() => null)
+  // Parallel data fetching
+  const [currentlyPlaying, recentlyPlayed] = await Promise.all([
+    axiosApi
+      .get<TCurrentlyPlaying | null>(CURRENTLY_PLAYING_ENDPOINT, {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      })
+      .then((res) => res.data || null)
+      .catch(() => null),
+    axiosApi
+      .get<TRecentlyPlayed | null>(RECENTLY_PLAYED_ENDPOINT, {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      })
+      .then((res) => res.data || null)
+      .catch(() => null),
+  ])
 
-  const recentlyPlayed = await axiosApi
-    .get<TRecentlyPlayed | null>(RECENTLY_PLAYED_ENDPOINT, {
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-      },
-    })
-    .then((res) => res.data || null)
-    .catch(() => null)
-
-  return {
+  const result = {
     currentlyPlaying,
     recentlyPlayed,
   }
+
+  spotifyCache.set(cacheKey, result)
+
+  return result
 })
 
 export type TCurrentlyPlaying = {

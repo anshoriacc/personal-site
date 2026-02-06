@@ -1,29 +1,37 @@
+import React from 'react'
 import { cn } from '@/lib/utils'
 import { useGetCurrentlyPlayingQuery } from '@/hooks/api/spotify'
 
 export const Spotify = () => {
   const currentlyPlayingQuery = useGetCurrentlyPlayingQuery()
 
-  const currentlyPlaying = currentlyPlayingQuery.data?.currentlyPlaying
-  const recentlyPlayed = currentlyPlayingQuery.data?.recentlyPlayed
+  const { isCurrentlyPlaying, song, artists, artistsName } =
+    React.useMemo(() => {
+      const currentlyPlaying = currentlyPlayingQuery.data?.currentlyPlaying
+      const recentlyPlayed = currentlyPlayingQuery.data?.recentlyPlayed
 
-  const isCurrentlyPlaying =
-    currentlyPlaying?.is_playing &&
-    currentlyPlaying?.currently_playing_type === 'track'
+      const isCurrentlyPlaying =
+        currentlyPlaying?.is_playing &&
+        currentlyPlaying?.currently_playing_type === 'track'
 
-  const song = isCurrentlyPlaying
-    ? currentlyPlaying?.item
-    : recentlyPlayed?.items?.[0]?.track
+      const song = isCurrentlyPlaying
+        ? currentlyPlaying?.item
+        : recentlyPlayed?.items?.[0]?.track
 
-  const artists = isCurrentlyPlaying
-    ? currentlyPlaying?.item?.artists
-    : recentlyPlayed?.items?.[0]?.track.artists
+      const artists = isCurrentlyPlaying
+        ? currentlyPlaying?.item?.artists
+        : recentlyPlayed?.items?.[0]?.track.artists
 
-  const artistsName = isCurrentlyPlaying
-    ? currentlyPlaying?.item?.artists.map((artist) => artist.name).join(', ')
-    : recentlyPlayed?.items?.[0]?.track?.artists
-        .map((artist) => artist.name)
-        .join(', ')
+      const artistsName = isCurrentlyPlaying
+        ? currentlyPlaying?.item?.artists
+            .map((artist) => artist.name)
+            .join(', ')
+        : recentlyPlayed?.items?.[0]?.track?.artists
+            .map((artist) => artist.name)
+            .join(', ')
+
+      return { isCurrentlyPlaying, song, artists, artistsName }
+    }, [currentlyPlayingQuery.data])
 
   return (
     <section className="grid grid-cols-[1.5rem_1fr] gap-3 select-none">
