@@ -11,6 +11,7 @@ import { type QueryClient } from '@tanstack/react-query'
 
 import { cn } from '@/lib/utils'
 import { useMounted } from '@/hooks/use-mounted'
+import { useDeferredScript } from '@/hooks/use-deferred-script'
 import { getThemeServerFn } from '../server/theme'
 import { useIsNightTime } from '@/stores/time.store'
 import { Providers } from '../components/providers'
@@ -91,11 +92,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       ],
       scripts: [
         {
-          defer: true,
-          src: 'https://umami.anshori.com/script.js',
-          'data-website-id': 'a35702fc-4b2e-4e45-b6c7-a93b8d273540',
-        },
-        {
           type: 'application/ld+json',
           children: JSON.stringify({
             '@context': 'https://schema.org',
@@ -128,6 +124,13 @@ function RootDocument({ children }: { children: React.ReactNode }) {
   const theme = Route.useLoaderData()
   const isNight = useIsNightTime()
 
+  // Defer analytics loading until after hydration
+  useDeferredScript({
+    src: 'https://umami.anshori.com/script.js',
+    defer: true,
+    'data-website-id': 'a35702fc-4b2e-4e45-b6c7-a93b8d273540',
+  })
+
   const selectionClasses = mounted
     ? !isNight
       ? 'selection:bg-amber-200 selection:text-amber-900 dark:selection:bg-amber-900 dark:selection:text-amber-200'
@@ -149,24 +152,28 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <Providers theme={theme}>
           {children}
 
-          <TanStackDevtools
-            config={{
-              position: 'bottom-right',
-            }}
-            plugins={[
-              {
-                name: 'Tanstack Router',
-                render: <TanStackRouterDevtoolsPanel />,
-              },
-            ]}
-          />
+          {process.env.NODE_ENV === 'development' ? (
+            <>
+              <TanStackDevtools
+                config={{
+                  position: 'bottom-right',
+                }}
+                plugins={[
+                  {
+                    name: 'Tanstack Router',
+                    render: <TanStackRouterDevtoolsPanel />,
+                  },
+                ]}
+              />
 
-          <ReactQueryDevtools buttonPosition="bottom-left" />
+              <ReactQueryDevtools buttonPosition="bottom-left" />
+            </>
+          ) : null}
         </Providers>
 
         <ThemeDetectionScript />
 
-        {mounted && <BodySelectionScript />}
+        {mounted ? <BodySelectionScript /> : null}
 
         <Scripts />
       </body>
