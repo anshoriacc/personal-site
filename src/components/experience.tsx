@@ -102,12 +102,12 @@ export const Experience = ({ simplified }: Props) => {
 
               <p className="text-muted-foreground">
                 <span>{exp.position}</span>
-                {exp.type && <span> ⋅ {exp.type}</span>}
+                {exp.type ? <span> ⋅ {exp.type}</span> : null}
               </p>
 
-              {exp.description && <p>{exp.description}</p>}
+              {exp.description ? <p>{exp.description}</p> : null}
 
-              {exp.technologies && exp.technologies.length > 0 && (
+              {exp.technologies && exp.technologies.length > 0 ? (
                 <div className="mt-2 flex flex-wrap gap-2 select-none">
                   {exp.technologies.map((tech, techIndex) => (
                     <Badge
@@ -119,9 +119,9 @@ export const Experience = ({ simplified }: Props) => {
                     </Badge>
                   ))}
                 </div>
-              )}
+              ) : null}
 
-              {!simplified && exp.responsibilities && (
+              {!simplified && exp.responsibilities ? (
                 <ul
                   role="list"
                   className={cn(
@@ -133,7 +133,7 @@ export const Experience = ({ simplified }: Props) => {
                     <li key={respIndex}>{resp}</li>
                   ))}
                 </ul>
-              )}
+              ) : null}
             </div>
 
             <div className="text-muted-foreground text-center select-none last:hidden">
@@ -143,38 +143,35 @@ export const Experience = ({ simplified }: Props) => {
         ))}
       </div>
 
-      {mounted && <ExperienceIndicatorScript />}
+      {mounted ? <ExperienceIndicatorScript /> : null}
     </section>
   )
 }
 
-export const ExperienceIndicatorScript = () => (
-  <script
-    dangerouslySetInnerHTML={{
-      __html: `(${(() => {
-        const t = new Date()
-        const fullHours = t.getHours()
-        const isNight = fullHours >= 18 || fullHours < 4
+// Module-level cached script content - created once
+const EXPERIENCE_INDICATOR_SCRIPT = `(${(() => {
+  const t = new Date()
+  const fullHours = t.getHours()
+  const isNight = fullHours >= 18 || fullHours < 4
 
-        const pingEl = document.getElementById('exp-indicator-ping')
-        const dotEl = document.getElementById('exp-indicator-dot')
+  const pingEl = document.getElementById('exp-indicator-ping')
+  const dotEl = document.getElementById('exp-indicator-dot')
 
-        if (pingEl) {
-          const pingClass = isNight ? 'bg-sky-400' : 'bg-amber-400'
-          pingEl.className = pingEl.className.replace(
-            /bg-(sky|amber)-400/,
-            pingClass,
-          )
-        }
+  if (pingEl) {
+    const pingClass = isNight ? 'bg-sky-400' : 'bg-amber-400'
+    pingEl.className = pingEl.className.replace(/bg-(sky|amber)-400/, pingClass)
+  }
 
-        if (dotEl) {
-          const dotClass = isNight ? 'bg-sky-500' : 'bg-amber-500'
-          dotEl.className = dotEl.className.replace(
-            /bg-(sky|amber)-500/,
-            dotClass,
-          )
-        }
-      }).toString()})()`,
-    }}
-  />
+  if (dotEl) {
+    const dotClass = isNight ? 'bg-sky-500' : 'bg-amber-500'
+    dotEl.className = dotEl.className.replace(/bg-(sky|amber)-500/, dotClass)
+  }
+}).toString()})()`
+
+const experienceScriptProps = {
+  dangerouslySetInnerHTML: { __html: EXPERIENCE_INDICATOR_SCRIPT },
+}
+
+export const ExperienceIndicatorScript = (): React.ReactNode => (
+  <script {...experienceScriptProps} />
 )
