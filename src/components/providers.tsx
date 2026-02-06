@@ -1,9 +1,9 @@
-import { type PropsWithChildren, useEffect } from 'react'
+import React from 'react'
 import { useThemeStore } from '@/stores/theme.store'
 import { useTimeStore } from '@/stores/time.store'
 import { type TTheme } from '@/server/theme'
 
-type Props = PropsWithChildren<{ theme: TTheme }>
+type Props = React.PropsWithChildren<{ theme: TTheme }>
 
 const getDOMTheme = (): TTheme | null => {
   if (typeof document === 'undefined') return null
@@ -15,7 +15,7 @@ const getDOMTheme = (): TTheme | null => {
 }
 
 export function Providers({ children, theme }: Props) {
-  useEffect(() => {
+  React.useEffect(() => {
     const domTheme = getDOMTheme()
 
     const themeToUse = domTheme ?? theme

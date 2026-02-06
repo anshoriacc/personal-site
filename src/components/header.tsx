@@ -219,7 +219,6 @@ export const Header = ({ constraintsRef }: Props) => {
 
           <motion.header
             ref={headerRef}
-            // drag // for development purpose
             dragConstraints={constraintsRef}
             layout
             onMouseEnter={handleMouseEnter}
