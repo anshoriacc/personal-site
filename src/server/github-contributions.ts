@@ -1,18 +1,20 @@
 import { createServerFn } from '@tanstack/react-start'
 import { axiosApi } from '@/lib/axios'
+import { LRUCache } from '@/lib/lru-cache'
 
-const cache = new Map<string, { data: any; timestamp: number }>()
-const CACHE_TTL = 60 * 60 * 1000 // 1 hour
+// Cache GitHub contributions for 1 hour
+const githubCache = new LRUCache<TContributionResponse>({
+  maxSize: 5,
+  defaultTTL: 60 * 60 * 1000, // 1 hour
+})
 
 export const getGithubContributions = createServerFn().handler(
   async (): Promise<TContributionResponse> => {
     const cacheKey = 'github-contributions'
-    const now = Date.now()
+    const cached = githubCache.get(cacheKey)
 
-    const cached = cache.get(cacheKey)
-
-    if (cached && now - cached.timestamp < CACHE_TTL) {
-      return cached.data
+    if (cached) {
+      return cached
     }
 
     const response = await axiosApi<TContributionResponse>(
@@ -24,10 +26,7 @@ export const getGithubContributions = createServerFn().handler(
 
     const data = response.data
 
-    cache.set(cacheKey, {
-      data: data,
-      timestamp: now,
-    })
+    githubCache.set(cacheKey, data)
 
     return data
   },

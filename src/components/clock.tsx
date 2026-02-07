@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import React from 'react'
 
 import { cn } from '@/lib/utils'
 import { useMounted } from '@/hooks/use-mounted'
@@ -20,10 +20,10 @@ export const Clock = ({ className }: Props) => {
   const hourRotation = useHourRotation()
   const minuteRotation = useMinuteRotation()
 
-  useEffect(() => {
+  React.useEffect(() => {
     updateTime()
 
-    const timer = setInterval(() => updateTime(), 10)
+    const timer = setInterval(() => updateTime(), 1000)
     return () => clearInterval(timer)
   }, [updateTime])
 
@@ -69,41 +69,44 @@ export const Clock = ({ className }: Props) => {
         transform={mounted ? `rotate(${minuteRotation}, 50, 50)` : undefined}
       />
 
-      {mounted && <ClockScript />}
+      {mounted ? <ClockScript /> : null}
     </svg>
   )
 }
 
-export const ClockScript = () => (
-  <script
-    dangerouslySetInnerHTML={{
-      __html: `(${(() => {
-        const t = new Date()
-        const h = t.getHours() % 12
-        const m = t.getMinutes()
-        const s = t.getSeconds()
-        const fullHours = t.getHours()
+// Module-level cached script content - created once
+const CLOCK_SCRIPT_CONTENT = `(${(() => {
+  const t = new Date()
+  const h = t.getHours() % 12
+  const m = t.getMinutes()
+  const s = t.getSeconds()
+  const fullHours = t.getHours()
 
-        const hourEl = document.getElementById('hour-hand')
-        const minuteEl = document.getElementById('minute-hand')
-        const clockCircle = document.getElementById('clock')
+  const hourEl = document.getElementById('hour-hand')
+  const minuteEl = document.getElementById('minute-hand')
+  const clockCircle = document.getElementById('clock')
 
-        if (hourEl) {
-          const hr = h * 30 + m * 0.5
-          hourEl.setAttribute('transform', 'rotate(' + hr + ', 50, 50)')
-        }
+  if (hourEl) {
+    const hr = h * 30 + m * 0.5
+    hourEl.setAttribute('transform', 'rotate(' + hr + ', 50, 50)')
+  }
 
-        if (minuteEl) {
-          const mr = m * 6 + s * 0.1
-          minuteEl.setAttribute('transform', 'rotate(' + mr + ', 50, 50)')
-        }
+  if (minuteEl) {
+    const mr = m * 6 + s * 0.1
+    minuteEl.setAttribute('transform', 'rotate(' + mr + ', 50, 50)')
+  }
 
-        if (clockCircle) {
-          const isNight = fullHours >= 18 || fullHours < 4
-          const colorClass = isNight ? 'fill-sky-500' : 'fill-amber-500'
-          clockCircle.setAttribute('class', colorClass)
-        }
-      }).toString()})()`,
-    }}
-  />
+  if (clockCircle) {
+    const isNight = fullHours >= 18 || fullHours < 4
+    const colorClass = isNight ? 'fill-sky-500' : 'fill-amber-500'
+    clockCircle.setAttribute('class', colorClass)
+  }
+}).toString()})()`
+
+const clockScriptProps = {
+  dangerouslySetInnerHTML: { __html: CLOCK_SCRIPT_CONTENT },
+}
+
+export const ClockScript = (): React.ReactNode => (
+  <script {...clockScriptProps} />
 )

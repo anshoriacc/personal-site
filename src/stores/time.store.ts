@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 
 interface TimeStore {
-  time: Date
+  time: Date | null
   isNightTime: boolean
   hours: number
   minutes: number
@@ -30,8 +30,18 @@ const calculateState = (time: Date) => {
   }
 }
 
+const defaultState = {
+  time: null,
+  isNightTime: false,
+  hours: 0,
+  minutes: 0,
+  seconds: 0,
+  hourRotation: 0,
+  minuteRotation: 0,
+}
+
 export const useTimeStore = create<TimeStore>((set) => ({
-  ...calculateState(new Date()),
+  ...defaultState,
   updateTime: () => set(calculateState(new Date())),
 }))
 

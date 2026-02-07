@@ -8,24 +8,28 @@ RUN npm install
 
 # Copy source and build
 COPY . .
-RUN npm run build
+RUN rm -rf node_modules/.vite && npm run build
 
 # ---------- Runtime stage ----------
 FROM node:lts-alpine AS runtime
 WORKDIR /app
 ENV NODE_ENV=production
 
+# Install dumb-init for signal handling and curl for Coolify health checks
 RUN apk add --no-cache dumb-init curl
 
-COPY --from=builder /app/package.json ./
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001
 
-COPY --from=builder /app/.output ./.output
+COPY --from=builder --chown=nodejs:nodejs /app/.output ./.output
 
+# Copy @vercel/og assets (required for OG image generation)
 COPY --from=builder /app/node_modules/@vercel/og/dist/ ./.output/server/_chunks/_libs/@vercel/
 
-COPY --from=builder /app/node_modules ./node_modules
+USER nodejs
 
 EXPOSE 3000
 
+# Use dumb-init to handle signals properly, run node directly
 ENTRYPOINT ["dumb-init", "--"]
-CMD ["npm", "run", "start"]
+CMD ["node", ".output/server/index.mjs"]
