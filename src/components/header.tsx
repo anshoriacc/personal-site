@@ -219,6 +219,7 @@ export const Header = ({ constraintsRef }: Props) => {
 
           <motion.header
             ref={headerRef}
+            // drag // for development purpose
             dragConstraints={constraintsRef}
             layout
             onMouseEnter={handleMouseEnter}
@@ -271,13 +272,18 @@ const LoadingText = ({ isPending }: { isPending: boolean }) => {
   const mounted = useMounted()
 
   return (
-    <span className="relative font-semibold">
-      <span className="text-muted-foreground">anshori</span>
+    <span className="inline-grid font-semibold">
+      <span
+        className="text-muted-foreground col-start-1 row-start-1 select-none"
+        aria-hidden="true"
+      >
+        anshori
+      </span>
 
       {mounted && (
         <motion.span
           initial={false}
-          className="text-foreground absolute inset-0"
+          className="text-foreground col-start-1 row-start-1"
           animate={{
             clipPath: isPending ? 'inset(0 80% 0 0)' : 'inset(0 0% 0 0)',
           }}
