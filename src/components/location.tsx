@@ -76,7 +76,7 @@ export const Location = ({ className }: Props) => {
       dark: theme === 'dark' ? 1 : 0,
       diffuse: 0,
       scale: 2.3,
-      offset: [0, canvasSize.width / 4.5],
+      offset: [0, canvasSize.width / 4],
       mapSamples: 60000,
       mapBrightness: 3,
       baseColor: theme === 'dark' ? BASE_COLOR_DARK : BASE_COLOR_LIGHT,
@@ -94,6 +94,11 @@ export const Location = ({ className }: Props) => {
         const isDark = themeRef.current === 'dark'
         state.dark = isDark ? 1 : 0
         state.mapBrightness = 3
+        state.baseColor = isDark ? BASE_COLOR_DARK : BASE_COLOR_LIGHT
+        state.glowColor = isDark ? BASE_COLOR_DARK : BASE_COLOR_LIGHT
+        state.markerColor = isNightTimeRef.current
+          ? MARKER_COLOR_NIGHT
+          : MARKER_COLOR_DAY
       },
     })
 
