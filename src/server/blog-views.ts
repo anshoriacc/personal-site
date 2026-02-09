@@ -1,7 +1,18 @@
 import { createServerFn } from '@tanstack/react-start'
-import { eq, sql } from 'drizzle-orm'
+import { getRequestIP } from '@tanstack/react-start/server'
+import { eq, sql, and } from 'drizzle-orm'
 import { db } from '@/db'
-import { views } from '@/db/schema'
+import { views, blogViewIps } from '@/db/schema'
+
+function hashIp(ip: string): string {
+  let hash = 0
+  for (let i = 0; i < ip.length; i++) {
+    const char = ip.charCodeAt(i)
+    hash = (hash << 5) - hash + char
+    hash = hash & hash
+  }
+  return Math.abs(hash).toString(16).padStart(16, '0')
+}
 
 export const getBlogViews = createServerFn()
   .inputValidator((slug: string) => slug)
@@ -20,7 +31,40 @@ export const incrementBlogViews = createServerFn({
 })
   .inputValidator((slug: string) => slug)
   .handler(async ({ data: slug }) => {
-    console.log('Incrementing views for slug:', slug, new Date().toISOString())
+    const ip = getRequestIP()
+
+    if (!ip) {
+      console.log('No IP found for slug:', slug)
+      const current = await db
+        .select({ count: views.count })
+        .from(views)
+        .where(eq(views.slug, slug))
+        .limit(1)
+      return current[0]?.count ?? 0
+    }
+
+    const ipHash = hashIp(ip)
+
+    const existingView = await db
+      .select({ id: blogViewIps.id })
+      .from(blogViewIps)
+      .where(and(eq(blogViewIps.slug, slug), eq(blogViewIps.ipHash, ipHash)))
+      .limit(1)
+
+    if (existingView.length > 0) {
+      const current = await db
+        .select({ count: views.count })
+        .from(views)
+        .where(eq(views.slug, slug))
+        .limit(1)
+      return current[0]?.count ?? 0
+    }
+
+    await db.insert(blogViewIps).values({
+      slug,
+      ipHash,
+    })
+
     const updated = await db
       .update(views)
       .set({
@@ -34,7 +78,6 @@ export const incrementBlogViews = createServerFn({
       return updated[0].count
     }
 
-    // Insert new row if doesn't exist
     const inserted = await db
       .insert(views)
       .values({ slug: slug, count: 1 })
