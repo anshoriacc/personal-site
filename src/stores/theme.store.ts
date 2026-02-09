@@ -24,10 +24,16 @@ export const useThemeStore = create<ThemeStore>((set) => ({
   },
 
   setTheme: async (theme) => {
-    set({ theme })
+    // Apply theme synchronously for immediate visual feedback
     if (typeof document !== 'undefined') {
       document.documentElement.className = theme
     }
+
+    // Use React's startTransition for state update to keep it smooth
+    const React = await import('react')
+    React.startTransition(() => {
+      set({ theme })
+    })
 
     try {
       await setThemeServerFn({ data: theme })

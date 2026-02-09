@@ -1,4 +1,4 @@
-import { pgTable, varchar, integer, timestamp } from 'drizzle-orm/pg-core'
+import { integer, pgTable, timestamp, varchar } from 'drizzle-orm/pg-core'
 
 export const views = pgTable('views', {
   slug: varchar('slug', { length: 255 }).primaryKey(),

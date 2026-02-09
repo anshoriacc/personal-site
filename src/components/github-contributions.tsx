@@ -137,38 +137,10 @@ export const GitHubContributions = () => {
                 >
                   {contributions.map((contribution, index) =>
                     contribution ? (
-                      <Tooltip
+                      <ContributionCell
                         key={contribution.date}
-                        disableHoverablePopup
-                        withoutProviders
-                      >
-                        <TooltipTrigger
-                          render={
-                            <span
-                              className={cn(
-                                'size-2 rounded-xs',
-                                contribution.level === 0 && 'bg-muted',
-                                contribution.level === 1 &&
-                                  'bg-neutral-300 dark:bg-neutral-600',
-                                contribution.level === 2 &&
-                                  'bg-neutral-500 dark:bg-neutral-400',
-                                contribution.level === 3 &&
-                                  'bg-neutral-700 dark:bg-neutral-200',
-                                contribution.level === 4 &&
-                                  'bg-neutral-900 dark:bg-neutral-50',
-                              )}
-                            />
-                          }
-                        />
-
-                        <TooltipContent className="select-none">
-                          <p>
-                            {contribution.count} contribution
-                            {contribution.count !== 1 ? 's' : ''} on{' '}
-                            {dayjs(contribution.date).format('MMM D, YYYY')}
-                          </p>
-                        </TooltipContent>
-                      </Tooltip>
+                        contribution={contribution}
+                      />
                     ) : (
                       <div key={`empty-${index}`} className="size-2" />
                     ),

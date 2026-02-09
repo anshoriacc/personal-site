@@ -1,0 +1,155 @@
+/** MDXEditor Dark Mode Overrides */
+.dark .mdxeditor {
+  --baseBg: #0a0a0a;
+  --baseBgHover: #1a1a1a;
+  --baseBgActive: #2a2a2a;
+  --baseText: #fafafa;
+  --baseTextContrast: #ffffff;
+  --separator: #2a2a2a;
+}
+
+.dark .mdxeditor-content-editable {
+  background-color: #0a0a0a;
+  color: #fafafa;
+}
+
+.dark .mdxeditor-toolbar {
+  background-color: #1a1a1a;
+  border-bottom-color: #2a2a2a;
+}
+
+.dark .mdxeditor-toolbar button {
+  color: #fafafa;
+}
+
+.dark .mdxeditor-toolbar button:hover {
+  background-color: #2a2a2a;
+}
+
+.dark .mdxeditor-select {
+  background-color: #1a1a1a;
+  color: #fafafa;
+  border-color: #2a2a2a;
+}
+
+.dark .mdxeditor-popup-container {
+  background-color: #1a1a1a;
+  border-color: #2a2a2a;
+}
+
+.dark .mdxeditor-dialog {
+  background-color: #1a1a1a;
+  color: #fafafa;
+}
+
+.dark .mdxeditor-dialog input,
+.dark .mdxeditor-dialog select,
+.dark .mdxeditor-dialog textarea {
+  background-color: #0a0a0a;
+  color: #fafafa;
+  border-color: #2a2a2a;
+}
+
+.dark .mdxeditor-diff-source-wrapper {
+  background-color: #0a0a0a;
+}
+
+.dark .mdxeditor-diff-source-wrapper textarea {
+  background-color: #0a0a0a;
+  color: #fafafa;
+}
+
+/* Dropdown menu fixes */
+.dark [class*='mdxeditor'] [role='listbox'],
+.dark [class*='mdxeditor'] [role='menu'],
+.dark [class*='select'] [role='listbox'] {
+  background-color: #1a1a1a !important;
+  color: #fafafa !important;
+  border-color: #2a2a2a !important;
+}
+
+.dark [class*='mdxeditor'] [role='option'],
+.dark [class*='mdxeditor'] [role='menuitem'] {
+  background-color: #1a1a1a;
+  color: #fafafa;
+}
+
+.dark [class*='mdxeditor'] [role='option']:hover,
+.dark [class*='mdxeditor'] [role='menuitem']:hover {
+  background-color: #2a2a2a;
+}
+
+/* Modal/Dialog overlay fixes */
+.dark [class*='mdxeditor'] [role='dialog'],
+.dark [class*='mdxeditor'] [data-state='open'] {
+  background-color: #1a1a1a;
+  color: #fafafa;
+}
+
+.dark [class*='mdxeditor-overlay'],
+.dark [class*='mdxeditor'] [data-radix-popper-content-wrapper] {
+  background-color: #1a1a1a !important;
+}
+
+/* Radix UI dropdowns used by MDXEditor */
+.dark [data-radix-popper-content-wrapper] > div {
+  background-color: #1a1a1a !important;
+  color: #fafafa !important;
+  border: 1px solid #2a2a2a !important;
+}
+
+.dark [data-radix-popper-content-wrapper] [role='menuitem'] {
+  color: #fafafa !important;
+}
+
+.dark [data-radix-popper-content-wrapper] [role='menuitem']:hover {
+  background-color: #2a2a2a !important;
+}
+
+/* All dropdown items */
+.dark [class*='mdxeditor'] ul,
+.dark [class*='mdxeditor'] li,
+.dark [class*='mdxeditor'] [class*='dropdown'] {
+  background-color: #1a1a1a;
+  color: #fafafa;
+}
+
+.dark [class*='mdxeditor'] button[class*='select'],
+.dark [class*='mdxeditor'] div[class*='select'] {
+  background-color: #1a1a1a;
+  color: #fafafa;
+  border-color: #2a2a2a;
+}
+
+/* Toolbar select dropdowns */
+.dark [class*='mdxeditor-toolbar'] select,
+.dark [class*='mdxeditor-toolbar'] [class*='select'] {
+  background-color: #1a1a1a;
+  color: #fafafa;
+}
+
+/* Modal content areas */
+.dark [class*='mdxeditor'] [class*='modal'],
+.dark [class*='mdxeditor'] [class*='dialog'] > div {
+  background-color: #1a1a1a !important;
+  color: #fafafa !important;
+}
+
+.dark [class*='mdxeditor'] input,
+.dark [class*='mdxeditor'] select,
+.dark [class*='mdxeditor'] textarea {
+  background-color: #0a0a0a;
+  color: #fafafa;
+  border-color: #2a2a2a;
+}
+
+/* Link dialog, image dialog, table dialog */
+.dark [class*='mdxeditor'] form,
+.dark [class*='mdxeditor'] [class*='form'] {
+  background-color: #1a1a1a;
+  color: #fafafa;
+}
+
+.dark [class*='mdxeditor'] label {
+  color: #fafafa;
+}

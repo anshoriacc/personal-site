@@ -11,6 +11,7 @@ import {
   CodeFolderIcon,
   Home11Icon,
   ArrowLeft01Icon,
+  News01Icon,
 } from '@hugeicons/core-free-icons'
 
 import { cn } from '@/lib/utils'
@@ -35,6 +36,7 @@ const BOUNCE_VARIANTS: Record<string, number> = {
 const MENU_ITEMS = [
   { to: '/', label: 'Home', icon: Home11Icon },
   { to: '/work', label: 'Work', icon: CodeFolderIcon },
+  { to: '/blog', label: 'Blog', icon: News01Icon },
 ] as const
 
 export const Header = ({ constraintsRef }: Props) => {

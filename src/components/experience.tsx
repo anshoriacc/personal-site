@@ -113,7 +113,7 @@ export const Experience = ({ simplified }: Props) => {
                     <Badge
                       variant="outline"
                       key={techIndex}
-                      className="rounded-sm px-2 py-1"
+                      className="rounded-sm"
                     >
                       {tech}
                     </Badge>

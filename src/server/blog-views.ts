@@ -3,10 +3,8 @@ import { eq, sql } from 'drizzle-orm'
 import { db } from '@/db'
 import { views } from '@/db/schema'
 
-export const getBlogViews = createServerFn({
-  method: 'GET',
-})
-  .validator((slug: string) => slug)
+export const getBlogViews = createServerFn()
+  .inputValidator((slug: string) => slug)
   .handler(async ({ data: slug }) => {
     const result = await db
       .select({ count: views.count })
@@ -20,9 +18,9 @@ export const getBlogViews = createServerFn({
 export const incrementBlogViews = createServerFn({
   method: 'POST',
 })
-  .validator((slug: string) => slug)
+  .inputValidator((slug: string) => slug)
   .handler(async ({ data: slug }) => {
-    // Try to update existing row
+    console.log('Incrementing views for slug:', slug, new Date().toISOString())
     const updated = await db
       .update(views)
       .set({
@@ -39,8 +37,24 @@ export const incrementBlogViews = createServerFn({
     // Insert new row if doesn't exist
     const inserted = await db
       .insert(views)
-      .values({ slug, count: 1 })
+      .values({ slug: slug, count: 1 })
       .returning({ count: views.count })
 
     return inserted[0].count
   })
+
+export const getAllBlogViews = createServerFn({
+  method: 'GET',
+}).handler(async () => {
+  const result = await db
+    .select({ slug: views.slug, count: views.count })
+    .from(views)
+
+  return result.reduce(
+    (acc, row) => {
+      acc[row.slug] = row.count
+      return acc
+    },
+    {} as Record<string, number>,
+  )
+})

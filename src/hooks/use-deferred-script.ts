@@ -11,6 +11,12 @@ export function useDeferredScript({
   async?: boolean
   [key: string]: string | boolean | undefined
 }) {
+  // Serialize attributes for dependency comparison
+  const attributesKey = React.useMemo(
+    () => JSON.stringify(attributes),
+    [attributes],
+  )
+
   React.useEffect(() => {
     // Defer loading until after hydration
     const loadScript = () => {
@@ -37,5 +43,5 @@ export function useDeferredScript({
     } else {
       setTimeout(loadScript, 2000)
     }
-  }, [src, defer, async])
+  }, [src, defer, async, attributesKey])
 }

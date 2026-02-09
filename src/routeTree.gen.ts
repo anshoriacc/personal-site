@@ -15,6 +15,9 @@ import { Route as ApiOgRouteImport } from './routes/api/og'
 import { Route as homeLayoutRouteImport } from './routes/(home)/_layout'
 import { Route as homeLayoutIndexRouteImport } from './routes/(home)/_layout/index'
 import { Route as homeLayoutWorkRouteImport } from './routes/(home)/_layout/work'
+import { Route as homeLayoutBlogIndexRouteImport } from './routes/(home)/_layout/blog/index'
+import { Route as homeLayoutBlogNewRouteImport } from './routes/(home)/_layout/blog/new'
+import { Route as homeLayoutBlogSlugRouteImport } from './routes/(home)/_layout/blog/$slug'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -45,6 +48,21 @@ const homeLayoutWorkRoute = homeLayoutWorkRouteImport.update({
   path: '/work',
   getParentRoute: () => homeLayoutRoute,
 } as any)
+const homeLayoutBlogIndexRoute = homeLayoutBlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => homeLayoutRoute,
+} as any)
+const homeLayoutBlogNewRoute = homeLayoutBlogNewRouteImport.update({
+  id: '/blog/new',
+  path: '/blog/new',
+  getParentRoute: () => homeLayoutRoute,
+} as any)
+const homeLayoutBlogSlugRoute = homeLayoutBlogSlugRouteImport.update({
+  id: '/blog/$slug',
+  path: '/blog/$slug',
+  getParentRoute: () => homeLayoutRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/health': typeof HealthRoute
@@ -52,6 +70,9 @@ export interface FileRoutesByFullPath {
   '/api/og': typeof ApiOgRoute
   '/work': typeof homeLayoutWorkRoute
   '/': typeof homeLayoutIndexRoute
+  '/blog/$slug': typeof homeLayoutBlogSlugRoute
+  '/blog/new': typeof homeLayoutBlogNewRoute
+  '/blog/': typeof homeLayoutBlogIndexRoute
 }
 export interface FileRoutesByTo {
   '/health': typeof HealthRoute
@@ -59,6 +80,9 @@ export interface FileRoutesByTo {
   '/api/og': typeof ApiOgRoute
   '/work': typeof homeLayoutWorkRoute
   '/': typeof homeLayoutIndexRoute
+  '/blog/$slug': typeof homeLayoutBlogSlugRoute
+  '/blog/new': typeof homeLayoutBlogNewRoute
+  '/blog': typeof homeLayoutBlogIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -68,12 +92,31 @@ export interface FileRoutesById {
   '/api/og': typeof ApiOgRoute
   '/(home)/_layout/work': typeof homeLayoutWorkRoute
   '/(home)/_layout/': typeof homeLayoutIndexRoute
+  '/(home)/_layout/blog/$slug': typeof homeLayoutBlogSlugRoute
+  '/(home)/_layout/blog/new': typeof homeLayoutBlogNewRoute
+  '/(home)/_layout/blog/': typeof homeLayoutBlogIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/health' | '/sitemap.xml' | '/api/og' | '/work' | '/'
+  fullPaths:
+    | '/health'
+    | '/sitemap.xml'
+    | '/api/og'
+    | '/work'
+    | '/'
+    | '/blog/$slug'
+    | '/blog/new'
+    | '/blog/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/health' | '/sitemap.xml' | '/api/og' | '/work' | '/'
+  to:
+    | '/health'
+    | '/sitemap.xml'
+    | '/api/og'
+    | '/work'
+    | '/'
+    | '/blog/$slug'
+    | '/blog/new'
+    | '/blog'
   id:
     | '__root__'
     | '/health'
@@ -82,6 +125,9 @@ export interface FileRouteTypes {
     | '/api/og'
     | '/(home)/_layout/work'
     | '/(home)/_layout/'
+    | '/(home)/_layout/blog/$slug'
+    | '/(home)/_layout/blog/new'
+    | '/(home)/_layout/blog/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -135,17 +181,44 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof homeLayoutWorkRouteImport
       parentRoute: typeof homeLayoutRoute
     }
+    '/(home)/_layout/blog/': {
+      id: '/(home)/_layout/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof homeLayoutBlogIndexRouteImport
+      parentRoute: typeof homeLayoutRoute
+    }
+    '/(home)/_layout/blog/new': {
+      id: '/(home)/_layout/blog/new'
+      path: '/blog/new'
+      fullPath: '/blog/new'
+      preLoaderRoute: typeof homeLayoutBlogNewRouteImport
+      parentRoute: typeof homeLayoutRoute
+    }
+    '/(home)/_layout/blog/$slug': {
+      id: '/(home)/_layout/blog/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof homeLayoutBlogSlugRouteImport
+      parentRoute: typeof homeLayoutRoute
+    }
   }
 }
 
 interface homeLayoutRouteChildren {
   homeLayoutWorkRoute: typeof homeLayoutWorkRoute
   homeLayoutIndexRoute: typeof homeLayoutIndexRoute
+  homeLayoutBlogSlugRoute: typeof homeLayoutBlogSlugRoute
+  homeLayoutBlogNewRoute: typeof homeLayoutBlogNewRoute
+  homeLayoutBlogIndexRoute: typeof homeLayoutBlogIndexRoute
 }
 
 const homeLayoutRouteChildren: homeLayoutRouteChildren = {
   homeLayoutWorkRoute: homeLayoutWorkRoute,
   homeLayoutIndexRoute: homeLayoutIndexRoute,
+  homeLayoutBlogSlugRoute: homeLayoutBlogSlugRoute,
+  homeLayoutBlogNewRoute: homeLayoutBlogNewRoute,
+  homeLayoutBlogIndexRoute: homeLayoutBlogIndexRoute,
 }
 
 const homeLayoutRouteWithChildren = homeLayoutRoute._addFileChildren(

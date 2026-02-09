@@ -3,6 +3,8 @@
 @import 'shadcn/tailwind.css';
 @import '@fontsource-variable/inter';
 @import '@fontsource-variable/plus-jakarta-sans';
+@import './styles/vesper-highlight.css';
+@import './styles/mdxeditor-dark.css';
 
 @custom-variant dark (&:is(.dark *));
 
