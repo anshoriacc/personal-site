@@ -19,6 +19,7 @@
     "@fontsource-variable/plus-jakarta-sans": "^5.2.8",
     "@hugeicons/core-free-icons": "^3.1.0",
     "@hugeicons/react": "^1.1.4",
+    "@mdxeditor/editor": "^3.52.3",
     "@tailwindcss/vite": "^4.0.6",
     "@tanstack/react-devtools": "^0.7.0",
     "@tanstack/react-form": "^1.27.7",

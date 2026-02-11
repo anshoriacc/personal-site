@@ -17,7 +17,7 @@ export const addOperation = createServerFn({ method: 'POST' })
   .handler(async ({ data }) => {
     const sessionData = getCookie('tree-arithmetic-auth-session')
     let session: Session = null
-    
+
     if (sessionData) {
       try {
         session = JSON.parse(sessionData)
@@ -25,7 +25,11 @@ export const addOperation = createServerFn({ method: 'POST' })
     }
 
     if (!session) throw new Error('Unauthorized')
-    const calculateResult = (left: number, type: OperationType, right: number) => {
+    const calculateResult = (
+      left: number,
+      type: OperationType,
+      right: number,
+    ) => {
       if (type === 'ADD') return left + right
       if (type === 'SUBTRACT') return left - right
       if (type === 'MULTIPLY') return left * right

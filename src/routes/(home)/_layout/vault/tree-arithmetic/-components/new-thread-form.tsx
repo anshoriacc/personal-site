@@ -44,9 +44,7 @@ export function NewThreadForm() {
         })
         form.reset()
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : 'Failed to create thread',
-        )
+        setError(err instanceof Error ? err.message : 'Failed to create thread')
       }
     },
   })

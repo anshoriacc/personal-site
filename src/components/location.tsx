@@ -1,12 +1,12 @@
 import React from 'react'
 import createGlobe from 'cobe'
 import { animate, MotionValue, motionValue } from 'motion/react'
+import { MapPinIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 
 import { cn } from '@/lib/utils'
 import { useTheme } from '@/stores/theme.store'
 import { useIsNightTime } from '@/stores/time.store'
-import { MapPin } from '@hugeicons/core-free-icons'
 
 type Props = {
   className?: string
@@ -214,7 +214,10 @@ export const Location = ({ className }: Props) => {
         }}
       />
       <div className="pointer-events-none absolute bottom-0 z-2 flex w-full items-center justify-center gap-1 text-sm">
-        <HugeiconsIcon icon={MapPin} className="text-muted-foreground size-4" />
+        <HugeiconsIcon
+          icon={MapPinIcon}
+          className="text-muted-foreground size-4"
+        />
         <span>Jakarta, Indonesia</span>
       </div>
     </section>

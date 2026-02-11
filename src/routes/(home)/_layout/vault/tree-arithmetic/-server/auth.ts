@@ -24,16 +24,18 @@ export type Session = {
   username: string
 } | null
 
-export const getSession = createServerFn().handler(async (): Promise<Session> => {
-  const sessionData = getCookie(SESSION_COOKIE_NAME)
-  if (!sessionData) return null
+export const getSession = createServerFn().handler(
+  async (): Promise<Session> => {
+    const sessionData = getCookie(SESSION_COOKIE_NAME)
+    if (!sessionData) return null
 
-  try {
-    return JSON.parse(sessionData)
-  } catch {
-    return null
-  }
-})
+    try {
+      return JSON.parse(sessionData)
+    } catch {
+      return null
+    }
+  },
+)
 
 export const register = createServerFn({ method: 'POST' })
   .inputValidator(registerSchema)

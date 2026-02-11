@@ -2,7 +2,7 @@ import React from 'react'
 import { cn } from '@/lib/utils'
 
 export const QuickFormStyling = () => {
-  const [checkedPages, setCheckedPages] = React.useState<boolean[]>(
+  const [checkedPages, setCheckedPages] = React.useState<Array<boolean>>(
     Array(6).fill(false),
   )
 

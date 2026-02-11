@@ -14,11 +14,7 @@ type Props = {
   leftArgument: number
 }
 
-export function OperationTree({
-  operation,
-  threadId,
-  leftArgument,
-}: Props) {
+export function OperationTree({ operation, threadId, leftArgument }: Props) {
   const { data: session } = useSessionQuery()
 
   const [showReplyForm, setShowReplyForm] = useState(false)

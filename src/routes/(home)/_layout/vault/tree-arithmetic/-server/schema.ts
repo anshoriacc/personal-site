@@ -1,29 +1,52 @@
-import { pgTable, text, doublePrecision, timestamp, pgEnum } from 'drizzle-orm/pg-core'
+import {
+  pgTable,
+  text,
+  doublePrecision,
+  timestamp,
+  pgEnum,
+} from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 
-export const operationTypeEnum = pgEnum('operation_type', ['ADD', 'SUBTRACT', 'MULTIPLY', 'DIVIDE'])
+export const operationTypeEnum = pgEnum('operation_type', [
+  'ADD',
+  'SUBTRACT',
+  'MULTIPLY',
+  'DIVIDE',
+])
 export const treeUsers = pgTable('tree_users', {
-  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  id: text('id')
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
   username: text('username').notNull().unique(),
   passwordHash: text('password_hash').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 })
 
 export const threads = pgTable('threads', {
-  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  id: text('id')
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
   startingNumber: doublePrecision('starting_number').notNull(),
-  authorId: text('author_id').notNull().references(() => treeUsers.id, { onDelete: 'cascade' }),
+  authorId: text('author_id')
+    .notNull()
+    .references(() => treeUsers.id, { onDelete: 'cascade' }),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 })
 
 export const operations = pgTable('operations', {
-  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
-  threadId: text('thread_id').notNull().references(() => threads.id, { onDelete: 'cascade' }),
+  id: text('id')
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  threadId: text('thread_id')
+    .notNull()
+    .references(() => threads.id, { onDelete: 'cascade' }),
   parentOperationId: text('parent_operation_id'),
   type: operationTypeEnum('type').notNull(),
   rightArgument: doublePrecision('right_argument').notNull(),
   result: doublePrecision('result').notNull(),
-  authorId: text('author_id').notNull().references(() => treeUsers.id, { onDelete: 'cascade' }),
+  authorId: text('author_id')
+    .notNull()
+    .references(() => treeUsers.id, { onDelete: 'cascade' }),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 })
 export const treeUsersRelations = relations(treeUsers, ({ many }) => ({
@@ -32,13 +55,22 @@ export const treeUsersRelations = relations(treeUsers, ({ many }) => ({
 }))
 
 export const threadsRelations = relations(threads, ({ one, many }) => ({
-  author: one(treeUsers, { fields: [threads.authorId], references: [treeUsers.id] }),
+  author: one(treeUsers, {
+    fields: [threads.authorId],
+    references: [treeUsers.id],
+  }),
   operations: many(operations),
 }))
 
 export const operationsRelations = relations(operations, ({ one, many }) => ({
-  thread: one(threads, { fields: [operations.threadId], references: [threads.id] }),
-  author: one(treeUsers, { fields: [operations.authorId], references: [treeUsers.id] }),
+  thread: one(threads, {
+    fields: [operations.threadId],
+    references: [threads.id],
+  }),
+  author: one(treeUsers, {
+    fields: [operations.authorId],
+    references: [treeUsers.id],
+  }),
   parentOperation: one(operations, {
     fields: [operations.parentOperationId],
     references: [operations.id],

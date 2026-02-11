@@ -2,9 +2,9 @@ import { motion } from 'motion/react'
 import { Moon02Icon, SunIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 
-import { Button } from '@/components/ui/button'
-import { useTheme, useSetTheme } from '@/stores/theme.store'
 import { cn } from '@/lib/utils'
+import { useSetTheme, useTheme } from '@/stores/theme.store'
+import { Button } from '@/components/ui/button'
 
 type Props = {
   className?: string

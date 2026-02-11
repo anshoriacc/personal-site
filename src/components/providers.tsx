@@ -1,7 +1,7 @@
 import React from 'react'
+import type { TTheme } from '@/server/theme'
 import { useThemeStore } from '@/stores/theme.store'
 import { useTimeStore } from '@/stores/time.store'
-import { type TTheme } from '@/server/theme'
 
 type Props = React.PropsWithChildren<{ theme: TTheme }>
 

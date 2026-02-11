@@ -19,7 +19,7 @@ export type OperationNode = {
     username: string
   }
   createdAt: Date
-  childOperations: OperationNode[]
+  childOperations: Array<OperationNode>
 }
 
 export type ThreadWithOperations = {
@@ -30,14 +30,14 @@ export type ThreadWithOperations = {
     username: string
   }
   createdAt: Date
-  operations: OperationNode[]
+  operations: Array<OperationNode>
 }
 
 export const getThreads = createServerFn().handler(async () => {
   const buildOperationTree = async (
     threadId: string,
     parentId: string | null,
-  ): Promise<OperationNode[]> => {
+  ): Promise<Array<OperationNode>> => {
     const ops = await db
       .select({
         id: operations.id,
@@ -55,12 +55,12 @@ export const getThreads = createServerFn().handler(async () => {
           eq(operations.threadId, threadId),
           parentId === null
             ? isNull(operations.parentOperationId)
-            : eq(operations.parentOperationId, parentId)
-        )
+            : eq(operations.parentOperationId, parentId),
+        ),
       )
       .orderBy(asc(operations.createdAt))
 
-    const result: OperationNode[] = []
+    const result: Array<OperationNode> = []
     for (const op of ops) {
       const childOperations = await buildOperationTree(threadId, op.id)
       result.push({
@@ -91,7 +91,7 @@ export const getThreads = createServerFn().handler(async () => {
     .innerJoin(treeUsers, eq(threads.authorId, treeUsers.id))
     .orderBy(desc(threads.createdAt))
 
-  const result: ThreadWithOperations[] = []
+  const result: Array<ThreadWithOperations> = []
   for (const t of allThreads) {
     const ops = await buildOperationTree(t.id, null)
     result.push({
@@ -114,7 +114,7 @@ export const createThread = createServerFn({ method: 'POST' })
   .handler(async ({ data }) => {
     const sessionData = getCookie('tree-arithmetic-auth-session')
     let session: Session = null
-    
+
     if (sessionData) {
       try {
         session = JSON.parse(sessionData)

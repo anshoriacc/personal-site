@@ -7,21 +7,21 @@ import {
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
-import { type QueryClient } from '@tanstack/react-query'
+import { getThemeServerFn } from '../server/theme'
+import { Providers } from '../components/providers'
+import { SITE_URL } from '../constants/env'
+import appCss from '../styles.css?url'
+import type { QueryClient } from '@tanstack/react-query'
 
 import { cn } from '@/lib/utils'
 import { useMounted } from '@/hooks/use-mounted'
 import { useDeferredScript } from '@/hooks/use-deferred-script'
-import { getThemeServerFn } from '../server/theme'
 import { useIsNightTime } from '@/stores/time.store'
-import { Providers } from '../components/providers'
 import { NotFound } from '@/components/not-found'
-import { SITE_URL } from '../constants/env'
 import {
-  ThemeDetectionScript,
   BodySelectionScript,
+  ThemeDetectionScript,
 } from '@/components/inline-scripts'
-import appCss from '../styles.css?url'
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {

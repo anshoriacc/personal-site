@@ -85,9 +85,7 @@ export function ThreadList() {
                   <div className="flex items-center gap-3">
                     <CardTitle className="text-base">
                       Starting Number:{' '}
-                      <span className="font-mono">
-                        {thread.startingNumber}
-                      </span>
+                      <span className="font-mono">{thread.startingNumber}</span>
                     </CardTitle>
                     <span className="text-muted-foreground text-xs">
                       by {thread.author.username}
@@ -98,9 +96,7 @@ export function ThreadList() {
                       <Button
                         variant="ghost"
                         size="xs"
-                        onClick={() =>
-                          toggle(thread.id, expanded, setExpanded)
-                        }
+                        onClick={() => toggle(thread.id, expanded, setExpanded)}
                       >
                         {isExpanded ? 'Collapse' : 'Expand'} (
                         {thread.operations.length})
