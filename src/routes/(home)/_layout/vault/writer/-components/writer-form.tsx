@@ -402,7 +402,6 @@ export const WriterForm = () => {
                             },
                           }),
                         ]}
-                        //   className="relative left-1/2 w-screen max-w-5xl -translate-x-1/2 px-4"
                       />
                     </div>
                   </div>
