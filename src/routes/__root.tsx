@@ -81,8 +81,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         },
       ],
       links: [
-        { rel: 'icon', href: '/dark192.png' },
+        { rel: 'icon', href: '/favicon.ico', type: 'image/x-icon' },
         { rel: 'apple-touch-icon', href: '/dark192.png' },
+        { rel: 'manifest', href: '/manifest.json' },
         { rel: 'preconnect', href: 'https://umami.anshori.com' },
         { rel: 'dns-prefetch', href: 'https://umami.anshori.com' },
         {

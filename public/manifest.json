@@ -4,9 +4,9 @@
   "description": "Portfolio of Achmad Anshori, Software Engineer based in Jakarta, Indonesia",
   "icons": [
     {
-      "src": "/dark800.png",
-      "sizes": "800x800",
-      "type": "image/png",
+      "src": "/favicon.ico",
+      "sizes": "32x32",
+      "type": "image/x-icon",
       "purpose": "any"
     },
     {
@@ -20,6 +20,12 @@
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "any maskable"
+    },
+    {
+      "src": "/dark800.png",
+      "sizes": "800x800",
+      "type": "image/png",
+      "purpose": "any"
     }
   ],
   "start_url": "/",
