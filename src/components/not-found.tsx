@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router'
+
 import { Header } from './header'
-import { Container } from './motion-container'
-import { Section } from './motion-section'
+import { MotionContainer, MotionItem } from './ui/motion'
 import { Button } from './ui/button'
 
 export const NotFound = () => {
@@ -10,8 +10,11 @@ export const NotFound = () => {
       <Header />
 
       <div className="flex flex-1 items-center justify-center">
-        <Container>
-          <Section className="flex flex-col items-center gap-4 text-center">
+        <MotionContainer as="main" className="space-y-12">
+          <MotionItem
+            as="section"
+            className="flex flex-col items-center gap-4 text-center"
+          >
             <h1 className="font-semibold sm:text-lg">404 Not Found</h1>
 
             <p className="text-muted-foreground">
@@ -25,8 +28,8 @@ export const NotFound = () => {
             >
               Return Home
             </Button>
-          </Section>
-        </Container>
+          </MotionItem>
+        </MotionContainer>
       </div>
     </div>
   )

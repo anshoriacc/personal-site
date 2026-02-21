@@ -1,7 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { QuickFormStyling } from './-components/quick-form-styling'
-import { Container } from '@/components/motion-container'
-import { Section } from '@/components/motion-section'
+import { MotionContainer, MotionItem } from '@/components/ui/motion'
 
 export const Route = createFileRoute('/(home)/_layout/vault/ellty/')({
   component: ElltyPage,
@@ -40,8 +39,8 @@ export const Route = createFileRoute('/(home)/_layout/vault/ellty/')({
 
 function ElltyPage() {
   return (
-    <Container>
-      <Section className="flex flex-col space-y-6">
+    <MotionContainer as="main" className="space-y-12">
+      <MotionItem className="flex flex-col space-y-6">
         <h1 className="font-medium sm:text-lg">Quick Form Styling</h1>
 
         <QuickFormStyling />
@@ -126,7 +125,7 @@ function ElltyPage() {
             </div>
           </div>
         </div>
-      </Section>
-    </Container>
+      </MotionItem>
+    </MotionContainer>
   )
 }

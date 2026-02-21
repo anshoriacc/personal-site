@@ -3,12 +3,10 @@ import { createFileRoute } from '@tanstack/react-router'
 import { getCurrentlyPlayingQueryOptions } from '@/hooks/api/spotify'
 import { getGithubContributionsQueryOptions } from '@/hooks/api/github-contributions'
 import { GitHubContributions } from '@/components/github-contributions'
-import { Container } from '@/components/motion-container'
-import { Section } from '@/components/motion-section'
+import { MotionContainer, MotionItem } from '@/components/ui/motion'
 import { Experience } from '@/components/experience'
 import { Profile } from '@/components/profile'
 import { Spotify } from '@/components/spotify'
-import { Location } from '@/components/location'
 
 export const Route = createFileRoute('/(home)/_layout/')({
   component: HomePage,
@@ -34,26 +32,22 @@ export const Route = createFileRoute('/(home)/_layout/')({
 
 function HomePage() {
   return (
-    <Container>
-      <Section>
+    <MotionContainer as="main" className="space-y-12">
+      <MotionItem>
         <Profile />
-      </Section>
+      </MotionItem>
 
-      <Section>
+      <MotionItem>
         <Experience simplified />
-      </Section>
+      </MotionItem>
 
-      <Section>
+      <MotionItem>
         <GitHubContributions />
-      </Section>
+      </MotionItem>
 
-      <Section>
+      <MotionItem>
         <Spotify />
-      </Section>
-
-      <Section>
-        <Location />
-      </Section>
-    </Container>
+      </MotionItem>
+    </MotionContainer>
   )
 }

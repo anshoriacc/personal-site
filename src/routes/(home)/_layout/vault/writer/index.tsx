@@ -1,7 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { MotionContainer, MotionItem } from '@/components/ui/motion'
 import { WriterForm } from './-components/writer-form'
-import { Container } from '@/components/motion-container'
-import { Section } from '@/components/motion-section'
 
 export const Route = createFileRoute('/(home)/_layout/vault/writer/')({
   component: WriterPage,
@@ -9,10 +8,10 @@ export const Route = createFileRoute('/(home)/_layout/vault/writer/')({
 
 function WriterPage() {
   return (
-    <Container>
-      <Section>
+    <MotionContainer as="main" className="space-y-12">
+      <MotionItem>
         <WriterForm />
-      </Section>
-    </Container>
+      </MotionItem>
+    </MotionContainer>
   )
 }

@@ -1,7 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { Container } from '@/components/motion-container'
-import { Section } from '@/components/motion-section'
+import { MotionContainer, MotionItem } from '@/components/ui/motion'
 import { Experience } from '@/components/experience'
 
 export const Route = createFileRoute('/(home)/_layout/work')({
@@ -18,10 +17,10 @@ export const Route = createFileRoute('/(home)/_layout/work')({
 
 function WorksPage() {
   return (
-    <Container>
-      <Section>
+    <MotionContainer as="main" className="space-y-12">
+      <MotionItem>
         <Experience />
-      </Section>
-    </Container>
+      </MotionItem>
+    </MotionContainer>
   )
 }

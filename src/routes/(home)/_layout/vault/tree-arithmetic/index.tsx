@@ -6,9 +6,8 @@ import { sessionQueryOptions, useSessionQuery } from './-hooks/auth'
 import { NewThreadForm } from './-components/new-thread-form'
 import { ThreadList } from './-components/thread-list'
 import { AuthPanel } from './-components/auth-panel'
-import { Section } from '@/components/motion-section'
-import { Container } from '@/components/motion-container'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { MotionContainer, MotionItem } from '@/components/ui/motion'
 import { Button } from '@/components/ui/button'
 import {
   Collapsible,
@@ -55,15 +54,15 @@ function Ellty2Page() {
   const { data: session } = useSessionQuery()
 
   return (
-    <Container className="space-y-">
-      <Section>
+    <MotionContainer as="main" className="space-y-12">
+      <MotionItem>
         <h1 className="font-medium sm:text-lg">Tree Arithmetic</h1>
         <p className="text-muted-foreground mt-1 text-sm">
           A number thread app where you communicate through math operations
         </p>
-      </Section>
+      </MotionItem>
 
-      <Section>
+      <MotionItem>
         <Collapsible>
           <CollapsibleTrigger
             render={
@@ -123,9 +122,9 @@ function Ellty2Page() {
             </div>
           </CollapsibleContent>
         </Collapsible>
-      </Section>
+      </MotionItem>
 
-      <Section className="space-y-4">
+      <MotionItem className="space-y-4">
         {!session && (
           <Alert variant="default">
             <HugeiconsIcon icon={Info} className="size-4" />
@@ -136,15 +135,15 @@ function Ellty2Page() {
           </Alert>
         )}
         <AuthPanel />
-      </Section>
+      </MotionItem>
 
-      <Section>{session && <NewThreadForm />}</Section>
+      <MotionItem>{session && <NewThreadForm />}</MotionItem>
 
-      <Section className="space-y-4">
+      <MotionItem className="space-y-4">
         <h2 className="font-medium">Threads</h2>
 
         <ThreadList />
-      </Section>
-    </Container>
+      </MotionItem>
+    </MotionContainer>
   )
 }
