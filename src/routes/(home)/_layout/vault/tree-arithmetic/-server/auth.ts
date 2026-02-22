@@ -24,18 +24,17 @@ export type Session = {
   username: string
 } | null
 
-export const getSession = createServerFn().handler(
-  async (): Promise<Session> => {
-    const sessionData = getCookie(SESSION_COOKIE_NAME)
-    if (!sessionData) return null
+export const getSession = createServerFn().handler((): Session => {
+  const sessionData = getCookie(SESSION_COOKIE_NAME)
 
-    try {
-      return JSON.parse(sessionData)
-    } catch {
-      return null
-    }
-  },
-)
+  if (!sessionData) return null
+
+  try {
+    return JSON.parse(sessionData)
+  } catch {
+    return null
+  }
+})
 
 export const register = createServerFn({ method: 'POST' })
   .inputValidator(registerSchema)
@@ -101,7 +100,7 @@ export const login = createServerFn({ method: 'POST' })
     return session
   })
 
-export const logout = createServerFn({ method: 'POST' }).handler(async () => {
+export const logout = createServerFn({ method: 'POST' }).handler(() => {
   setCookie(SESSION_COOKIE_NAME, '', {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',

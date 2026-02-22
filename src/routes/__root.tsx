@@ -5,13 +5,13 @@ import {
   createRootRouteWithContext,
 } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { ReactQueryDevtoolsPanel } from '@tanstack/react-query-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
-import { getThemeServerFn } from '../server/theme'
+import type { QueryClient } from '@tanstack/react-query'
 import { Providers } from '../components/providers'
+import { getThemeServerFn } from '../server/theme'
 import { SITE_URL } from '../constants/env'
 import appCss from '../styles.css?url'
-import type { QueryClient } from '@tanstack/react-query'
 
 import { cn } from '@/lib/utils'
 import { useMounted } from '@/hooks/use-mounted'
@@ -19,8 +19,8 @@ import { useDeferredScript } from '@/hooks/use-deferred-script'
 import { useIsNightTime } from '@/stores/time.store'
 import { NotFound } from '@/components/not-found'
 import {
-  BodySelectionScript,
   ThemeDetectionScript,
+  BodySelectionScript,
 } from '@/components/inline-scripts'
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
@@ -150,27 +150,20 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           selectionClasses,
         )}
       >
-        <Providers theme={theme}>
-          {children}
+        <Providers theme={theme}>{children}</Providers>
 
-          {process.env.NODE_ENV === 'development' ? (
-            <>
-              <TanStackDevtools
-                config={{
-                  position: 'bottom-right',
-                }}
-                plugins={[
-                  {
-                    name: 'Tanstack Router',
-                    render: <TanStackRouterDevtoolsPanel />,
-                  },
-                ]}
-              />
-
-              <ReactQueryDevtools buttonPosition="bottom-left" />
-            </>
-          ) : null}
-        </Providers>
+        <TanStackDevtools
+          plugins={[
+            {
+              name: 'Tanstack Router',
+              render: <TanStackRouterDevtoolsPanel />,
+            },
+            {
+              name: 'Tanstack Query',
+              render: <ReactQueryDevtoolsPanel />,
+            },
+          ]}
+        />
 
         <ThemeDetectionScript />
 

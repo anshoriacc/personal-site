@@ -73,9 +73,9 @@ export interface FileRoutesByFullPath {
   '/api/og': typeof ApiOgRoute
   '/work': typeof homeLayoutWorkRoute
   '/': typeof homeLayoutIndexRoute
-  '/vault/ellty': typeof homeLayoutVaultElltyIndexRoute
-  '/vault/tree-arithmetic': typeof homeLayoutVaultTreeArithmeticIndexRoute
-  '/vault/writer': typeof homeLayoutVaultWriterIndexRoute
+  '/vault/ellty/': typeof homeLayoutVaultElltyIndexRoute
+  '/vault/tree-arithmetic/': typeof homeLayoutVaultTreeArithmeticIndexRoute
+  '/vault/writer/': typeof homeLayoutVaultWriterIndexRoute
 }
 export interface FileRoutesByTo {
   '/health': typeof HealthRoute
@@ -107,9 +107,9 @@ export interface FileRouteTypes {
     | '/api/og'
     | '/work'
     | '/'
-    | '/vault/ellty'
-    | '/vault/tree-arithmetic'
-    | '/vault/writer'
+    | '/vault/ellty/'
+    | '/vault/tree-arithmetic/'
+    | '/vault/writer/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/health'
@@ -187,21 +187,21 @@ declare module '@tanstack/react-router' {
     '/(home)/_layout/vault/writer/': {
       id: '/(home)/_layout/vault/writer/'
       path: '/vault/writer'
-      fullPath: '/vault/writer'
+      fullPath: '/vault/writer/'
       preLoaderRoute: typeof homeLayoutVaultWriterIndexRouteImport
       parentRoute: typeof homeLayoutRoute
     }
     '/(home)/_layout/vault/tree-arithmetic/': {
       id: '/(home)/_layout/vault/tree-arithmetic/'
       path: '/vault/tree-arithmetic'
-      fullPath: '/vault/tree-arithmetic'
+      fullPath: '/vault/tree-arithmetic/'
       preLoaderRoute: typeof homeLayoutVaultTreeArithmeticIndexRouteImport
       parentRoute: typeof homeLayoutRoute
     }
     '/(home)/_layout/vault/ellty/': {
       id: '/(home)/_layout/vault/ellty/'
       path: '/vault/ellty'
-      fullPath: '/vault/ellty'
+      fullPath: '/vault/ellty/'
       preLoaderRoute: typeof homeLayoutVaultElltyIndexRouteImport
       parentRoute: typeof homeLayoutRoute
     }

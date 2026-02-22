@@ -122,14 +122,14 @@ export const Header = ({ constraintsRef }: Props) => {
 
   const renderContent = (
     viewState: ViewState,
-    routerStatus: 'pending' | 'idle',
+    _routerStatus: 'pending' | 'idle',
   ) => {
     if (viewState === 'idle') {
       return (
         <div className="flex h-full items-center gap-2 p-1.5">
           <Clock />
           <span className="mr-1.5">
-            <LoadingText isPending={routerStatus === 'pending'} />
+            <LoadingText isPending={_routerStatus === 'pending'} />
           </span>
         </div>
       )
@@ -140,7 +140,7 @@ export const Header = ({ constraintsRef }: Props) => {
         <div className="flex items-center justify-between gap-4 border-b border-b-white/20 p-1.5">
           <div className="flex items-center gap-2">
             <Clock />
-            <LoadingText isPending={routerStatus === 'pending'} />
+            <LoadingText isPending={_routerStatus === 'pending'} />
           </div>
 
           <ThemeToggle />

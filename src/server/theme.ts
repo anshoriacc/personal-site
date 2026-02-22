@@ -9,12 +9,12 @@ const THEME_COOKIE = '_preferred-theme'
 const DEFAULT_THEME: TTheme = 'dark'
 
 export const getThemeServerFn = createServerFn().handler(
-  async () => (getCookie(THEME_COOKIE) || DEFAULT_THEME) as TTheme,
+  () => (getCookie(THEME_COOKIE) || DEFAULT_THEME) as TTheme,
 )
 
 export const setThemeServerFn = createServerFn({ method: 'POST' })
   .inputValidator(themeValidator)
-  .handler(async ({ data }) => {
+  .handler(({ data }) => {
     setCookie(THEME_COOKIE, data)
     return data
   })
