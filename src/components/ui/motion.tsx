@@ -4,8 +4,7 @@ const containerVariants: Variants = {
   hidden: {},
   show: {
     transition: {
-      staggerChildren: 0.08,
-      delayChildren: 0.05,
+      staggerChildren: 0.1,
     },
   },
 }
@@ -13,14 +12,12 @@ const containerVariants: Variants = {
 type ContainerProps = React.PropsWithChildren<{
   className?: string
   as?: 'div' | 'main' | 'section'
-  delay?: number
 }>
 
 export const MotionContainer = ({
   children,
   className,
   as = 'div',
-  delay = 0,
 }: ContainerProps) => {
   const shouldReduceMotion = useReducedMotion()
 
@@ -32,7 +29,6 @@ export const MotionContainer = ({
       initial={shouldReduceMotion ? undefined : 'hidden'}
       animate="show"
       className={className}
-      style={delay > 0 ? { transitionDelay: `${delay}ms` } : undefined}
     >
       {children}
     </Component>
