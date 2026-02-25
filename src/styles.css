@@ -5,6 +5,8 @@
 @import '@fontsource-variable/plus-jakarta-sans';
 @import '@fontsource-variable/montserrat';
 
+@plugin '@tailwindcss/typography';
+
 @source './routes';
 @source './components';
 
