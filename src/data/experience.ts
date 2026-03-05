@@ -18,7 +18,7 @@ export const experiences: Array<Experience> = [
     url: 'https://www.linkedin.com/company/travelio-com',
     type: 'Full time',
     startDate: 'Dec 2025',
-    endDate: 'present',
+    endDate: 'Mar 2026',
     description: 'Worked on Travelio, an online home rental operator web app.',
     responsibilities: [
       'Developed features for Travelio Property Management web app.',

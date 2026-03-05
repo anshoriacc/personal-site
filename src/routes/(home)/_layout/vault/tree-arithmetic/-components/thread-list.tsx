@@ -53,7 +53,9 @@ export function ThreadList() {
   if (error) {
     return (
       <Card>
-        <p className="text-destructive text-sm">Failed to load threads</p>
+        <CardContent>
+          <p className="text-destructive text-sm">Failed to load threads</p>
+        </CardContent>
       </Card>
     )
   }
