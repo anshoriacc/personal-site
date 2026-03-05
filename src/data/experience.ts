@@ -46,7 +46,7 @@ export const experiences: Array<Experience> = [
     position: 'Frontend Engineer',
     type: 'Freelance',
     startDate: 'Jul 2024',
-    endDate: 'Jul 2025',
+    endDate: 'Dec 2025',
     description:
       'Worked on several projects including audit trail dashboard for insurance companies and Satu SDM.',
     responsibilities: [

@@ -81,7 +81,7 @@ export const Experience = ({ simplified }: Props) => {
                   </Tooltip>
                 )}
 
-                <span className="font-medium">
+                <span className="font-">
                   {exp.url ? (
                     <a
                       href={exp.url}
@@ -100,14 +100,18 @@ export const Experience = ({ simplified }: Props) => {
                 </span>
               </h3>
 
-              <p className="text-muted-foreground">
-                <span>{exp.position}</span>
-                {exp.type ? <span> ⋅ {exp.type}</span> : null}
-              </p>
+              {!simplified && (
+                <p className="text-muted-foreground">
+                  <span>{exp.position}</span>
+                  {exp.type ? <span> ⋅ {exp.type}</span> : null}
+                </p>
+              )}
 
-              {exp.description ? <p>{exp.description}</p> : null}
+              {!simplified && exp.description ? <p>{exp.description}</p> : null}
 
-              {exp.technologies && exp.technologies.length > 0 ? (
+              {!simplified &&
+              exp.technologies &&
+              exp.technologies.length > 0 ? (
                 <div className="mt-2 flex flex-wrap gap-2 select-none">
                   {exp.technologies.map((tech, techIndex) => (
                     <Badge
@@ -136,9 +140,11 @@ export const Experience = ({ simplified }: Props) => {
               ) : null}
             </div>
 
-            <div className="text-muted-foreground text-center select-none last:hidden">
-              〰︎〰︎〰︎〰︎〰︎
-            </div>
+            {!simplified && (
+              <div className="text-muted-foreground text-center select-none last:hidden">
+                〰︎〰︎〰︎〰︎〰︎
+              </div>
+            )}
           </React.Fragment>
         ))}
       </div>

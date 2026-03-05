@@ -8,6 +8,7 @@ interface TimeStore {
   seconds: number
   hourRotation: number
   minuteRotation: number
+  secondRotation: number
   updateTime: () => void
 }
 
@@ -27,6 +28,7 @@ const calculateState = (time: Date) => {
     seconds,
     hourRotation: hours * 30 + minutes * 0.5,
     minuteRotation: minutes * 6 + seconds * 0.1,
+    secondRotation: seconds * 6,
   }
 }
 
@@ -38,6 +40,7 @@ const defaultState = {
   seconds: 0,
   hourRotation: 0,
   minuteRotation: 0,
+  secondRotation: 0,
 }
 
 export const useTimeStore = create<TimeStore>((set) => ({
@@ -49,4 +52,6 @@ export const useIsNightTime = () => useTimeStore((state) => state.isNightTime)
 export const useHourRotation = () => useTimeStore((state) => state.hourRotation)
 export const useMinuteRotation = () =>
   useTimeStore((state) => state.minuteRotation)
+export const useSecondRotation = () =>
+  useTimeStore((state) => state.secondRotation)
 export const useCurrentTime = () => useTimeStore((state) => state.time)

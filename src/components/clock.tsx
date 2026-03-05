@@ -7,6 +7,7 @@ import {
   useIsNightTime,
   useHourRotation,
   useMinuteRotation,
+  useSecondRotation,
 } from '@/stores/time.store'
 
 type Props = {
@@ -19,6 +20,7 @@ export const Clock = ({ className }: Props) => {
   const isNight = useIsNightTime()
   const hourRotation = useHourRotation()
   const minuteRotation = useMinuteRotation()
+  const secondRotation = useSecondRotation()
 
   React.useEffect(() => {
     updateTime()
@@ -53,7 +55,7 @@ export const Clock = ({ className }: Props) => {
         x2="50"
         y2="30"
         stroke="currentColor"
-        strokeWidth="3"
+        strokeWidth="4"
         strokeLinecap="round"
         transform={mounted ? `rotate(${hourRotation}, 50, 50)` : undefined}
       />
@@ -64,9 +66,20 @@ export const Clock = ({ className }: Props) => {
         x2="50"
         y2="15"
         stroke="currentColor"
-        strokeWidth="2"
+        strokeWidth="3"
         strokeLinecap="round"
         transform={mounted ? `rotate(${minuteRotation}, 50, 50)` : undefined}
+      />
+      <line
+        id="second-hand"
+        x1="50"
+        y1="50"
+        x2="50"
+        y2="10"
+        strokeWidth="2"
+        strokeLinecap="round"
+        className="stroke-rose-500"
+        transform={mounted ? `rotate(${secondRotation}, 50, 50)` : undefined}
       />
 
       {mounted ? <ClockScript /> : null}
@@ -84,6 +97,7 @@ const CLOCK_SCRIPT_CONTENT = `(${(() => {
 
   const hourEl = document.getElementById('hour-hand')
   const minuteEl = document.getElementById('minute-hand')
+  const secondEl = document.getElementById('second-hand')
   const clockCircle = document.getElementById('clock')
 
   if (hourEl) {
@@ -94,6 +108,11 @@ const CLOCK_SCRIPT_CONTENT = `(${(() => {
   if (minuteEl) {
     const mr = m * 6 + s * 0.1
     minuteEl.setAttribute('transform', 'rotate(' + mr + ', 50, 50)')
+  }
+
+  if (secondEl) {
+    const sr = s * 6
+    secondEl.setAttribute('transform', 'rotate(' + sr + ', 50, 50)')
   }
 
   if (clockCircle) {
