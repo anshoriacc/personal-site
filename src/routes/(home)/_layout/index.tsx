@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
+import { createPageMeta } from '@/lib/seo'
 import { getCurrentlyPlayingQueryOptions } from '@/hooks/api/spotify'
 import { getGithubContributionsQueryOptions } from '@/hooks/api/github-contributions'
 import { GitHubContributions } from '@/components/github-contributions'
@@ -20,14 +21,7 @@ export const Route = createFileRoute('/(home)/_layout/')({
       console.error('Error prefetching data in HomePage loader:', error)
     }
   },
-  head: () => ({
-    links: [
-      {
-        rel: 'canonical',
-        href: `${process.env.SITE_URL || 'https://anshori.com'}/`,
-      },
-    ],
-  }),
+  head: () => createPageMeta({ path: '/' }),
 })
 
 function HomePage() {

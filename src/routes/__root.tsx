@@ -10,10 +10,10 @@ import { TanStackDevtools } from '@tanstack/react-devtools'
 import type { QueryClient } from '@tanstack/react-query'
 import { Providers } from '../components/providers'
 import { getThemeServerFn } from '../server/theme'
-import { SITE_URL } from '../constants/env'
 import appCss from '../styles.css?url'
 
 import { cn } from '@/lib/utils'
+import { createPageMeta } from '@/lib/seo'
 import { useMounted } from '@/hooks/use-mounted'
 import { useDeferredScript } from '@/hooks/use-deferred-script'
 import { useIsNightTime } from '@/stores/time.store'
@@ -26,95 +26,59 @@ import {
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {
     loader: () => getThemeServerFn(),
-    head: () => ({
-      meta: [
-        { charSet: 'UTF-8' },
-        {
-          title: 'Achmad Anshori',
-        },
-        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        {
-          name: 'description',
-          content: 'Software Engineer based in Jakarta, Indonesia.',
-        },
-        { name: 'author', content: 'Achmad Anshori' },
-        {
-          name: 'keywords',
-          content:
-            'Achmad Anshori, Software Engineer, Web Developer, React, TypeScript, TanStack, Jakarta, Indonesia, Full Stack Developer',
-        },
-        { name: 'theme-color', content: '#000000' },
-        { property: 'og:title', content: 'Achmad Anshori' },
-        {
-          property: 'og:description',
-          content: 'Software Engineer based in Jakarta, Indonesia.',
-        },
-        { property: 'og:type', content: 'website' },
-        { property: 'og:locale', content: 'en_US' },
-        {
-          property: 'og:url',
-          content: SITE_URL,
-        },
-        {
-          property: 'og:image',
-          content: `${SITE_URL}/api/og`,
-        },
-        { property: 'og:image:width', content: '1200' },
-        { property: 'og:image:height', content: '630' },
-        { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:title', content: 'Achmad Anshori' },
-        {
-          name: 'twitter:description',
-          content: 'Software Engineer based in Jakarta, Indonesia.',
-        },
-        {
-          name: 'twitter:url',
-          content: SITE_URL,
-        },
-        {
-          name: 'twitter:creator',
-          content: '@20arik_',
-        },
-        {
-          name: 'twitter:image',
-          content: `${SITE_URL}/api/og`,
-        },
-      ],
-      links: [
-        { rel: 'icon', href: '/favicon.ico', type: 'image/x-icon' },
-        { rel: 'apple-touch-icon', href: '/dark192.png' },
-        { rel: 'manifest', href: '/manifest.json' },
-        { rel: 'preconnect', href: 'https://umami.anshori.com' },
-        { rel: 'dns-prefetch', href: 'https://umami.anshori.com' },
-        {
-          rel: 'stylesheet',
-          href: appCss,
-        },
-      ],
-      scripts: [
-        {
-          type: 'application/ld+json',
-          children: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'Person',
-            name: 'Achmad Anshori',
-            url: SITE_URL,
-            jobTitle: 'Software Engineer',
-            description: 'Software Engineer based in Jakarta, Indonesia.',
-            address: {
-              '@type': 'PostalAddress',
-              addressLocality: 'Jakarta',
-              addressCountry: 'Indonesia',
-            },
-            sameAs: [
-              'https://github.com/anshoriacc',
-              'https://linkedin.com/in/achmad-anshori',
-              'https://x.com/20arik_',
-            ],
-          }),
-        },
-      ],
-    }),
+    head: () => {
+      const siteUrl = process.env.SITE_URL || 'https://anshori.com'
+      const { meta, links } = createPageMeta({ path: '/' })
+
+      return {
+        meta: [
+          { charSet: 'UTF-8' },
+          { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+          { name: 'author', content: 'Achmad Anshori' },
+          {
+            name: 'keywords',
+            content:
+              'Achmad Anshori, Software Engineer, Web Developer, React, TypeScript, TanStack, Jakarta, Indonesia, Full Stack Developer',
+          },
+          ...meta,
+        ],
+        links: [
+          { rel: 'icon', href: '/favicon.ico', type: 'image/x-icon' },
+          { rel: 'apple-touch-icon', href: '/dark192.png' },
+          { rel: 'manifest', href: '/manifest.json' },
+          { rel: 'preconnect', href: 'https://umami.anshori.com' },
+          { rel: 'dns-prefetch', href: 'https://umami.anshori.com' },
+          {
+            rel: 'stylesheet',
+            href: appCss,
+          },
+          ...links,
+        ],
+        scripts: [
+          {
+            type: 'application/ld+json',
+            children: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Person',
+              name: 'Achmad Anshori',
+              url: siteUrl,
+              jobTitle: 'Software Engineer',
+              description: 'Software Engineer based in Jakarta, Indonesia.',
+              address: {
+                '@type': 'PostalAddress',
+                addressLocality: 'Jakarta',
+                addressCountry: 'Indonesia',
+              },
+              sameAs: [
+                'https://github.com/anshoriacc',
+                'https://linkedin.com/in/achmad-anshori',
+                'https://x.com/20arik_',
+              ],
+            }),
+          },
+        ],
+      }
+    },
     shellComponent: RootDocument,
     notFoundComponent: () => <NotFound />,
   },

@@ -1,40 +1,19 @@
 import { createFileRoute } from '@tanstack/react-router'
+
+import { createPageMeta } from '@/lib/seo'
 import { QuickFormStyling } from './-components/quick-form-styling'
 import { MotionContainer, MotionItem } from '@/components/ui/motion'
 
 export const Route = createFileRoute('/(home)/_layout/vault/ellty/')({
   component: ElltyPage,
-  head: () => ({
-    meta: [
-      { title: 'Quick Form Styling - Achmad Anshori' },
-      {
-        name: 'description',
-        content:
-          'Interactive demonstration of form element styling states including checkboxes, radio buttons, and inputs with hover and active states.',
-      },
-      { property: 'og:title', content: 'Quick Form Styling - Achmad Anshori' },
-      {
-        property: 'og:description',
-        content:
-          'Interactive demonstration of form element styling states including checkboxes, radio buttons, and inputs with hover and active states.',
-      },
-      {
-        name: 'twitter:title',
-        content: 'Quick Form Styling - Achmad Anshori',
-      },
-      {
-        name: 'twitter:description',
-        content:
-          'Interactive demonstration of form element styling states including checkboxes, radio buttons, and inputs with hover and active states.',
-      },
-    ],
-    links: [
-      {
-        rel: 'canonical',
-        href: `${process.env.SITE_URL || 'https://anshori.com'}/vault/ellty`,
-      },
-    ],
-  }),
+  head: () =>
+    createPageMeta({
+      title: 'Quick Form Styling',
+      description:
+        'Interactive demonstration of form element styling states including checkboxes, radio buttons, and inputs with hover and active states.',
+      path: '/vault/ellty',
+      ogSubtitle: 'Vault Project',
+    }),
 })
 
 function ElltyPage() {

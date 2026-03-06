@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { ChevronRight, Info } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 
+import { createPageMeta } from '@/lib/seo'
 import { sessionQueryOptions, useSessionQuery } from './-hooks/auth'
 import { NewThreadForm } from './-components/new-thread-form'
 import { ThreadList } from './-components/thread-list'
@@ -20,34 +21,14 @@ export const Route = createFileRoute('/(home)/_layout/vault/tree-arithmetic/')({
     await context.queryClient.ensureQueryData(sessionQueryOptions)
   },
   component: Ellty2Page,
-  head: () => ({
-    meta: [
-      { title: 'Tree Arithmetic - Achmad Anshori' },
-      {
-        name: 'description',
-        content:
-          'A number thread app where you communicate through math operations. Built with Drizzle ORM, and PostgreSQL.',
-      },
-      { property: 'og:title', content: 'Tree Arithmetic - Achmad Anshori' },
-      {
-        property: 'og:description',
-        content:
-          'A number thread app where you communicate through math operations. Built with Drizzle ORM, and PostgreSQL.',
-      },
-      { name: 'twitter:title', content: 'Tree Arithmetic - Achmad Anshori' },
-      {
-        name: 'twitter:description',
-        content:
-          'A number thread app where you communicate through math operations. Built with Drizzle ORM, and PostgreSQL.',
-      },
-    ],
-    links: [
-      {
-        rel: 'canonical',
-        href: `${process.env.SITE_URL || 'https://anshori.com'}/vault/tree-arithmetic`,
-      },
-    ],
-  }),
+  head: () =>
+    createPageMeta({
+      title: 'Tree Arithmetic',
+      description:
+        'A number thread app where you communicate through math operations. Built with Drizzle ORM, and PostgreSQL.',
+      path: '/vault/tree-arithmetic',
+      ogSubtitle: 'Vault Project',
+    }),
 })
 
 function Ellty2Page() {
