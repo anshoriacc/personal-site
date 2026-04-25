@@ -2,6 +2,7 @@ import React from 'react'
 import { AnimatePresence, MotionConfig, motion } from 'motion/react'
 import {
   Link,
+  RouterState,
   useCanGoBack,
   useRouter,
   useRouterState,
@@ -40,7 +41,9 @@ const MENU_ITEMS = [
 export const Header = ({ constraintsRef }: Props) => {
   const canGoBack = useCanGoBack()
   const router = useRouter()
-  const routerStatus = useRouterState({ select: (state) => state.status })
+  const routerStatus = useRouterState({
+    select: (state: RouterState) => state.status,
+  })
 
   const [view, setView] = React.useState<ViewState>('idle')
   const [variantKey, setVariantKey] = React.useState<string>('idle')
