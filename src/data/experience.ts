@@ -13,6 +13,21 @@ export type Experience = {
 
 export const experiences: Array<Experience> = [
   {
+    company: 'Sentra Raya Solusi',
+    position: 'Frontend Engineer',
+    type: 'Freelance',
+    startDate: 'Jul 2024',
+    endDate: 'Apr 2026',
+    description:
+      'Worked on several projects including audit trail dashboard for insurance companies and Satu SDM.',
+    responsibilities: [
+      'Developed audit trail record dashboard for Tugu Insurance and BSI for compliance monitoring.',
+      'Developed core features for Satu SDM.',
+      'Deployed and debugged apps.',
+    ],
+    technologies: ['React', 'Next.js', 'TypeScript', 'Node.js', 'Nest.js'],
+  },
+  {
     company: 'Travelio',
     position: 'Software Engineer',
     url: 'https://www.linkedin.com/company/travelio-com',
@@ -23,7 +38,7 @@ export const experiences: Array<Experience> = [
     responsibilities: [
       'Developed features for Travelio Property Management web app.',
     ],
-    technologies: ['Node.js', 'Express'],
+    technologies: ['Node.js', 'Express', 'React'],
   },
   {
     company: 'Bithealth',
@@ -40,21 +55,6 @@ export const experiences: Array<Experience> = [
       'Debugged & fixed production issues.',
     ],
     technologies: ['React', 'TypeScript', 'Node.js', 'Express', 'Nest.js'],
-  },
-  {
-    company: 'Sentra Raya Solusi',
-    position: 'Frontend Engineer',
-    type: 'Freelance',
-    startDate: 'Jul 2024',
-    endDate: 'Dec 2025',
-    description:
-      'Worked on several projects including audit trail dashboard for insurance companies and Satu SDM.',
-    responsibilities: [
-      'Developed audit trail record dashboard for Tugu Insurance and BSI for compliance monitoring.',
-      'Developed core features for Satu SDM.',
-      'Deployed and debugged apps.',
-    ],
-    technologies: ['React', 'Next.js', 'TypeScript', 'Node.js', 'Nest.js'],
   },
   {
     company: 'Vorta Siber Indonesia',
