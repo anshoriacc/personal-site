@@ -6,7 +6,7 @@ export const ThemeHotkey = () => {
   const setTheme = useSetTheme()
 
   useHotkey('T', () => {
-    void setTheme(theme === 'dark' ? 'light' : 'dark')
+    setTheme(theme === 'dark' ? 'light' : 'dark')
   })
 
   return null
