@@ -7,6 +7,41 @@ interface ThemeStore {
   initTheme: (theme: TTheme) => void
 }
 
+type TResolvedTheme = TTheme
+
+function createTransitionDisablingStylesheet(): HTMLStyleElement {
+  const css = document.createElement('style')
+  css.type = 'text/css'
+  css.appendChild(
+    document.createTextNode(
+      `*, *::before, *::after {
+        transition: none !important;
+      }`,
+    ),
+  )
+  return css
+}
+
+function disableTransitions(): HTMLStyleElement {
+  const css = createTransitionDisablingStylesheet()
+  document.head.appendChild(css)
+  return css
+}
+
+function enableTransitions(css: HTMLStyleElement): void {
+  window.getComputedStyle(css).opacity
+  document.head.removeChild(css)
+}
+
+export function applyTheme(resolvedTheme: TResolvedTheme) {
+  if (typeof document === 'undefined') return
+  const html = document.documentElement
+  const transitionsDisabled = disableTransitions()
+  html.classList.remove('light', 'dark')
+  html.classList.add(resolvedTheme)
+  enableTransitions(transitionsDisabled)
+}
+
 const getInitialTheme = (): TTheme => {
   if (typeof document === 'undefined') return 'dark'
   const htmlClass = document.documentElement.className
@@ -25,9 +60,7 @@ export const useThemeStore = create<ThemeStore>((set) => ({
 
   setTheme: async (theme) => {
     set({ theme })
-    if (typeof document !== 'undefined') {
-      document.documentElement.className = theme
-    }
+    applyTheme(theme)
 
     try {
       await setThemeServerFn({ data: theme })
