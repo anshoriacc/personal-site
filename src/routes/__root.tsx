@@ -22,6 +22,7 @@ import {
   ThemeDetectionScript,
   BodySelectionScript,
 } from '@/components/inline-scripts'
+import { ThemeHotkey } from '@/components/theme-hotkey'
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {
@@ -115,7 +116,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         )}
       >
         <Providers theme={theme}>{children}</Providers>
-
         <TanStackDevtools
           plugins={[
             {
@@ -128,11 +128,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             },
           ]}
         />
-
         <ThemeDetectionScript />
-
         {mounted ? <BodySelectionScript /> : null}
-
+        <ThemeHotkey />Ï
         <Scripts />
       </body>
     </html>
