@@ -1,6 +1,4 @@
 import React from 'react'
-import dayjs from 'dayjs'
-
 import { cn } from '@/lib/utils'
 import { useGetGithubContributionsQuery } from '@/hooks/api/github-contributions'
 import { ScrollArea, ScrollBar } from './ui/scroll-area'
@@ -13,7 +11,23 @@ import {
   TooltipTrigger,
 } from './ui/tooltip'
 
-// Memoized contribution cell to prevent unnecessary re-renders
+const monthFormatter = new Intl.DateTimeFormat(undefined, { month: 'short' })
+const dateFormatter = new Intl.DateTimeFormat(undefined, {
+  month: 'short',
+  day: 'numeric',
+  year: 'numeric',
+})
+
+const formatContributionDate = (date: string): string => {
+  const parsedDate = new Date(date)
+
+  if (Number.isNaN(parsedDate.getTime())) {
+    return date
+  }
+
+  return dateFormatter.format(parsedDate)
+}
+
 const ContributionCell = React.memo(
   ({
     contribution,
@@ -49,7 +63,7 @@ const ContributionCell = React.memo(
           <p>
             {contribution.count} contribution
             {contribution.count !== 1 ? 's' : ''} on{' '}
-            {dayjs(contribution.date).format('MMM D, YYYY')}
+            {formatContributionDate(contribution.date)}
           </p>
         </TooltipContent>
       </Tooltip>
@@ -68,15 +82,18 @@ export const GitHubContributions = () => {
     () =>
       contributions.reduce<Array<{ month: string; columnIndex: number }>>(
         (acc, contribution, index) => {
-          if (contribution) {
-            const date = dayjs(contribution.date)
+          const date = new Date(contribution.date)
 
-            if (date.date() === 1) {
-              const month = date.format('MMM')
-              const columnIndex = Math.floor(index / 7)
-              acc.push({ month, columnIndex })
-            }
+          if (Number.isNaN(date.getTime())) {
+            return acc
           }
+
+          if (date.getDate() === 1) {
+            const month = monthFormatter.format(date)
+            const columnIndex = Math.floor(index / 7)
+            acc.push({ month, columnIndex })
+          }
+
           return acc
         },
         [],
@@ -135,44 +152,12 @@ export const GitHubContributions = () => {
                     gridTemplateColumns: `repeat(${Math.ceil(contributions.length / 7)}, 0.5rem)`,
                   }}
                 >
-                  {contributions.map((contribution, index) =>
-                    contribution ? (
-                      <Tooltip
-                        key={contribution.date}
-                        disableHoverablePopup
-                        withoutProviders
-                      >
-                        <TooltipTrigger
-                          render={
-                            <span
-                              className={cn(
-                                'size-2 rounded-xs',
-                                contribution.level === 0 && 'bg-muted',
-                                contribution.level === 1 &&
-                                  'bg-neutral-300 dark:bg-neutral-600',
-                                contribution.level === 2 &&
-                                  'bg-neutral-500 dark:bg-neutral-400',
-                                contribution.level === 3 &&
-                                  'bg-neutral-700 dark:bg-neutral-200',
-                                contribution.level === 4 &&
-                                  'bg-neutral-900 dark:bg-neutral-50',
-                              )}
-                            />
-                          }
-                        />
-
-                        <TooltipContent className="select-none">
-                          <p>
-                            {contribution.count} contribution
-                            {contribution.count !== 1 ? 's' : ''} on{' '}
-                            {dayjs(contribution.date).format('MMM D, YYYY')}
-                          </p>
-                        </TooltipContent>
-                      </Tooltip>
-                    ) : (
-                      <div key={`empty-${index}`} className="size-2" />
-                    ),
-                  )}
+                  {contributions.map((contribution) => (
+                    <ContributionCell
+                      key={contribution.date}
+                      contribution={contribution}
+                    />
+                  ))}
                 </div>
               </TooltipProvider>
             </div>

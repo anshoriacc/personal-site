@@ -35,6 +35,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         meta: [
           { charSet: 'UTF-8' },
           { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+          {
+            name: 'theme-color',
+            media: '(prefers-color-scheme: light)',
+            content: '#ffffff',
+          },
+          {
+            name: 'theme-color',
+            media: '(prefers-color-scheme: dark)',
+            content: '#252525',
+          },
           { name: 'author', content: 'Achmad Anshori' },
           {
             name: 'keywords',
@@ -130,7 +140,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         />
         <ThemeDetectionScript />
         {mounted ? <BodySelectionScript /> : null}
-        <ThemeHotkey />Ï
+        <ThemeHotkey />
         <Scripts />
       </body>
     </html>

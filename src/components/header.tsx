@@ -128,7 +128,7 @@ export const Header = ({ constraintsRef }: Props) => {
     _routerStatus: 'pending' | 'idle',
   ) => {
     if (viewState === 'idle') {
-      return (
+      const idleContent = (
         <div className="flex h-full items-center gap-2 p-1.5">
           <Clock />
           <span className="mr-1.5">
@@ -136,6 +136,21 @@ export const Header = ({ constraintsRef }: Props) => {
           </span>
         </div>
       )
+
+      if (isMobile) {
+        return (
+          <button
+            type="button"
+            aria-label="Open Site Menu"
+            onClick={() => handleViewChange('expanded')}
+            className="touch-manipulation rounded-[14px] focus-visible:ring-2 focus-visible:ring-neutral-100 focus-visible:outline-none"
+          >
+            {idleContent}
+          </button>
+        )
+      }
+
+      return idleContent
     }
 
     return (
@@ -177,12 +192,6 @@ export const Header = ({ constraintsRef }: Props) => {
     router.history.back()
   }, [router])
 
-  const handleHeaderClick = React.useCallback(() => {
-    if (isMobile && view === 'idle') {
-      handleViewChange('expanded')
-    }
-  }, [isMobile, view, handleViewChange])
-
   return (
     <MotionConfig transition={{ type: 'spring', bounce: 0.2, duration: 0.2 }}>
       <motion.div className="dark group pointer-events-none fixed top-6 left-0 z-10 flex w-full cursor-default select-none">
@@ -207,11 +216,12 @@ export const Header = ({ constraintsRef }: Props) => {
                   exit={{ scale: 0.9, opacity: 0, filter: 'blur(4px)', x: -5 }}
                   transition={{ type: 'spring', bounce: 0.35, duration: 0.2 }}
                   onClick={handleBackClick}
+                  aria-label="Go Back"
                   style={{ borderRadius: 10 }}
                   className={cn(
                     'flex size-8 items-center justify-center bg-black text-neutral-50 shadow-md',
                     'box-border border border-white/5 bg-clip-padding backdrop-blur-md backdrop-brightness-100 backdrop-saturate-100',
-                    'transition-colors hover:bg-neutral-900',
+                    'touch-manipulation transition-colors hover:bg-neutral-900 focus-visible:ring-2 focus-visible:ring-neutral-100 focus-visible:outline-none',
                   )}
                 >
                   <HugeiconsIcon icon={ArrowLeft01Icon} className="size-5" />
@@ -227,7 +237,6 @@ export const Header = ({ constraintsRef }: Props) => {
             layout
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
-            onClick={handleHeaderClick}
             transition={{
               type: 'spring',
               bounce: BOUNCE_VARIANTS[variantKey] ?? 0.3,

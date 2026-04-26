@@ -2,11 +2,10 @@ import { createServerFn } from '@tanstack/react-start'
 
 import { axiosApi } from '@/lib/axios'
 import { LRUCache } from '@/lib/lru-cache'
-import {
-  SPOTIFY_CLIENT_ID,
-  SPOTIFY_CLIENT_SECRET,
-  SPOTIFY_REFRESH_TOKEN,
-} from '@/constants/env'
+import { getServerEnv } from '@/constants/env'
+
+const { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, SPOTIFY_REFRESH_TOKEN } =
+  getServerEnv()
 
 const CURRENTLY_PLAYING_ENDPOINT = `https://api.spotify.com/v1/me/player/currently-playing`
 const RECENTLY_PLAYED_ENDPOINT = `https://api.spotify.com/v1/me/player/recently-played?limit=5`
@@ -38,7 +37,7 @@ export const getCurrentlyPlaying = createServerFn().handler(async () => {
       TOKEN_ENDPOINT,
       new URLSearchParams({
         grant_type: 'refresh_token',
-        refresh_token: SPOTIFY_REFRESH_TOKEN!,
+        refresh_token: SPOTIFY_REFRESH_TOKEN,
       }).toString(),
       {
         headers: {
@@ -163,7 +162,7 @@ type TTrack = {
   id: string
   is_local: boolean
   name: string
-  popularity: 66
+  popularity: number
   preview_url: string | null
   track_number: number
   type: 'track'
