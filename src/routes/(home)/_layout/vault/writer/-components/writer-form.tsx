@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
 import { useForm } from '@tanstack/react-form'
 import { AnimatePresence, motion } from 'motion/react'
 import z from 'zod'
@@ -124,7 +124,7 @@ export const WriterForm = () => {
     },
   })
 
-  const handleCopy = useCallback(async () => {
+  const handleCopy = async () => {
     if (!generatedMarkdown) return
 
     try {
@@ -134,15 +134,15 @@ export const WriterForm = () => {
     } catch (error) {
       console.error('Failed to copy:', error)
     }
-  }, [generatedMarkdown])
+  }
 
-  const handleDownload = useCallback(() => {
+  const handleDownload = () => {
     if (!generatedMarkdown) return
 
     const title = form.getFieldValue('title') || 'untitled'
     const filename = `${title.toLowerCase().replace(/\s+/g, '-')}.md`
     downloadMarkdownFile(filename, generatedMarkdown)
-  }, [generatedMarkdown, form])
+  }
 
   const handleReset = () => {
     form.reset()

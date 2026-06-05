@@ -57,6 +57,7 @@ export const Header = ({ constraintsRef }: Props) => {
   const headerRef = React.useRef<HTMLElement>(null)
   const hoverTimeoutRef = React.useRef<NodeJS.Timeout | null>(null)
   const isHoveringRef = React.useRef(false)
+  const pointerRef = React.useRef({ x: -Infinity, y: -Infinity })
 
   const handleViewChange = React.useCallback(
     (newView: ViewState) => {
@@ -93,6 +94,24 @@ export const Header = ({ constraintsRef }: Props) => {
       }
     }, 50)
   }, [isMobile, handleViewChange])
+
+  // When the back button finishes collapsing, the header slides under a
+  // stationary cursor. Browsers don't fire mouseenter for layout shifts, so
+  // re-check the click position and expand if it's now hovering the header.
+  const handleBackExitComplete = React.useCallback(() => {
+    if (isMobile) return
+
+    const rect = headerRef.current?.getBoundingClientRect()
+    if (!rect) return
+
+    const { x, y } = pointerRef.current
+    const isPointerOverHeader =
+      x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom
+
+    if (isPointerOverHeader) {
+      handleMouseEnter()
+    }
+  }, [isMobile, handleMouseEnter])
 
   React.useEffect(() => {
     if (view !== 'expanded') return
@@ -188,15 +207,23 @@ export const Header = ({ constraintsRef }: Props) => {
     )
   }
 
-  const handleBackClick = React.useCallback(() => {
-    router.history.back()
-  }, [router])
+  const handleBackClick = React.useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      pointerRef.current = { x: event.clientX, y: event.clientY }
+      router.history.back()
+    },
+    [router],
+  )
 
   return (
     <MotionConfig transition={{ type: 'spring', bounce: 0.2, duration: 0.2 }}>
       <motion.div className="dark group pointer-events-none fixed top-6 left-0 z-10 flex w-full cursor-default select-none">
         <div className="mx-auto flex">
-          <AnimatePresence mode="popLayout" initial={false}>
+          <AnimatePresence
+            mode="popLayout"
+            initial={false}
+            onExitComplete={handleBackExitComplete}
+          >
             {isMounted && canGoBack && view === 'idle' && (
               <motion.div
                 initial={{ width: 0, opacity: 0 }}
