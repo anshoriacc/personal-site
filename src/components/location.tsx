@@ -1,8 +1,7 @@
 import React from 'react'
 import createGlobe from 'cobe'
 import { animate, MotionValue, motionValue } from 'motion/react'
-import { MapPinIcon } from '@hugeicons/core-free-icons'
-import { HugeiconsIcon } from '@hugeicons/react'
+import { IconMapPin } from '@tabler/icons-react'
 
 import { cn } from '@/lib/utils'
 import { useTheme } from '@/stores/theme.store'
@@ -214,10 +213,7 @@ export const Location = ({ className }: Props) => {
         }}
       />
       <div className="pointer-events-none absolute bottom-0 z-2 flex w-full items-center justify-center gap-1 text-sm">
-        <HugeiconsIcon
-          icon={MapPinIcon}
-          className="text-muted-foreground size-4"
-        />
+        <IconMapPin className="text-muted-foreground size-4" />
         <span>Jakarta, Indonesia</span>
       </div>
     </section>

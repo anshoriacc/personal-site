@@ -37,7 +37,7 @@ export const getSession = createServerFn().handler((): Session => {
 })
 
 export const register = createServerFn({ method: 'POST' })
-  .inputValidator(registerSchema)
+  .validator(registerSchema)
   .handler(async ({ data }) => {
     const { username, password } = data
 
@@ -72,7 +72,7 @@ export const register = createServerFn({ method: 'POST' })
   })
 
 export const login = createServerFn({ method: 'POST' })
-  .inputValidator(loginSchema)
+  .validator(loginSchema)
   .handler(async ({ data }) => {
     const { username, password } = data
 

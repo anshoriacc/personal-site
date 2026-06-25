@@ -1,5 +1,4 @@
 import React from 'react'
-import { AnimatePresence, MotionConfig, motion } from 'motion/react'
 import {
   Link,
   RouterState,
@@ -7,12 +6,8 @@ import {
   useRouter,
   useRouterState,
 } from '@tanstack/react-router'
-import { HugeiconsIcon } from '@hugeicons/react'
-import {
-  CodeFolderIcon,
-  Home11Icon,
-  ArrowLeft01Icon,
-} from '@hugeicons/core-free-icons'
+import { AnimatePresence, MotionConfig, motion } from 'motion/react'
+import { IconChevronLeft, IconFolderCode, IconHome } from '@tabler/icons-react'
 
 import { cn } from '@/lib/utils'
 import { useMounted } from '@/hooks/use-mounted'
@@ -34,8 +29,8 @@ const BOUNCE_VARIANTS: Record<string, number> = {
 }
 
 const MENU_ITEMS = [
-  { to: '/', label: 'Home', icon: Home11Icon },
-  { to: '/work', label: 'Work', icon: CodeFolderIcon },
+  { to: '/', label: 'Home', icon: IconHome },
+  { to: '/work', label: 'Work', icon: IconFolderCode },
 ] as const
 
 export const Header = ({ constraintsRef }: Props) => {
@@ -189,7 +184,7 @@ export const Header = ({ constraintsRef }: Props) => {
             '*:flex *:items-center *:gap-2 *:rounded-md *:p-1.5',
           )}
         >
-          {MENU_ITEMS.map(({ to, label, icon }) => (
+          {MENU_ITEMS.map(({ to, label, icon: Icon }) => (
             <Link
               key={to}
               to={to}
@@ -198,7 +193,7 @@ export const Header = ({ constraintsRef }: Props) => {
                 className: 'hover:text-foreground text-muted-foreground',
               }}
             >
-              <HugeiconsIcon icon={icon} className="size-4" />
+              <Icon className="size-4" />
               {label}
             </Link>
           ))}
@@ -251,7 +246,7 @@ export const Header = ({ constraintsRef }: Props) => {
                     'touch-manipulation transition-colors hover:bg-neutral-900 focus-visible:ring-2 focus-visible:ring-neutral-100 focus-visible:outline-none',
                   )}
                 >
-                  <HugeiconsIcon icon={ArrowLeft01Icon} className="size-5" />
+                  <IconChevronLeft className="size-5" />
                 </motion.button>
               </motion.div>
             )}

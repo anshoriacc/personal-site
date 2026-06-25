@@ -16,14 +16,13 @@ import {
   thematicBreakPlugin,
   toolbarPlugin,
 } from '@mdxeditor/editor'
-import { HugeiconsIcon } from '@hugeicons/react'
 import {
-  Copy01Icon,
-  DocumentCodeIcon,
-  Download01Icon,
-  RotateClockwiseIcon,
-  Tick01Icon,
-} from '@hugeicons/core-free-icons'
+  IconCheck,
+  IconCopy,
+  IconDownload,
+  IconFileCode,
+  IconRotateClockwise,
+} from '@tabler/icons-react'
 
 import {
   Field,
@@ -427,11 +426,11 @@ export const WriterForm = () => {
 
           <Field orientation="horizontal" className="pt-4">
             <Button type="submit">
-              <HugeiconsIcon icon={DocumentCodeIcon} />
+              <IconFileCode />
               Generate Markdown
             </Button>
             <Button type="button" variant="secondary" onClick={handleReset}>
-              <HugeiconsIcon icon={RotateClockwiseIcon} />
+              <IconRotateClockwise />
               Reset
             </Button>
           </Field>
@@ -473,7 +472,7 @@ export const WriterForm = () => {
                                 animate={{ opacity: 1 }}
                                 className="flex items-center gap-1.5"
                               >
-                                <HugeiconsIcon icon={Tick01Icon} />
+                                <IconCheck />
                                 Copied!
                               </motion.span>
                             </motion.div>
@@ -485,7 +484,7 @@ export const WriterForm = () => {
                                 animate={{ opacity: 1 }}
                                 className="flex items-center gap-1.5"
                               >
-                                <HugeiconsIcon icon={Copy01Icon} />
+                                <IconCopy />
                                 Copy
                               </motion.span>
                             </motion.div>
@@ -502,7 +501,7 @@ export const WriterForm = () => {
                         size="sm"
                         onClick={handleDownload}
                       >
-                        <HugeiconsIcon icon={Download01Icon} />
+                        <IconDownload />
                         Download .md
                       </Button>
                     </motion.div>

@@ -1,6 +1,5 @@
 import { motion } from 'motion/react'
-import { Moon02Icon, SunIcon } from '@hugeicons/core-free-icons'
-import { HugeiconsIcon } from '@hugeicons/react'
+import { IconMoon, IconSun } from '@tabler/icons-react'
 
 import { cn } from '@/lib/utils'
 import { useSetTheme, useTheme } from '@/stores/theme.store'
@@ -40,11 +39,11 @@ export const ThemeToggle = ({ className }: Props) => {
         whileHover={{ rotate: [0, -15, 6, -1, 0] }}
         className="flex items-center justify-center"
       >
-        <HugeiconsIcon
-          icon={theme === 'dark' ? Moon02Icon : SunIcon}
-          strokeWidth={2}
-          className="size-5"
-        />
+        {theme === 'dark' ? (
+          <IconMoon stroke={2} className="size-5" />
+        ) : (
+          <IconSun stroke={2} className="size-5" />
+        )}
       </motion.span>
       <span className="sr-only">Toggle theme</span>
     </Button>

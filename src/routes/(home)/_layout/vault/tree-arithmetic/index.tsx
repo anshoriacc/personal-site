@@ -1,6 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { ChevronRight, Info } from '@hugeicons/core-free-icons'
-import { HugeiconsIcon } from '@hugeicons/react'
+import { IconChevronRight, IconInfoCircle } from '@tabler/icons-react'
 
 import { createPageMeta } from '@/lib/seo'
 import { sessionQueryOptions, useSessionQuery } from './-hooks/auth'
@@ -54,7 +53,7 @@ function Ellty2Page() {
               >
                 <span>Description</span>
                 <span className="ml-auto transition-transform group-aria-expanded:rotate-90">
-                  <HugeiconsIcon icon={ChevronRight} className="size-4" />
+                  <IconChevronRight className="size-4" />
                 </span>
               </Button>
             }
@@ -108,7 +107,7 @@ function Ellty2Page() {
       <MotionItem className="space-y-4">
         {!session && (
           <Alert variant="default">
-            <HugeiconsIcon icon={Info} className="size-4" />
+            <IconInfoCircle className="size-4" />
 
             <AlertDescription>
               Login to start or reply to threads.
