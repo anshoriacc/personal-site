@@ -57,8 +57,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           { rel: 'icon', href: '/favicon.ico', type: 'image/x-icon' },
           { rel: 'apple-touch-icon', href: '/dark192.png' },
           { rel: 'manifest', href: '/manifest.json' },
-          { rel: 'preconnect', href: 'https://umami.anshori.com' },
-          { rel: 'dns-prefetch', href: 'https://umami.anshori.com' },
+          { rel: 'preconnect', href: 'https://analytics.anshori.com' },
+          { rel: 'dns-prefetch', href: 'https://analytics.anshori.com' },
           {
             rel: 'stylesheet',
             href: appCss,
@@ -66,6 +66,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           ...links,
         ],
         scripts: [
+          {
+            children:
+              'window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init()',
+          },
           {
             type: 'application/ld+json',
             children: JSON.stringify({
@@ -102,9 +106,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 
   // Defer analytics loading until after hydration
   useDeferredScript({
-    src: 'https://umami.anshori.com/script.js',
-    defer: true,
-    'data-website-id': 'a35702fc-4b2e-4e45-b6c7-a93b8d273540',
+    src: 'https://analytics.anshori.com/js/pa-p0NwZyekqcSY7WVXGto9a.js',
+    defer: false,
+    async: true,
   })
 
   const selectionClasses = mounted
