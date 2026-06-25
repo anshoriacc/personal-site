@@ -1,35 +1,31 @@
-# ---------- Build stage ----------
-FROM node:lts-alpine AS builder
+# syntax=docker/dockerfile:1
+
+FROM node:24-alpine AS builder
 WORKDIR /app
 
-# Install dependencies first (better layer caching)
-COPY package.json ./
-RUN npm install
+ENV PNPM_HOME=/pnpm
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable && corepack prepare pnpm@11.9.0 --activate
 
-# Copy source and build
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store \
+    pnpm install --frozen-lockfile
+
 COPY . .
-RUN rm -rf node_modules/.vite && npm run build
+ENV NODE_OPTIONS=--max-old-space-size=4096
+RUN pnpm build
 
-# ---------- Runtime stage ----------
-FROM node:lts-alpine AS runtime
+FROM node:24-alpine AS runtime
 WORKDIR /app
 ENV NODE_ENV=production
+ENV PORT=3000
 
-# Install dumb-init for signal handling and curl for Coolify health checks
-RUN apk add --no-cache dumb-init curl
-
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nodejs -u 1001
+RUN apk add --no-cache dumb-init
+RUN addgroup -g 1001 -S nodejs && adduser -S nodejs -u 1001
+USER nodejs
 
 COPY --from=builder --chown=nodejs:nodejs /app/.output ./.output
 
-# Copy @vercel/og assets (required for OG image generation)
-COPY --from=builder /app/node_modules/@vercel/og/dist/ ./.output/server/_chunks/_libs/@vercel/
-
-USER nodejs
-
 EXPOSE 3000
-
-# Use dumb-init to handle signals properly, run node directly
 ENTRYPOINT ["dumb-init", "--"]
 CMD ["node", ".output/server/index.mjs"]
