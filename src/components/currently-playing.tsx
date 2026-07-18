@@ -37,6 +37,7 @@ export const CurrentlyPlaying = () => {
   const prevAngle = useRef(0)
   const lastTime = useRef(0)
   const dragVelocity = useRef(0)
+  const isHovering = useRef(false)
 
   useEffect(() => {
     const handleGlobalPointerUp = () => {
@@ -65,8 +66,13 @@ export const CurrentlyPlaying = () => {
         dragVelocity.current = 0
       }
 
-      const currentSpeed = 60 + dragVelocity.current
-      rotation.set(rotation.get() + (delta / 1000) * currentSpeed)
+      const shouldSpin = isCurrentlyPlaying || isHovering.current
+      const baseSpeed = shouldSpin ? 60 : 0
+      const currentSpeed = baseSpeed + dragVelocity.current
+
+      if (currentSpeed !== 0) {
+        rotation.set(rotation.get() + (delta / 1000) * currentSpeed)
+      }
     }
   })
 
@@ -122,8 +128,12 @@ export const CurrentlyPlaying = () => {
   }
 
   return (
-    <div className="grid grid-cols-[auto_1fr] items-center gap-10">
-      <div className="group relative flex size-20 items-center select-none">
+    <div className="group grid grid-cols-[auto_1fr] items-center gap-10">
+      <div
+        className="group/vinyl relative flex size-20 items-center select-none"
+        onMouseEnter={() => (isHovering.current = true)}
+        onMouseLeave={() => (isHovering.current = false)}
+      >
         {/* vinyl */}
         <div className="absolute left-[55%] aspect-square size-[90%] rounded-full shadow-md transition-all group-hover:left-[65%]">
           <motion.div
@@ -135,7 +145,8 @@ export const CurrentlyPlaying = () => {
             className={cn(
               'absolute inset-0 cursor-grab rounded-full ring-1 ring-black/10 ring-inset active:cursor-grabbing dark:ring-white/10',
               'will-change-transform',
-              (isNotShowing || currentlyPlayingQuery.isLoading) && 'grayscale',
+              (!isCurrentlyPlaying || isNotShowing || currentlyPlayingQuery.isLoading) &&
+                'grayscale transition-[filter] duration-300 group-hover:grayscale-0',
             )}
             style={{
               rotate: rotation,
@@ -198,7 +209,12 @@ export const CurrentlyPlaying = () => {
                 )}
               />
 
-              <IconBrandSpotifyFilled className="absolute bottom-1 left-1 size-4 text-[#25d865]" />
+              <IconBrandSpotifyFilled
+                className={cn(
+                  'absolute bottom-1 left-1 size-4 text-[#25d865]',
+                  !isCurrentlyPlaying && 'text-secondary',
+                )}
+              />
             </div>
           )}
         </div>
@@ -206,7 +222,12 @@ export const CurrentlyPlaying = () => {
 
       {song && artists && artistsName ? (
         <div className="flex w-full flex-col justify-center">
-          <span className="text-muted-foreground text-sm">
+          <span
+            className={cn(
+              'text-muted-foreground text-xs',
+              'opacity-0 blur-xs transition-all duration-300 group-hover:opacity-100 group-hover:blur-none',
+            )}
+          >
             {isCurrentlyPlaying
               ? 'Currently playing'
               : 'Offline. Recently played'}
@@ -216,7 +237,7 @@ export const CurrentlyPlaying = () => {
             target="_blank"
             rel="noopener noreferrer"
             title={`open ${song?.name} by ${artistsName} in spotify web player`}
-            className="cursor-external-link line-clamp-1 w-fit hover:underline"
+            className="cursor-external-link line-clamp-1 w-fit underline-offset-4 hover:underline"
           >
             {song?.name}
           </a>
@@ -228,7 +249,7 @@ export const CurrentlyPlaying = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   title={`open ${artist.name} in spotify web player`}
-                  className="cursor-external-link hover:underline"
+                  className="cursor-external-link underline-offset-4 hover:underline"
                 >
                   {artist.name}
                 </a>
