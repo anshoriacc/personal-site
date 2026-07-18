@@ -5,9 +5,9 @@ import { getCurrentlyPlayingQueryOptions } from '@/hooks/api/spotify'
 import { getGithubContributionsQueryOptions } from '@/hooks/api/github-contributions'
 import { GitHubContributions } from '@/components/github-contributions'
 import { MotionContainer, MotionItem } from '@/components/ui/motion'
+import { CurrentlyPlaying } from '@/components/currently-playing'
 import { Experience } from '@/components/experience'
 import { Profile } from '@/components/profile'
-import { Spotify } from '@/components/spotify'
 
 export const Route = createFileRoute('/(home)/_layout/')({
   component: HomePage,
@@ -40,7 +40,7 @@ function HomePage() {
       </MotionItem>
 
       <MotionItem>
-        <Spotify />
+        <CurrentlyPlaying />
       </MotionItem>
     </MotionContainer>
   )

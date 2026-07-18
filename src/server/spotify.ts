@@ -14,13 +14,13 @@ const BASIC_AUTH = Buffer.from(
   `${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`,
 ).toString('base64')
 
-// Cache currently playing data for 30 seconds
+// Cache currently playing data for 15 seconds
 const spotifyCache = new LRUCache<{
   currentlyPlaying: TCurrentlyPlaying | null
   recentlyPlayed: TRecentlyPlayed | null
 }>({
   maxSize: 10,
-  defaultTTL: 30 * 1000, // 30 seconds
+  defaultTTL: 15 * 1000, // 15 seconds
 })
 
 export const getCurrentlyPlaying = createServerFn().handler(async () => {

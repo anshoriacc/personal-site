@@ -4,7 +4,8 @@ import { queryOptions, useQuery } from '@tanstack/react-query'
 export const getCurrentlyPlayingQueryOptions = queryOptions({
   queryKey: ['currently-playing'],
   queryFn: getCurrentlyPlaying,
-  staleTime: 30 * 1000,
+  staleTime: 15 * 1000, // 15 seconds
+  refetchInterval: 15 * 1000, // 15 seconds
 })
 
 export const useGetCurrentlyPlayingQuery = () =>
