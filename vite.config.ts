@@ -7,14 +7,6 @@ import { nitro } from 'nitro/vite'
 
 const config = defineConfig({
   resolve: { tsconfigPaths: true },
-  ssr: {
-    optimizeDeps: {
-      exclude: ['sharp'],
-    },
-  },
-  optimizeDeps: {
-    exclude: ['sharp'],
-  },
   plugins: [
     devtools({ eventBusConfig: { port: 42042 } }),
     nitro(),
