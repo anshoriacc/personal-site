@@ -40,9 +40,9 @@ export const ThemeToggle = ({ className }: Props) => {
         className="flex items-center justify-center"
       >
         {theme === 'dark' ? (
-          <IconMoon stroke={2} className="size-5" />
+          <IconMoon aria-hidden="true" stroke={2} className="size-5" />
         ) : (
-          <IconSun stroke={2} className="size-5" />
+          <IconSun aria-hidden="true" stroke={2} className="size-5" />
         )}
       </motion.span>
       <span className="sr-only">Toggle theme</span>

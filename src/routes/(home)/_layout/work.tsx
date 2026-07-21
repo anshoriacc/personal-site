@@ -17,7 +17,11 @@ export const Route = createFileRoute('/(home)/_layout/work')({
 
 function WorksPage() {
   return (
-    <MotionContainer as="main" className="space-y-12">
+    <MotionContainer as="main" className="flex flex-col gap-12">
+      <MotionItem>
+        <h1 className="font-semibold sm:text-lg">Work</h1>
+      </MotionItem>
+
       <MotionItem>
         <Experience />
       </MotionItem>

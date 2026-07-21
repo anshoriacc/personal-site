@@ -1,5 +1,4 @@
-export type Experience = {
-  company: string
+export type ExperienceRole = {
   position: string
   type?: string
   location?: string
@@ -8,68 +7,100 @@ export type Experience = {
   description?: string
   responsibilities?: Array<string>
   technologies?: Array<string>
+}
+
+export type Experience = {
+  company: string
   url?: string
+  roles: Array<ExperienceRole>
 }
 
 export const experiences: Array<Experience> = [
   {
     company: 'Sentra Raya Solusi',
-    position: 'Frontend Engineer',
-    type: 'Freelance',
-    startDate: 'Jul 2024',
-    endDate: 'Apr 2026',
-    description:
-      'Worked on several projects including audit trail dashboard for insurance companies and Satu SDM.',
-    responsibilities: [
-      'Developed audit trail record dashboard for Tugu Insurance and BSI for compliance monitoring.',
-      'Developed core features for Satu SDM.',
-      'Deployed and debugged apps.',
+    roles: [
+      {
+        position: 'Full Stack Developer',
+        type: 'Full-time',
+        startDate: 'May 2026',
+        endDate: 'present',
+        description: 'Working on several projects, including Integra Brimob.',
+        responsibilities: [
+          'Architecting the frontend foundation for Integra Brimob, establishing project structure, reusable UI components, and conventions for scalable feature development.',
+        ],
+        technologies: ['React', 'Next.js', 'TypeScript', 'Node.js', 'Nest.js'],
+      },
+      {
+        position: 'Frontend Engineer',
+        type: 'Freelance',
+        startDate: 'Jul 2024',
+        endDate: 'Apr 2026',
+        description:
+          'Contributed to client projects, including compliance audit-trail dashboards and Satu SDM.',
+        responsibilities: [
+          'Built compliance-focused audit-trail dashboards for Tugu Insurance and BSI.',
+          'Delivered core features for Satu SDM.',
+          'Deployed applications and resolved production issues.',
+        ],
+        technologies: ['React', 'Next.js', 'TypeScript', 'Node.js', 'Nest.js'],
+      },
     ],
-    technologies: ['React', 'Next.js', 'TypeScript', 'Node.js', 'Nest.js'],
   },
   {
     company: 'Travelio',
-    position: 'Software Engineer',
     url: 'https://www.linkedin.com/company/travelio-com',
-    type: 'Full time',
-    startDate: 'Dec 2025',
-    endDate: 'Mar 2026',
-    description: 'Worked on Travelio, an online home rental operator web app.',
-    responsibilities: [
-      'Developed features for Travelio Property Management web app.',
+    roles: [
+      {
+        position: 'Software Engineer',
+        type: 'Full-time',
+        startDate: 'Dec 2025',
+        endDate: 'Mar 2026',
+        description:
+          "Contributed to Travelio's online property rental and management platform.",
+        responsibilities: [
+          'Delivered features for Travelio Property Management.',
+        ],
+        technologies: ['Node.js', 'Express', 'React'],
+      },
     ],
-    technologies: ['Node.js', 'Express', 'React'],
   },
   {
     company: 'Bithealth',
-    position: 'Software Engineer',
     url: 'https://www.linkedin.com/company/bithealth',
-    type: 'Full time',
-    startDate: 'Mar 2024',
-    endDate: 'Nov 2025',
-    description: 'Worked on Hospita, a hospital management web app.',
-    responsibilities: [
-      'Developed features for Hospita, a hospital management web app using react and node.',
-      "Integrated BPJS Kesehatan's E-Klaim service into the app.",
-      'Optimized performance both on client & server side: migrated data fetching pattern to tanstack/query, optimized query performance.',
-      'Debugged & fixed production issues.',
+    roles: [
+      {
+        position: 'Software Engineer',
+        type: 'Full-time',
+        startDate: 'Mar 2024',
+        endDate: 'Nov 2025',
+        description: 'Contributed to Hospita, a hospital management platform.',
+        responsibilities: [
+          "Integrated BPJS Kesehatan's E-Klaim service into Hospita.",
+          'Improved client and server performance by adopting TanStack Query and optimizing server-side queries.',
+          'Investigated and resolved production issues.',
+        ],
+        technologies: ['React', 'TypeScript', 'Node.js', 'Express', 'Nest.js'],
+      },
     ],
-    technologies: ['React', 'TypeScript', 'Node.js', 'Express', 'Nest.js'],
   },
   {
     company: 'Vorta Siber Indonesia',
-    position: 'Software Engineer',
     url: 'https://www.linkedin.com/company/vorta-siber-indonesia',
-    type: 'Full time',
-    startDate: 'Jun 2022',
-    endDate: 'Mar 2024',
-    description:
-      'Worked on several projects including web and mobile apps for clients.',
-    responsibilities: [
-      'Developed several web and mobile apps using react and react-native.',
-      'Utilized face-recognition using 3rd party service into the apps.',
-      'Deployed and debugged apps.',
+    roles: [
+      {
+        position: 'Software Engineer',
+        type: 'Full-time',
+        startDate: 'Jun 2022',
+        endDate: 'Mar 2024',
+        description:
+          'Delivered web and mobile applications for multiple clients.',
+        responsibilities: [
+          'Built client web and mobile applications with React and React Native.',
+          'Integrated third-party face-recognition services into client applications.',
+          'Deployed applications and resolved production issues.',
+        ],
+        technologies: ['React', 'React Native', 'TypeScript', 'PHP', 'Laravel'],
+      },
     ],
-    technologies: ['React', 'React Native', 'TypeScript', 'PHP', 'Laravel'],
   },
 ]

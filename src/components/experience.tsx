@@ -48,11 +48,11 @@ export const Experience = ({ simplified }: Props) => {
       </div>
 
       <div className="space-y-3">
-        {displayedExperiences.map((exp, index) => (
-          <React.Fragment key={index}>
+        {displayedExperiences.map((exp) => (
+          <React.Fragment key={exp.company}>
             <div className="space-y-0.5">
               <h3 className="flex items-center gap-2">
-                {exp.endDate === 'present' && (
+                {exp.roles.some((role) => role.endDate === 'present') && (
                   <Tooltip disableHoverablePopup>
                     <TooltipTrigger
                       render={
@@ -81,7 +81,7 @@ export const Experience = ({ simplified }: Props) => {
                   </Tooltip>
                 )}
 
-                <span className="font-">
+                <span>
                   {exp.url ? (
                     <a
                       href={exp.url}
@@ -95,48 +95,59 @@ export const Experience = ({ simplified }: Props) => {
                     exp.company
                   )}
                 </span>
-                <span className="text-muted-foreground text-sm">
-                  {exp.startDate} – {exp.endDate}
-                </span>
+                {simplified && (
+                  <span className="text-muted-foreground text-sm">
+                    {exp.roles.at(-1)?.startDate} – {exp.roles[0].endDate}
+                  </span>
+                )}
               </h3>
 
-              {!simplified && (
-                <p className="text-muted-foreground">
-                  <span>{exp.position}</span>
-                  {exp.type ? <span> ⋅ {exp.type}</span> : null}
-                </p>
-              )}
+              {!simplified ? (
+                <div className="ml-4 space-y-5 pt-2">
+                  {exp.roles.map((role) => (
+                    <div key={`${role.position}-${role.startDate}`}>
+                      <h4 className="font">{role.position}</h4>
+                      <p className="text-muted-foreground text-sm">
+                        {role.type ? <span>{role.type} ⋅ </span> : null}
+                        <span>
+                          {role.startDate} – {role.endDate}
+                        </span>
+                      </p>
 
-              {!simplified && exp.description ? <p>{exp.description}</p> : null}
+                      {role.description ? (
+                        <p className="mt-1">{role.description}</p>
+                      ) : null}
 
-              {!simplified &&
-              exp.technologies &&
-              exp.technologies.length > 0 ? (
-                <div className="mt-2 flex flex-wrap gap-2 select-none">
-                  {exp.technologies.map((tech, techIndex) => (
-                    <Badge
-                      variant="outline"
-                      key={techIndex}
-                      className="rounded-sm px-2 py-1"
-                    >
-                      {tech}
-                    </Badge>
+                      {role.technologies && role.technologies.length > 0 ? (
+                        <div className="mt-2 flex flex-wrap gap-2 select-none">
+                          {role.technologies.map((tech) => (
+                            <Badge
+                              variant="outline"
+                              key={tech}
+                              className="rounded-sm px-2 py-1"
+                            >
+                              {tech}
+                            </Badge>
+                          ))}
+                        </div>
+                      ) : null}
+
+                      {role.responsibilities ? (
+                        <ul
+                          role="list"
+                          className={cn(
+                            'text-muted-foreground mt-2 space-y-0.5 pl-4',
+                            '*:relative *:before:absolute *:before:-left-4 *:before:content-["▪︎"]',
+                          )}
+                        >
+                          {role.responsibilities.map((responsibility) => (
+                            <li key={responsibility}>{responsibility}</li>
+                          ))}
+                        </ul>
+                      ) : null}
+                    </div>
                   ))}
                 </div>
-              ) : null}
-
-              {!simplified && exp.responsibilities ? (
-                <ul
-                  role="list"
-                  className={cn(
-                    'text-muted-foreground mt-2 space-y-0.5 pl-4',
-                    '*:relative *:before:absolute *:before:-left-4 *:before:content-["▪︎"]',
-                  )}
-                >
-                  {exp.responsibilities.map((resp, respIndex) => (
-                    <li key={respIndex}>{resp}</li>
-                  ))}
-                </ul>
               ) : null}
             </div>
 

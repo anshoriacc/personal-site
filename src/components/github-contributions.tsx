@@ -119,14 +119,17 @@ export const GitHubContributions = () => {
           }
           nativeButton={false}
         >
-          <GithubIcon className="size-3.5" />
+          <GithubIcon aria-hidden="true" className="size-3.5" />
           GitHub
         </Button>
       </div>
 
       {githubContributionsQuery.data ? (
         <div className="relative w-full">
-          <ScrollArea className="w-full">
+          <ScrollArea
+            className="w-full"
+            viewportClassName="scroll-fade-4 data-[has-overflow-x]:scroll-fade-x"
+          >
             <div className="flex min-w-max flex-col">
               <div
                 className="text-muted-foreground mb-1 grid gap-0.5 text-xs"
