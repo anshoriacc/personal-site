@@ -1,4 +1,5 @@
 import { createServerFn } from '@tanstack/react-start'
+import { isAxiosError } from 'axios'
 
 import { axiosApi } from '@/lib/axios'
 import { LRUCache } from '@/lib/lru-cache'
@@ -13,6 +14,162 @@ const TOKEN_ENDPOINT = `https://accounts.spotify.com/api/token`
 const BASIC_AUTH = Buffer.from(
   `${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`,
 ).toString('base64')
+
+function logSpotifyError(
+  context: string,
+  error: unknown,
+  details?: Record<string, unknown>,
+): void {
+  if (isAxiosError(error)) {
+    const data = error.response?.data as
+      | {
+          error?: string | { message?: string; status?: number }
+          error_description?: string
+        }
+      | undefined
+
+    console.error(`Spotify ${context} failed:`, {
+      status: error.response?.status,
+      error: typeof data?.error === 'string' ? data.error : data?.error?.status,
+      message:
+        data?.error_description ??
+        (typeof data?.error === 'object' ? data.error.message : undefined) ??
+        error.message,
+      ...details,
+    })
+    return
+  }
+
+  console.error(
+    `Spotify ${context} failed:`,
+    error instanceof Error ? error.message : 'Unknown error',
+  )
+}
+
+type TSpotifyAccessToken = {
+  value: string
+  scope: string
+  expiresAt: number
+}
+
+let accessTokenCache: TSpotifyAccessToken | null = null
+let tokenRefreshPromise: Promise<TSpotifyAccessToken | null> | null = null
+let activeRefreshToken = SPOTIFY_REFRESH_TOKEN
+
+function getSpotifyAccessToken(): Promise<TSpotifyAccessToken | null> {
+  const expiryBuffer = 60 * 1000
+
+  if (
+    accessTokenCache &&
+    accessTokenCache.expiresAt > Date.now() + expiryBuffer
+  ) {
+    return Promise.resolve(accessTokenCache)
+  }
+
+  if (tokenRefreshPromise) {
+    return tokenRefreshPromise
+  }
+
+  const refreshPromise = axiosApi
+    .post(
+      TOKEN_ENDPOINT,
+      new URLSearchParams({
+        grant_type: 'refresh_token',
+        refresh_token: activeRefreshToken,
+      }).toString(),
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: `Basic ${BASIC_AUTH}`,
+        },
+      },
+    )
+    .then((res): TSpotifyAccessToken | null => {
+      const data = res.data as {
+        access_token?: unknown
+        expires_in?: unknown
+        refresh_token?: unknown
+        scope?: unknown
+      }
+
+      if (typeof data.access_token !== 'string' || !data.access_token) {
+        console.error('Spotify token refresh failed:', {
+          message: 'Response did not include an access token',
+        })
+        return null
+      }
+
+      if (typeof data.refresh_token === 'string' && data.refresh_token) {
+        activeRefreshToken = data.refresh_token
+      }
+
+      const expiresIn =
+        typeof data.expires_in === 'number' ? data.expires_in : 3600
+
+      accessTokenCache = {
+        value: data.access_token,
+        scope: typeof data.scope === 'string' ? data.scope : '',
+        expiresAt: Date.now() + expiresIn * 1000,
+      }
+
+      return accessTokenCache
+    })
+    .catch((error: unknown) => {
+      logSpotifyError('token refresh', error)
+      return null
+    })
+    .finally(() => {
+      if (tokenRefreshPromise === refreshPromise) {
+        tokenRefreshPromise = null
+      }
+    })
+
+  tokenRefreshPromise = refreshPromise
+  return refreshPromise
+}
+
+const RETRYABLE_SPOTIFY_STATUSES = new Set([401, 403, 500, 502, 503, 504])
+
+async function requestSpotifyData<T>(
+  endpoint: string,
+  accessToken: TSpotifyAccessToken,
+  context: string,
+): Promise<T | null> {
+  const maxAttempts = 3
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      const response = await axiosApi.get<T | null>(endpoint, {
+        headers: {
+          Authorization: `Bearer ${accessToken.value}`,
+        },
+      })
+
+      return response.data || null
+    } catch (error: unknown) {
+      const status = isAxiosError(error) ? error.response?.status : undefined
+      const shouldRetry =
+        attempt < maxAttempts &&
+        status !== undefined &&
+        RETRYABLE_SPOTIFY_STATUSES.has(status)
+
+      if (shouldRetry) {
+        await new Promise((resolve) =>
+          setTimeout(resolve, 250 * 2 ** (attempt - 1)),
+        )
+        continue
+      }
+
+      logSpotifyError(context, error, {
+        attempts: attempt,
+        grantedScopes: accessToken.scope,
+      })
+      return null
+    }
+  }
+
+  return null
+}
 
 // Cache currently playing data for 15 seconds
 const spotifyCache = new LRUCache<{
@@ -31,54 +188,27 @@ export const getCurrentlyPlaying = createServerFn().handler(async () => {
     return cached
   }
 
-  // Start token request immediately (don't await yet)
-  const tokenPromise = axiosApi
-    .post(
-      TOKEN_ENDPOINT,
-      new URLSearchParams({
-        grant_type: 'refresh_token',
-        refresh_token: SPOTIFY_REFRESH_TOKEN,
-      }).toString(),
-      {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          Authorization: `Basic ${BASIC_AUTH}`,
-        },
-      },
-    )
-    .then((res) => res.data || null)
-    .catch(() => null)
+  const accessToken = await getSpotifyAccessToken()
 
-  // Wait for token
-  const requestToken = await tokenPromise
-
-  if (!requestToken) {
+  if (!accessToken) {
     return {
       currentlyPlaying: null,
       recentlyPlayed: null,
     }
   }
 
-  const { access_token } = requestToken
-
   // Parallel data fetching
   const [currentlyPlaying, recentlyPlayed] = await Promise.all([
-    axiosApi
-      .get<TCurrentlyPlaying | null>(CURRENTLY_PLAYING_ENDPOINT, {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
-      })
-      .then((res) => res.data || null)
-      .catch(() => null),
-    axiosApi
-      .get<TRecentlyPlayed | null>(RECENTLY_PLAYED_ENDPOINT, {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
-      })
-      .then((res) => res.data || null)
-      .catch(() => null),
+    requestSpotifyData<TCurrentlyPlaying>(
+      CURRENTLY_PLAYING_ENDPOINT,
+      accessToken,
+      'currently playing request',
+    ),
+    requestSpotifyData<TRecentlyPlayed>(
+      RECENTLY_PLAYED_ENDPOINT,
+      accessToken,
+      'recently played request',
+    ),
   ])
 
   const result = {

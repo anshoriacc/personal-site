@@ -135,7 +135,7 @@ export const CurrentlyPlaying = () => {
         onMouseLeave={() => (isHovering.current = false)}
       >
         {/* vinyl */}
-        <div className="absolute left-[55%] aspect-square size-[90%] rounded-full shadow-md transition-all group-hover:left-[65%]">
+        <div className="absolute left-[50%] aspect-square size-[90%] rounded-full shadow-md transition-all group-hover:left-[60%]">
           <motion.div
             ref={vinylRef}
             onPointerDown={onPointerDown}
