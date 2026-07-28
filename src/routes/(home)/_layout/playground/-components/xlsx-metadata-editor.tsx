@@ -57,6 +57,7 @@ import { Textarea } from '@/components/ui/textarea'
 import {
   METADATA_GROUPS,
   METADATA_KEYS,
+  createEmptyMetadataValues,
   createMetadataFormValues,
   type CustomPropertyEdit,
   type CustomPropertyType,
@@ -65,24 +66,19 @@ import {
   type MetadataFormValues,
   type MetadataGroupDefinition,
   type MetadataKey,
-  type PropertyMode,
   type WorkbookMetadata,
 } from '../-lib/xlsx-metadata.types'
 
 const XLSX_MIME_TYPE =
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+const XLSM_MIME_TYPE = 'application/vnd.ms-excel.sheet.macroEnabled.12'
 const ZIP_MIME_TYPE = 'application/zip'
+const WORKBOOK_EXTENSION_PATTERN = /\.(xlsx|xlsm)$/i
 const MAX_FILE_COUNT = 20
 const MAX_TOTAL_BYTES = 250 * 1024 * 1024
 
 const PROPERTY_MODES = ['keep', 'set', 'clear'] as const
 const CUSTOM_PROPERTY_TYPES = ['text', 'number', 'boolean', 'date'] as const
-
-const PROPERTY_MODE_LABELS = {
-  keep: 'Keep',
-  set: 'Set',
-  clear: 'Clear',
-} as const satisfies Record<PropertyMode, string>
 
 const CUSTOM_TYPE_LABELS = {
   text: 'Text',
@@ -95,6 +91,70 @@ const BOOLEAN_LABELS = {
   true: 'True',
   false: 'False',
 } as const
+
+const COMMON_METADATA_KEYS = [
+  'title',
+  'creator',
+  'company',
+  'created',
+] as const satisfies ReadonlyArray<MetadataKey>
+
+const DESCRIBED_METADATA_KEYS = new Set<MetadataKey>([
+  'contentStatus',
+  'identifier',
+  'language',
+  'template',
+  'hyperlinkBase',
+])
+
+const commonMetadataKeySet = new Set<MetadataKey>(COMMON_METADATA_KEYS)
+
+const ADDITIONAL_GROUP_COPY = {
+  document: {
+    label: 'Document details',
+    description: 'Topic, search, and document-library details.',
+  },
+  people: {
+    label: 'Ownership',
+    description: 'Editors and business ownership.',
+  },
+  lifecycle: {
+    label: 'Dates & status',
+    description: 'Timestamps and publication state.',
+  },
+  advanced: {
+    label: 'Technical details',
+    description: 'Identifiers and Office-specific settings.',
+  },
+} as const
+
+function getMetadataFieldDefinition(key: MetadataKey): MetadataFieldDefinition {
+  for (const group of METADATA_GROUPS) {
+    const definition = (
+      group.fields as ReadonlyArray<MetadataFieldDefinition>
+    ).find((field) => field.key === key)
+
+    if (definition) return definition
+  }
+
+  throw new Error(`Missing metadata definition for ${key}.`)
+}
+
+const COMMON_METADATA_FIELDS = COMMON_METADATA_KEYS.map(
+  getMetadataFieldDefinition,
+)
+
+const ADDITIONAL_METADATA_GROUPS: ReadonlyArray<MetadataGroupDefinition> =
+  METADATA_GROUPS.map((group) => ({
+    id: group.id,
+    label: ADDITIONAL_GROUP_COPY[group.id].label,
+    description: ADDITIONAL_GROUP_COPY[group.id].description,
+    fields: (group.fields as ReadonlyArray<MetadataFieldDefinition>).filter(
+      (definition) => !commonMetadataKeySet.has(definition.key),
+    ),
+  })).filter((group) => group.fields.length > 0)
+
+const EMPTY_METADATA_VALUES = createEmptyMetadataValues()
 
 const metadataEditSchema = z.object({
   mode: z.enum(PROPERTY_MODES),
@@ -258,6 +318,21 @@ function validateForm(values: MetadataFormValues): string | undefined {
   return result.success ? undefined : result.error.issues[0]?.message
 }
 
+function countMetadataChanges(values: MetadataFormValues): number {
+  return (
+    METADATA_KEYS.filter((key) => values.standard[key].mode !== 'keep').length +
+    values.customProperties.filter((property) => property.mode !== 'keep')
+      .length
+  )
+}
+
+function countStandardChanges(
+  values: MetadataFormValues['standard'],
+  keys: ReadonlyArray<MetadataKey>,
+): number {
+  return keys.filter((key) => values[key].mode !== 'keep').length
+}
+
 function formatFileSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`
 
@@ -281,6 +356,10 @@ function getErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : 'Unexpected processing error.'
 }
 
+function workbookMimeType(fileName: string): string {
+  return /\.xlsm$/i.test(fileName) ? XLSM_MIME_TYPE : XLSX_MIME_TYPE
+}
+
 function downloadData(data: Uint8Array, fileName: string, type: string): void {
   const bytes = data.buffer.slice(
     data.byteOffset,
@@ -295,41 +374,6 @@ function downloadData(data: Uint8Array, fileName: string, type: string): void {
   anchor.click()
   anchor.remove()
   window.setTimeout(() => URL.revokeObjectURL(url), 1_000)
-}
-
-function PropertyModeSelect({
-  label,
-  value,
-  onValueChange,
-}: {
-  label: string
-  value: PropertyMode
-  onValueChange: (value: PropertyMode) => void
-}) {
-  return (
-    <Select
-      items={PROPERTY_MODE_LABELS}
-      value={value}
-      onValueChange={(nextValue) => onValueChange(nextValue as PropertyMode)}
-    >
-      <SelectTrigger
-        size="sm"
-        aria-label={`${label} update mode`}
-        className="w-24 shrink-0"
-      >
-        <SelectValue>{PROPERTY_MODE_LABELS[value]}</SelectValue>
-      </SelectTrigger>
-      <SelectContent alignItemWithTrigger={false}>
-        <SelectGroup>
-          {PROPERTY_MODES.map((mode) => (
-            <SelectItem key={mode} value={mode}>
-              {PROPERTY_MODE_LABELS[mode]}
-            </SelectItem>
-          ))}
-        </SelectGroup>
-      </SelectContent>
-    </Select>
-  )
 }
 
 function CustomTypeSelect({
@@ -370,18 +414,22 @@ function CustomTypeSelect({
 function MetadataField({
   definition,
   edit,
+  baselineValue,
+  canRemove,
   onChange,
 }: {
   definition: MetadataFieldDefinition
   edit: MetadataEdit
+  baselineValue: string
+  canRemove: boolean
   onChange: (edit: MetadataEdit) => void
 }) {
   const inputId = `xlsx-metadata-${definition.key}`
   const updateValue = (value: string) => onChange({ mode: 'set', value })
+  const restoreValue = () => onChange({ mode: 'keep', value: baselineValue })
   const controlProps = {
     id: inputId,
     value: edit.value,
-    disabled: edit.mode === 'clear',
     placeholder: definition.placeholder,
     onChange: (
       event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -389,20 +437,57 @@ function MetadataField({
   }
 
   return (
-    <Field data-disabled={edit.mode === 'clear' ? true : undefined}>
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex min-w-0 flex-col gap-0.5">
+    <Field>
+      <div className="flex min-h-10 items-center justify-between gap-3">
+        <div className="flex min-w-0 items-center gap-2">
           <FieldLabel htmlFor={inputId}>{definition.label}</FieldLabel>
-          <FieldDescription>{definition.description}</FieldDescription>
+          {edit.mode === 'set' ? (
+            <Badge variant="secondary">Changed</Badge>
+          ) : null}
         </div>
-        <PropertyModeSelect
-          label={definition.label}
-          value={edit.mode}
-          onValueChange={(mode) => onChange({ ...edit, mode })}
-        />
+        {edit.mode === 'set' ? (
+          <Button
+            type="button"
+            variant="ghost"
+            className="h-10 transition-transform duration-150 active:scale-[0.96]"
+            onClick={restoreValue}
+          >
+            Undo
+          </Button>
+        ) : edit.mode === 'keep' && canRemove ? (
+          <Button
+            type="button"
+            variant="ghost"
+            className="h-10 transition-transform duration-150 active:scale-[0.96]"
+            onClick={() => onChange({ ...edit, mode: 'clear' })}
+          >
+            Remove
+          </Button>
+        ) : null}
       </div>
 
-      {definition.input === 'textarea' ? (
+      {DESCRIBED_METADATA_KEYS.has(definition.key) && edit.mode !== 'clear' ? (
+        <FieldDescription className="-mt-1 text-pretty">
+          {definition.description}
+        </FieldDescription>
+      ) : null}
+
+      {edit.mode === 'clear' ? (
+        <div className="bg-muted/50 flex min-h-12 items-center gap-3 rounded-xl px-3 py-2">
+          <IconTrash aria-hidden="true" className="text-muted-foreground" />
+          <span className="min-w-0 flex-1 text-sm text-pretty">
+            This value will be removed.
+          </span>
+          <Button
+            type="button"
+            variant="ghost"
+            className="h-10 transition-transform duration-150 active:scale-[0.96]"
+            onClick={restoreValue}
+          >
+            Undo
+          </Button>
+        </div>
+      ) : definition.input === 'textarea' ? (
         <Textarea {...controlProps} rows={3} />
       ) : (
         <Input type={definition.input} {...controlProps} />
@@ -411,53 +496,101 @@ function MetadataField({
   )
 }
 
-function MetadataSection({
+function MetadataGroup({
   group,
   values,
+  baselineValues,
+  allowRemoveEmpty,
   onChange,
-  defaultOpen = false,
 }: {
   group: MetadataGroupDefinition
   values: MetadataFormValues['standard']
+  baselineValues: WorkbookMetadata['standard']
+  allowRemoveEmpty: boolean
   onChange: (key: MetadataKey, edit: MetadataEdit) => void
-  defaultOpen?: boolean
 }) {
-  const [open, setOpen] = React.useState(defaultOpen)
   const editedCount = group.fields.filter(
     (field) => values[field.key].mode !== 'keep',
   ).length
 
   return (
-    <Collapsible open={open} onOpenChange={setOpen}>
-      <CollapsibleTrigger className="focus-visible:ring-ring/50 flex min-h-11 w-full items-center gap-3 rounded-lg px-1 text-left outline-none focus-visible:ring-[3px]">
-        <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-          <span className="font-medium">{group.label}</span>
-          <span className="text-muted-foreground text-xs text-pretty">
+    <section
+      aria-labelledby={`xlsx-group-${group.id}`}
+      className="flex flex-col gap-4"
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex min-w-0 flex-col gap-0.5">
+          <h3
+            id={`xlsx-group-${group.id}`}
+            className="font-medium text-balance"
+          >
+            {group.label}
+          </h3>
+          <p className="text-muted-foreground text-sm text-pretty">
             {group.description}
+          </p>
+        </div>
+        {editedCount > 0 ? (
+          <Badge variant="secondary" className="tabular-nums">
+            {editedCount} changed
+          </Badge>
+        ) : null}
+      </div>
+      <FieldGroup>
+        {group.fields.map((definition) => (
+          <MetadataField
+            key={definition.key}
+            definition={definition}
+            edit={values[definition.key]}
+            baselineValue={baselineValues[definition.key]}
+            canRemove={
+              allowRemoveEmpty || Boolean(baselineValues[definition.key])
+            }
+            onChange={(edit) => onChange(definition.key, edit)}
+          />
+        ))}
+      </FieldGroup>
+    </section>
+  )
+}
+
+function MetadataDisclosure({
+  title,
+  description,
+  summary,
+  editedCount,
+  children,
+}: {
+  title: string
+  description: string
+  summary: string
+  editedCount: number
+  children: React.ReactNode
+}) {
+  const [open, setOpen] = React.useState(false)
+
+  return (
+    <Collapsible open={open} onOpenChange={setOpen}>
+      <CollapsibleTrigger className="focus-visible:ring-ring/50 bg-muted/40 hover:bg-muted/60 flex min-h-16 w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition-[background-color] duration-150 outline-none focus-visible:ring-[3px]">
+        <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+          <span className="font-medium text-balance">{title}</span>
+          <span className="text-muted-foreground text-xs text-pretty">
+            {open ? description : summary}
           </span>
         </span>
         {editedCount > 0 ? (
           <Badge variant="secondary" className="tabular-nums">
             {editedCount}
           </Badge>
-        ) : null}
+        ) : (
+          <Badge variant="outline">Optional</Badge>
+        )}
         <IconChevronDown
           aria-hidden="true"
           className={cn(open ? 'rotate-180' : undefined)}
         />
       </CollapsibleTrigger>
-      <CollapsibleContent>
-        <FieldGroup className="pt-5">
-          {group.fields.map((definition) => (
-            <MetadataField
-              key={definition.key}
-              definition={definition}
-              edit={values[definition.key]}
-              onChange={(edit) => onChange(definition.key, edit)}
-            />
-          ))}
-        </FieldGroup>
-      </CollapsibleContent>
+      <CollapsibleContent className="pt-6">{children}</CollapsibleContent>
     </Collapsible>
   )
 }
@@ -521,6 +654,15 @@ function CustomPropertyRow({
   onChange: (property: CustomPropertyEdit) => void
   onRemove: () => void
 }) {
+  const restoreProperty = () =>
+    onChange({
+      ...property,
+      mode: 'keep',
+      name: property.originalName ?? property.name,
+      type: property.originalType ?? property.type,
+      value: property.originalValue ?? property.value,
+    })
+
   if (property.mode === 'clear') {
     return (
       <div className="bg-muted/50 flex min-h-14 items-center gap-3 rounded-xl px-3 py-2">
@@ -532,7 +674,7 @@ function CustomPropertyRow({
           type="button"
           variant="ghost"
           className="h-10 transition-transform duration-150 active:scale-[0.96]"
-          onClick={() => onChange({ ...property, mode: 'keep' })}
+          onClick={restoreProperty}
         >
           Undo
         </Button>
@@ -589,14 +731,19 @@ function CustomPropertyRow({
       </Field>
       {property.originalName ? (
         <div className="flex items-center justify-between gap-3">
-          <span className="text-muted-foreground text-xs">
-            Existing property
-          </span>
-          <PropertyModeSelect
-            label={property.name || 'Custom property'}
-            value={property.mode}
-            onValueChange={(mode) => onChange({ ...property, mode })}
-          />
+          <Badge variant={property.mode === 'set' ? 'secondary' : 'outline'}>
+            {property.mode === 'set' ? 'Changed' : 'Existing property'}
+          </Badge>
+          {property.mode === 'set' ? (
+            <Button
+              type="button"
+              variant="ghost"
+              className="h-10 transition-transform duration-150 active:scale-[0.96]"
+              onClick={restoreProperty}
+            >
+              Undo changes
+            </Button>
+          ) : null}
         </div>
       ) : null}
     </div>
@@ -629,13 +776,11 @@ function CustomProperties({
 
   return (
     <FieldSet>
+      <FieldLegend className="sr-only">Custom properties</FieldLegend>
       <div className="flex items-start justify-between gap-3">
-        <div className="flex min-w-0 flex-col gap-0.5">
-          <FieldLegend>Custom properties</FieldLegend>
-          <FieldDescription>
-            Add typed values used by Office workflows and document libraries.
-          </FieldDescription>
-        </div>
+        <FieldDescription className="max-w-sm text-pretty">
+          Add typed values used by Office workflows and document libraries.
+        </FieldDescription>
         <Button
           type="button"
           variant="outline"
@@ -811,11 +956,16 @@ export function XlsxMetadataEditor() {
   const hasSignatures = files.some(
     (queuedFile) => queuedFile.metadata?.hasDigitalSignatures,
   )
+  const hasMacros = files.some((queuedFile) => queuedFile.metadata?.hasMacros)
   const unsupportedCustomPropertyCount = files.reduce(
     (total, queuedFile) =>
       total + (queuedFile.metadata?.unsupportedCustomPropertyCount ?? 0),
     0,
   )
+  const baselineValues =
+    usableFiles.length === 1
+      ? (usableFiles[0].metadata?.standard ?? EMPTY_METADATA_VALUES)
+      : EMPTY_METADATA_VALUES
 
   const processFiles = async (values: MetadataFormValues) => {
     const candidates = files.filter(
@@ -829,7 +979,7 @@ export function XlsxMetadataEditor() {
       setNotice({
         kind: 'error',
         title: 'No ready files',
-        description: 'Add at least one readable XLSX workbook.',
+        description: 'Add at least one readable XLSX or XLSM workbook.',
       })
       return
     }
@@ -881,11 +1031,15 @@ export function XlsxMetadataEditor() {
     }
 
     if (results.length === 1) {
-      downloadData(results[0].data, results[0].fileName, XLSX_MIME_TYPE)
+      downloadData(
+        results[0].data,
+        results[0].fileName,
+        workbookMimeType(results[0].fileName),
+      )
     } else {
       downloadData(
         await createBulkArchive(results),
-        'xlsx-metadata-updated.zip',
+        'excel-metadata-updated.zip',
         ZIP_MIME_TYPE,
       )
     }
@@ -980,9 +1134,12 @@ export function XlsxMetadataEditor() {
     const queuedFiles = selectedFiles.map((file): QueuedFile => ({
       id: getFileId(file),
       file,
-      status: /\.xlsx$/i.test(file.name) && file.size > 0 ? 'reading' : 'error',
-      error: !/\.xlsx$/i.test(file.name)
-        ? 'Only .xlsx files are supported.'
+      status:
+        WORKBOOK_EXTENSION_PATTERN.test(file.name) && file.size > 0
+          ? 'reading'
+          : 'error',
+      error: !WORKBOOK_EXTENSION_PATTERN.test(file.name)
+        ? 'Only .xlsx and .xlsm files are supported.'
         : file.size === 0
           ? 'File is empty.'
           : undefined,
@@ -1053,10 +1210,15 @@ export function XlsxMetadataEditor() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Choose workbooks</CardTitle>
+          <CardTitle>
+            {files.length > 0 ? 'Workbooks' : 'Choose workbooks'}
+          </CardTitle>
           <CardDescription>
-            Drop up to {MAX_FILE_COUNT} XLSX files. One file loads its current
-            metadata; multiple files use safe bulk mode.
+            {files.length === 0
+              ? `Drop up to ${MAX_FILE_COUNT} XLSX or XLSM files. One file loads its current metadata; multiple files use safe bulk mode.`
+              : usableFiles.length === 1
+                ? 'Current metadata is loaded into the editor below.'
+                : 'Only the changes you choose will apply across ready files.'}
           </CardDescription>
           {files.length > 0 ? (
             <CardAction>
@@ -1070,7 +1232,7 @@ export function XlsxMetadataEditor() {
           <input
             ref={fileInputRef}
             type="file"
-            accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            accept=".xlsx,.xlsm,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel.sheet.macroEnabled.12"
             multiple
             className="sr-only"
             onChange={(event) => addFiles(Array.from(event.target.files ?? []))}
@@ -1078,8 +1240,11 @@ export function XlsxMetadataEditor() {
           <button
             type="button"
             className={cn(
-              'focus-visible:border-ring focus-visible:ring-ring/50 flex min-h-40 w-full flex-col items-center justify-center gap-3 rounded-xl border border-dashed px-6 py-8 text-center outline-none focus-visible:ring-[3px]',
+              'focus-visible:border-ring focus-visible:ring-ring/50 flex w-full items-center gap-3 rounded-xl border border-dashed outline-none focus-visible:ring-[3px]',
               'transition-[transform,background-color,border-color] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.96]',
+              files.length > 0
+                ? 'min-h-16 flex-row justify-start px-3 py-3 text-left'
+                : 'min-h-40 flex-col justify-center px-6 py-8 text-center',
               isDragging
                 ? 'border-foreground bg-muted'
                 : 'border-input bg-background',
@@ -1101,13 +1266,24 @@ export function XlsxMetadataEditor() {
               addFiles(Array.from(event.dataTransfer.files))
             }}
           >
-            <span className="bg-muted flex size-11 items-center justify-center rounded-xl">
+            <span
+              className={cn(
+                'bg-muted flex items-center justify-center',
+                files.length > 0 ? 'size-10 rounded-lg' : 'size-11 rounded-xl',
+              )}
+            >
               <IconUpload aria-hidden="true" />
             </span>
             <span className="flex max-w-sm flex-col gap-1">
-              <span className="font-medium">Drop XLSX files here</span>
+              <span className="font-medium">
+                {files.length > 0
+                  ? 'Add more workbooks'
+                  : 'Drop XLSX or XLSM files here'}
+              </span>
               <span className="text-muted-foreground text-sm text-pretty">
-                or click to browse. Combined size limit: 250 MB.
+                {files.length > 0
+                  ? 'Drop here or click to browse.'
+                  : 'or click to browse. Combined size limit: 250 MB.'}
               </span>
             </span>
           </button>
@@ -1123,6 +1299,16 @@ export function XlsxMetadataEditor() {
           <AlertDescription>
             Editing metadata invalidates existing digital signatures. Updated
             copies will need to be signed again.
+          </AlertDescription>
+        </Alert>
+      ) : null}
+
+      {hasMacros ? (
+        <Alert>
+          <IconShieldLock />
+          <AlertTitle>Macros preserved</AlertTitle>
+          <AlertDescription>
+            The VBA project is copied unchanged into the updated XLSM file.
           </AlertDescription>
         </Alert>
       ) : null}
@@ -1155,52 +1341,152 @@ export function XlsxMetadataEditor() {
         >
           <Card>
             <CardHeader>
-              <CardTitle>Metadata changes</CardTitle>
+              <CardTitle>Choose what to change</CardTitle>
               <CardDescription>
-                Typing switches that property to Set. Keep leaves each original
-                value untouched; Clear removes it.
+                {usableFiles.length === 1
+                  ? 'Existing values stay untouched until you edit or remove them.'
+                  : 'Enter only the values you want applied to every workbook.'}
               </CardDescription>
               <CardAction>
-                <Badge variant="outline">
-                  {usableFiles.length === 1
-                    ? 'Single file'
-                    : `Bulk · ${usableFiles.length}`}
-                </Badge>
+                <form.Subscribe selector={(state) => state.values}>
+                  {(values) => {
+                    const changeCount = countMetadataChanges(values)
+
+                    return (
+                      <Badge
+                        variant={changeCount > 0 ? 'secondary' : 'outline'}
+                        className="tabular-nums"
+                      >
+                        {changeCount === 0
+                          ? 'No changes'
+                          : `${changeCount} ${changeCount === 1 ? 'change' : 'changes'}`}
+                      </Badge>
+                    )
+                  }}
+                </form.Subscribe>
               </CardAction>
             </CardHeader>
-            <CardContent className="flex flex-col gap-5">
+            <CardContent className="flex flex-col gap-6">
               <form.Field name="standard">
-                {(field) => (
-                  <div className="flex flex-col gap-1">
-                    {METADATA_GROUPS.map((group, index) => (
-                      <React.Fragment key={group.id}>
-                        {index > 0 ? <Separator /> : null}
-                        <MetadataSection
-                          group={group}
-                          values={field.state.value}
-                          defaultOpen={index === 0}
-                          onChange={(key, edit) =>
-                            field.handleChange({
-                              ...field.state.value,
-                              [key]: edit,
-                            })
-                          }
-                        />
-                      </React.Fragment>
-                    ))}
-                  </div>
-                )}
+                {(field) => {
+                  const commonEditedCount = countStandardChanges(
+                    field.state.value,
+                    COMMON_METADATA_KEYS,
+                  )
+                  const additionalKeys = ADDITIONAL_METADATA_GROUPS.flatMap(
+                    (group) => group.fields.map((definition) => definition.key),
+                  )
+                  const additionalEditedCount = countStandardChanges(
+                    field.state.value,
+                    additionalKeys,
+                  )
+
+                  return (
+                    <div className="flex flex-col gap-6">
+                      <section
+                        aria-labelledby="xlsx-common-properties"
+                        className="flex flex-col gap-4"
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex min-w-0 flex-col gap-0.5">
+                            <h2
+                              id="xlsx-common-properties"
+                              className="font-medium text-balance"
+                            >
+                              Common properties
+                            </h2>
+                            <p className="text-muted-foreground text-sm text-pretty">
+                              The details people most often need to correct.
+                            </p>
+                          </div>
+                          {commonEditedCount > 0 ? (
+                            <Badge variant="secondary" className="tabular-nums">
+                              {commonEditedCount} changed
+                            </Badge>
+                          ) : null}
+                        </div>
+                        <FieldGroup>
+                          {COMMON_METADATA_FIELDS.map((definition) => (
+                            <MetadataField
+                              key={definition.key}
+                              definition={definition}
+                              edit={field.state.value[definition.key]}
+                              baselineValue={
+                                baselineValues[definition.key] ?? ''
+                              }
+                              canRemove={
+                                usableFiles.length > 1 ||
+                                Boolean(baselineValues[definition.key])
+                              }
+                              onChange={(edit) =>
+                                field.handleChange({
+                                  ...field.state.value,
+                                  [definition.key]: edit,
+                                })
+                              }
+                            />
+                          ))}
+                        </FieldGroup>
+                      </section>
+
+                      <MetadataDisclosure
+                        title="More properties"
+                        description="Document, ownership, lifecycle, and technical metadata."
+                        summary="Subject, comments, keywords, dates, status, and technical details."
+                        editedCount={additionalEditedCount}
+                      >
+                        <div className="flex flex-col gap-6">
+                          {ADDITIONAL_METADATA_GROUPS.map((group, index) => (
+                            <React.Fragment key={group.id}>
+                              {index > 0 ? <Separator /> : null}
+                              <MetadataGroup
+                                group={group}
+                                values={field.state.value}
+                                baselineValues={baselineValues}
+                                allowRemoveEmpty={usableFiles.length > 1}
+                                onChange={(key, edit) =>
+                                  field.handleChange({
+                                    ...field.state.value,
+                                    [key]: edit,
+                                  })
+                                }
+                              />
+                            </React.Fragment>
+                          ))}
+                        </div>
+                      </MetadataDisclosure>
+                    </div>
+                  )
+                }}
               </form.Field>
 
-              <Separator />
-
               <form.Field name="customProperties">
-                {(field) => (
-                  <CustomProperties
-                    properties={field.state.value}
-                    onChange={field.handleChange}
-                  />
-                )}
+                {(field) => {
+                  const editedCount = field.state.value.filter(
+                    (property) => property.mode !== 'keep',
+                  ).length
+                  const existingCount = field.state.value.filter(
+                    (property) => property.originalName,
+                  ).length
+
+                  return (
+                    <MetadataDisclosure
+                      title="Custom properties"
+                      description="Typed values for specialized Office workflows and document libraries."
+                      summary={
+                        existingCount > 0
+                          ? `${existingCount} existing ${existingCount === 1 ? 'property' : 'properties'} · open to review or add`
+                          : 'Only needed for specialized Office workflows.'
+                      }
+                      editedCount={editedCount}
+                    >
+                      <CustomProperties
+                        properties={field.state.value}
+                        onChange={field.handleChange}
+                      />
+                    </MetadataDisclosure>
+                  )
+                }}
               </form.Field>
 
               <form.Subscribe selector={(state) => state.errors}>
@@ -1229,26 +1515,34 @@ export function XlsxMetadataEditor() {
                 Reset changes
               </Button>
               <form.Subscribe
-                selector={(state) => [state.canSubmit, state.isSubmitting]}
+                selector={(state) => ({
+                  values: state.values,
+                  canSubmit: state.canSubmit,
+                  isSubmitting: state.isSubmitting,
+                })}
               >
-                {([canSubmit, isSubmitting]) => (
-                  <Button
-                    type="submit"
-                    className="h-10 transition-transform duration-150 active:scale-[0.96]"
-                    disabled={!canSubmit || isSubmitting}
-                  >
-                    {usableFiles.length > 1 ? (
-                      <IconFileZip data-icon="inline-start" />
-                    ) : (
-                      <IconDownload data-icon="inline-start" />
-                    )}
-                    {isSubmitting
-                      ? 'Processing…'
-                      : usableFiles.length > 1
-                        ? `Update ${usableFiles.length} files`
-                        : 'Update & download'}
-                  </Button>
-                )}
+                {({ values, canSubmit, isSubmitting }) => {
+                  const changeCount = countMetadataChanges(values)
+
+                  return (
+                    <Button
+                      type="submit"
+                      className="h-10 transition-transform duration-150 active:scale-[0.96]"
+                      disabled={changeCount === 0 || !canSubmit || isSubmitting}
+                    >
+                      {usableFiles.length > 1 ? (
+                        <IconFileZip data-icon="inline-start" />
+                      ) : (
+                        <IconDownload data-icon="inline-start" />
+                      )}
+                      {isSubmitting
+                        ? 'Processing…'
+                        : usableFiles.length > 1
+                          ? `Apply to ${usableFiles.length} files`
+                          : 'Apply & download'}
+                    </Button>
+                  )
+                }}
               </form.Subscribe>
             </CardFooter>
           </Card>

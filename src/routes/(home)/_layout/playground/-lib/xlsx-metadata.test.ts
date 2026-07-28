@@ -18,13 +18,21 @@ const CONTENT_TYPES_NAMESPACE =
   'http://schemas.openxmlformats.org/package/2006/content-types'
 const RELATIONSHIPS_NAMESPACE =
   'http://schemas.openxmlformats.org/package/2006/relationships'
+const VBA_PROJECT_BYTES = new Uint8Array([
+  0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1, 0x56, 0x42, 0x41,
+])
+const VBA_SIGNATURE_BYTES = new Uint8Array([0x53, 0x49, 0x47, 0x4e])
 
 function createWorkbook({
   custom = true,
+  macroEnabled = false,
+  macroSigned = false,
   unsupportedCustom = false,
   signed = false,
 }: {
   custom?: boolean
+  macroEnabled?: boolean
+  macroSigned?: boolean
   unsupportedCustom?: boolean
   signed?: boolean
 } = {}): Uint8Array {
@@ -37,10 +45,16 @@ function createWorkbook({
   const unknownProperty = unsupportedCustom
     ? '<property fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}" pid="3" name="Uncommon"><vt:vector size="1" baseType="lpwstr"><vt:lpwstr>Preserve me</vt:lpwstr></vt:vector></property>'
     : ''
+  const workbookContentType = macroEnabled
+    ? 'application/vnd.ms-excel.sheet.macroEnabled.main+xml'
+    : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml'
+  const macroOverride = macroEnabled
+    ? '<Override PartName="/xl/vbaProject.bin" ContentType="application/vnd.ms-office.vbaProject"/>'
+    : ''
 
   const archive: Record<string, Uint8Array> = {
     '[Content_Types].xml': strToU8(
-      `<?xml version="1.0" encoding="UTF-8"?><Types xmlns="${CONTENT_TYPES_NAMESPACE}"><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/><Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>${customOverride}</Types>`,
+      `<?xml version="1.0" encoding="UTF-8"?><Types xmlns="${CONTENT_TYPES_NAMESPACE}"><Override PartName="/xl/workbook.xml" ContentType="${workbookContentType}"/><Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/><Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>${macroOverride}${customOverride}</Types>`,
     ),
     '_rels/.rels': strToU8(
       `<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="${RELATIONSHIPS_NAMESPACE}"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/>${customRelationship}</Relationships>`,
@@ -69,10 +83,21 @@ function createWorkbook({
     archive['_xmlsignatures/sig1.xml'] = strToU8('<Signature/>')
   }
 
+  if (macroEnabled) {
+    archive['xl/vbaProject.bin'] = VBA_PROJECT_BYTES
+    archive['xl/_rels/workbook.xml.rels'] = strToU8(
+      `<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="${RELATIONSHIPS_NAMESPACE}"><Relationship Id="rIdVba" Type="http://schemas.microsoft.com/office/2006/relationships/vbaProject" Target="vbaProject.bin"/></Relationships>`,
+    )
+  }
+
+  if (macroSigned) {
+    archive['xl/vbaProjectSignature.bin'] = VBA_SIGNATURE_BYTES
+  }
+
   return zipSync(archive)
 }
 
-describe('XLSX metadata', () => {
+describe('Excel workbook metadata', () => {
   it('reads standard, custom, unsupported, and signature metadata', async () => {
     const metadata = await readWorkbookMetadata(
       createWorkbook({ unsupportedCustom: true, signed: true }),
@@ -88,6 +113,39 @@ describe('XLSX metadata', () => {
     ])
     expect(metadata.unsupportedCustomPropertyCount).toBe(1)
     expect(metadata.hasDigitalSignatures).toBe(true)
+    expect(metadata.hasMacros).toBe(false)
+  })
+
+  it('updates XLSM metadata while preserving the VBA project and extension', async () => {
+    const original = createWorkbook({ macroEnabled: true, macroSigned: true })
+    const values = createMetadataFormValues()
+    values.standard.title = { mode: 'set', value: 'Macro workbook' }
+
+    const result = await updateWorkbookMetadata(
+      'automation.xlsm',
+      original,
+      values,
+    )
+    const metadata = await readWorkbookMetadata(result.data)
+    const originalArchive = unzipSync(original)
+    const updatedArchive = unzipSync(result.data)
+
+    expect(result.fileName).toBe('automation-metadata-updated.xlsm')
+    expect(metadata.standard.title).toBe('Macro workbook')
+    expect(metadata.hasMacros).toBe(true)
+    expect(metadata.hasDigitalSignatures).toBe(true)
+    expect(updatedArchive['xl/vbaProject.bin']).toEqual(
+      originalArchive['xl/vbaProject.bin'],
+    )
+    expect(updatedArchive['xl/vbaProjectSignature.bin']).toEqual(
+      originalArchive['xl/vbaProjectSignature.bin'],
+    )
+    expect(strFromU8(updatedArchive['[Content_Types].xml'])).toContain(
+      'application/vnd.ms-excel.sheet.macroEnabled.main+xml',
+    )
+    expect(strFromU8(updatedArchive['xl/_rels/workbook.xml.rels'])).toContain(
+      'vbaProject.bin',
+    )
   })
 
   it('updates every exposed standard property and preserves sheet XML', async () => {
@@ -255,18 +313,22 @@ describe('XLSX metadata', () => {
       await createBulkArchive([
         { fileName: 'report.xlsx', data: strToU8('one') },
         { fileName: 'report.xlsx', data: strToU8('two') },
+        { fileName: 'report.xlsm', data: strToU8('three') },
+        { fileName: 'report.xlsm', data: strToU8('four') },
       ]),
     )
 
     expect(Object.keys(archive).sort()).toEqual([
+      'report-2.xlsm',
       'report-2.xlsx',
+      'report.xlsm',
       'report.xlsx',
     ])
   })
 
-  it('rejects files that are not XLSX ZIP archives', async () => {
+  it('rejects files that are not XLSX or XLSM ZIP archives', async () => {
     await expect(readWorkbookMetadata(strToU8('not an xlsx'))).rejects.toThrow(
-      'readable, unencrypted XLSX',
+      'readable, unencrypted XLSX or XLSM',
     )
   })
 })

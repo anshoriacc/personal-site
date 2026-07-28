@@ -120,7 +120,11 @@ function unzipArchive(data: Uint8Array): Promise<Unzipped> {
   return new Promise((resolve, reject) => {
     unzip(data, (error, archive) => {
       if (error) {
-        reject(new Error('File is not a readable, unencrypted XLSX archive.'))
+        reject(
+          new Error(
+            'File is not a readable, unencrypted XLSX or XLSM archive.',
+          ),
+        )
         return
       }
 
@@ -133,7 +137,7 @@ function zipArchive(data: AsyncZippable): Promise<Uint8Array<ArrayBuffer>> {
   return new Promise((resolve, reject) => {
     zip(data, { level: 6 }, (error, archive) => {
       if (error) {
-        reject(new Error('Could not create the updated XLSX archive.'))
+        reject(new Error('Could not create the updated Excel archive.'))
         return
       }
 
@@ -151,7 +155,7 @@ function validateArchive(archive: Unzipped): void {
   const missingPath = requiredPaths.find((path) => !archive[path])
 
   if (missingPath) {
-    throw new Error('File is not a valid XLSX workbook.')
+    throw new Error('File is not a valid XLSX or XLSM workbook.')
   }
 }
 
@@ -615,8 +619,15 @@ function hasCustomPropertyElements(document: XMLDocument): boolean {
 }
 
 function updatedFileName(fileName: string): string {
-  const baseName = fileName.replace(/\.xlsx$/i, '')
-  return `${baseName}-metadata-updated.xlsx`
+  const extension = /\.xlsm$/i.test(fileName) ? 'xlsm' : 'xlsx'
+  const baseName = fileName.replace(/\.(xlsx|xlsm)$/i, '')
+  return `${baseName}-metadata-updated.${extension}`
+}
+
+function addFileNameSuffix(fileName: string, suffix: number): string {
+  const extension = fileName.match(/\.(xlsx|xlsm)$/i)?.[0] ?? ''
+  const baseName = extension ? fileName.slice(0, -extension.length) : fileName
+  return `${baseName}-${suffix}${extension}`
 }
 
 export async function readWorkbookMetadata(
@@ -639,8 +650,11 @@ export async function readWorkbookMetadata(
     standard,
     customProperties: customProperties.properties,
     hasDigitalSignatures: Object.keys(archive).some((path) =>
-      path.toLowerCase().startsWith('_xmlsignatures/'),
+      ['_xmlsignatures/', 'vbaprojectsignature'].some((signaturePath) =>
+        path.toLowerCase().includes(signaturePath),
+      ),
     ),
+    hasMacros: Boolean(archive['xl/vbaProject.bin']),
     unsupportedCustomPropertyCount: customProperties.unsupportedCount,
   }
 }
@@ -707,7 +721,7 @@ export async function createBulkArchive(
     let suffix = 2
 
     while (usedNames.has(name.toLowerCase())) {
-      name = result.fileName.replace(/\.xlsx$/i, `-${suffix}.xlsx`)
+      name = addFileNameSuffix(result.fileName, suffix)
       suffix += 1
     }
 

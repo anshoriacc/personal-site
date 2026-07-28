@@ -216,6 +216,8 @@ export type CustomPropertyValue = {
 export type CustomPropertyEdit = CustomPropertyValue & {
   id: string
   originalName?: string
+  originalType?: CustomPropertyType
+  originalValue?: string
   mode: PropertyMode
 }
 
@@ -228,6 +230,7 @@ export type WorkbookMetadata = {
   standard: MetadataValues
   customProperties: Array<CustomPropertyValue>
   hasDigitalSignatures: boolean
+  hasMacros: boolean
   unsupportedCustomPropertyCount: number
 }
 
@@ -262,6 +265,8 @@ export function createMetadataFormValues(
         ...property,
         id: `existing-${index}-${property.name}`,
         originalName: property.name,
+        originalType: property.type,
+        originalValue: property.value,
         mode: 'keep' as const,
       })) ?? [],
   }
