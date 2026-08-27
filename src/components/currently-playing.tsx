@@ -145,7 +145,9 @@ export const CurrentlyPlaying = () => {
             className={cn(
               'absolute inset-0 cursor-grab rounded-full ring-1 ring-black/10 ring-inset active:cursor-grabbing dark:ring-white/10',
               'will-change-transform',
-              (!isCurrentlyPlaying || isNotShowing || currentlyPlayingQuery.isLoading) &&
+              (!isCurrentlyPlaying ||
+                isNotShowing ||
+                currentlyPlayingQuery.isLoading) &&
                 'grayscale transition-[filter] duration-300 group-hover:grayscale-0',
             )}
             style={{

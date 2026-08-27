@@ -67,8 +67,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         ],
         scripts: [
           {
-            children:
-              'window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init()',
+            children: `
+              window.op=window.op||function(){var n=[];return new Proxy(function(){arguments.length&&n.push([].slice.call(arguments))},{get:function(t,r){return"q"===r?n:function(){n.push([r].concat([].slice.call(arguments)))}} ,has:function(t,r){return"q"===r}}) }();
+              window.op('init', {
+                apiUrl: 'https://analytics.anshori.com/api',
+                clientId: 'eee71111-ab2e-4d1e-a23d-0294f22deb06',
+                trackScreenViews: true,
+                trackOutgoingLinks: true,
+                trackAttributes: true,
+              });
+            `,
           },
           {
             type: 'application/ld+json',
@@ -106,8 +114,8 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 
   // Defer analytics loading until after hydration
   useDeferredScript({
-    src: 'https://analytics.anshori.com/js/pa-p0NwZyekqcSY7WVXGto9a.js',
-    defer: false,
+    src: 'https://openpanel.dev/op1.js',
+    defer: true,
     async: true,
   })
 

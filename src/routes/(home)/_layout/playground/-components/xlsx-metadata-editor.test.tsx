@@ -91,6 +91,20 @@ describe('XlsxMetadataEditor', () => {
     expect(screen.getByLabelText('Subject')).toBeTruthy()
   })
 
+  it('uses a calendar trigger instead of a native date-time input', async () => {
+    const { container } = render(<XlsxMetadataEditor />)
+
+    selectFiles(container, [createWorkbookFile('single.xlsx')])
+
+    expect(await screen.findByText('Ready')).toBeTruthy()
+    expect(
+      screen.getByRole('button', {
+        name: 'Choose created date and time',
+      }),
+    ).toBeTruthy()
+    expect(container.querySelector('input[type="datetime-local"]')).toBeNull()
+  })
+
   it('switches to blank, keep-safe bulk mode for multiple workbooks', async () => {
     const { container } = render(<XlsxMetadataEditor />)
 

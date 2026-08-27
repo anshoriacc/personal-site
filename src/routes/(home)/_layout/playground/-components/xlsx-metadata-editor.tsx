@@ -1,8 +1,10 @@
 import React from 'react'
 import { useForm } from '@tanstack/react-form'
+import { format } from 'date-fns'
 import { z } from 'zod'
 import {
   IconAlertTriangle,
+  IconCalendar,
   IconCheck,
   IconChevronDown,
   IconClock,
@@ -20,6 +22,7 @@ import { cn } from '@/lib/utils'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
 import {
   Card,
   CardAction,
@@ -43,6 +46,11 @@ import {
   FieldSet,
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 import {
   Select,
   SelectContent,
@@ -79,6 +87,12 @@ const MAX_TOTAL_BYTES = 250 * 1024 * 1024
 
 const PROPERTY_MODES = ['keep', 'set', 'clear'] as const
 const CUSTOM_PROPERTY_TYPES = ['text', 'number', 'boolean', 'date'] as const
+const HOUR_OPTIONS = Array.from({ length: 24 }, (_, hour) =>
+  String(hour).padStart(2, '0'),
+)
+const MINUTE_OPTIONS = Array.from({ length: 60 }, (_, minute) =>
+  String(minute).padStart(2, '0'),
+)
 
 const CUSTOM_TYPE_LABELS = {
   text: 'Text',
@@ -360,6 +374,17 @@ function workbookMimeType(fileName: string): string {
   return /\.xlsm$/i.test(fileName) ? XLSM_MIME_TYPE : XLSX_MIME_TYPE
 }
 
+function parseDateTimeValue(value: string): Date | undefined {
+  if (!value) return undefined
+
+  const date = new Date(value)
+  return Number.isNaN(date.getTime()) ? undefined : date
+}
+
+function formatDateTimeValue(date: Date): string {
+  return format(date, "yyyy-MM-dd'T'HH:mm")
+}
+
 function downloadData(data: Uint8Array, fileName: string, type: string): void {
   const bytes = data.buffer.slice(
     data.byteOffset,
@@ -408,6 +433,163 @@ function CustomTypeSelect({
         </SelectGroup>
       </SelectContent>
     </Select>
+  )
+}
+
+function DateTimePicker({
+  id,
+  value,
+  label,
+  onChange,
+}: {
+  id: string
+  value: string
+  label: string
+  onChange: (value: string) => void
+}) {
+  const [open, setOpen] = React.useState(false)
+  const selectedDate = parseDateTimeValue(value)
+  const hourValue = selectedDate ? format(selectedDate, 'HH') : '00'
+  const minuteValue = selectedDate ? format(selectedDate, 'mm') : '00'
+
+  const updateDate = (date: Date) => {
+    const nextDate = new Date(date)
+    nextDate.setHours(
+      selectedDate?.getHours() ?? 0,
+      selectedDate?.getMinutes() ?? 0,
+      0,
+      0,
+    )
+    onChange(formatDateTimeValue(nextDate))
+  }
+
+  const updateTime = (part: 'hour' | 'minute', nextValue: string) => {
+    if (!selectedDate) return
+
+    const nextDate = new Date(selectedDate)
+    nextDate.setHours(
+      part === 'hour' ? Number(nextValue) : selectedDate.getHours(),
+      part === 'minute' ? Number(nextValue) : selectedDate.getMinutes(),
+      0,
+      0,
+    )
+    onChange(formatDateTimeValue(nextDate))
+  }
+
+  const setToNow = () => {
+    onChange(formatDateTimeValue(new Date()))
+    setOpen(false)
+  }
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger
+        render={
+          <Button
+            id={id}
+            type="button"
+            variant="outline"
+            data-empty={!selectedDate}
+            aria-label={`Choose ${label.toLocaleLowerCase()} date and time`}
+            className="data-[empty=true]:text-muted-foreground h-10 w-full justify-start text-left font-normal"
+          />
+        }
+      >
+        <IconCalendar data-icon="inline-start" />
+        <span className="truncate">
+          {selectedDate
+            ? format(selectedDate, "MMM d, yyyy 'at' HH:mm")
+            : 'Pick a date and time'}
+        </span>
+      </PopoverTrigger>
+      <PopoverContent align="start" className="w-auto p-0">
+        <Calendar
+          mode="single"
+          required
+          selected={selectedDate}
+          defaultMonth={selectedDate}
+          captionLayout="dropdown"
+          startMonth={new Date(1900, 0)}
+          endMonth={new Date(2100, 11)}
+          onSelect={updateDate}
+        />
+        <Separator />
+        <FieldGroup className="gap-3 p-3">
+          <Field orientation="horizontal">
+            <FieldLabel>
+              <IconClock aria-hidden="true" />
+              Time
+            </FieldLabel>
+            <div className="flex items-center gap-1.5">
+              <Select
+                items={HOUR_OPTIONS}
+                value={hourValue}
+                disabled={!selectedDate}
+                onValueChange={(nextValue) =>
+                  updateTime('hour', String(nextValue))
+                }
+              >
+                <SelectTrigger
+                  aria-label={`${label} hour`}
+                  className="w-[4.5rem]"
+                >
+                  <SelectValue>{hourValue}</SelectValue>
+                </SelectTrigger>
+                <SelectContent alignItemWithTrigger={false}>
+                  <SelectGroup>
+                    {HOUR_OPTIONS.map((hour) => (
+                      <SelectItem key={hour} value={hour}>
+                        {hour}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <span aria-hidden="true" className="text-muted-foreground">
+                :
+              </span>
+              <Select
+                items={MINUTE_OPTIONS}
+                value={minuteValue}
+                disabled={!selectedDate}
+                onValueChange={(nextValue) =>
+                  updateTime('minute', String(nextValue))
+                }
+              >
+                <SelectTrigger
+                  aria-label={`${label} minute`}
+                  className="w-[4.5rem]"
+                >
+                  <SelectValue>{minuteValue}</SelectValue>
+                </SelectTrigger>
+                <SelectContent alignItemWithTrigger={false}>
+                  <SelectGroup>
+                    {MINUTE_OPTIONS.map((minute) => (
+                      <SelectItem key={minute} value={minute}>
+                        {minute}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+          </Field>
+          <div className="flex justify-end gap-2">
+            <Button type="button" variant="ghost" size="sm" onClick={setToNow}>
+              Now
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              disabled={!selectedDate}
+              onClick={() => setOpen(false)}
+            >
+              Done
+            </Button>
+          </div>
+        </FieldGroup>
+      </PopoverContent>
+    </Popover>
   )
 }
 
@@ -489,6 +671,13 @@ function MetadataField({
         </div>
       ) : definition.input === 'textarea' ? (
         <Textarea {...controlProps} rows={3} />
+      ) : definition.input === 'datetime-local' ? (
+        <DateTimePicker
+          id={inputId}
+          value={edit.value}
+          label={definition.label}
+          onChange={updateValue}
+        />
       ) : (
         <Input type={definition.input} {...controlProps} />
       )}
@@ -626,16 +815,21 @@ function CustomPropertyValueInput({
     )
   }
 
+  if (property.type === 'date') {
+    return (
+      <DateTimePicker
+        id={`xlsx-custom-date-${property.id}`}
+        value={property.value}
+        label={property.name || 'Custom property'}
+        onChange={(value) => onChange({ ...property, mode: 'set', value })}
+      />
+    )
+  }
+
   return (
     <Input
       value={property.value}
-      type={
-        property.type === 'date'
-          ? 'datetime-local'
-          : property.type === 'number'
-            ? 'number'
-            : 'text'
-      }
+      type={property.type === 'number' ? 'number' : 'text'}
       step={property.type === 'number' ? 'any' : undefined}
       placeholder={property.type === 'number' ? '42' : 'Custom property value'}
       onChange={(event) =>
