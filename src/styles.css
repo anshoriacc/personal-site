@@ -44,7 +44,6 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-  --cursor-external-link: url('/cursors/external.svg') 4 2, pointer;
 }
 
 .dark {
@@ -80,7 +79,6 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
-  --cursor-external-link: url('/cursors/external-dark.svg') 4 2, pointer;
 }
 
 @theme inline {
@@ -123,7 +121,6 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
-  --cursor-external-link: var(--cursor-external-link);
 }
 
 @layer base {
@@ -139,7 +136,4 @@
 }
 
 @layer utilities {
-  .cursor-external-link {
-    cursor: var(--cursor-external-link);
-  }
 }

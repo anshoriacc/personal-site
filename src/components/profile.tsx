@@ -46,7 +46,7 @@ export const Profile = () => {
               href="https://resume.anshori.com"
               target="_blank"
               rel="noreferrer"
-              className="cursor-external-link"
+              className="cursor-alias"
             />
           }
           nativeButton={false}
@@ -63,7 +63,7 @@ export const Profile = () => {
               href="https://github.com/anshoriacc"
               target="_blank"
               rel="noreferrer"
-              className="cursor-external-link"
+              className="cursor-alias"
             />
           }
           nativeButton={false}
@@ -80,7 +80,7 @@ export const Profile = () => {
               href="https://www.linkedin.com/in/achmad-anshori"
               target="_blank"
               rel="noreferrer"
-              className="cursor-external-link"
+              className="cursor-alias"
             />
           }
           nativeButton={false}

@@ -239,7 +239,7 @@ export const CurrentlyPlaying = () => {
             target="_blank"
             rel="noopener noreferrer"
             title={`open ${song?.name} by ${artistsName} in spotify web player`}
-            className="cursor-external-link line-clamp-1 w-fit underline-offset-4 hover:underline"
+            className="cursor-alias line-clamp-1 w-fit underline-offset-4 hover:underline"
           >
             {song?.name}
           </a>
@@ -251,7 +251,7 @@ export const CurrentlyPlaying = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   title={`open ${artist.name} in spotify web player`}
-                  className="cursor-external-link underline-offset-4 hover:underline"
+                  className="cursor-alias underline-offset-4 hover:underline"
                 >
                   {artist.name}
                 </a>

@@ -114,7 +114,7 @@ export const GitHubContributions = () => {
               href="https://github.com/anshoriacc"
               target="_blank"
               rel="noreferrer"
-              className="cursor-external-link"
+              className="cursor-alias"
             />
           }
           nativeButton={false}

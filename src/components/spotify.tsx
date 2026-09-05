@@ -32,7 +32,7 @@ export const Spotify = () => {
         target="_blank"
         rel="noopener noreferrer"
         title="go to my spotify profile"
-        className="cursor-external-link"
+        className="cursor-alias"
       >
         <svg viewBox="0 0 32 32" className="size-6">
           <path
@@ -55,7 +55,7 @@ export const Spotify = () => {
             target="_blank"
             rel="noopener noreferrer"
             title={`open ${song?.name} by ${artistsName} in spotify web player`}
-            className="cursor-external-link line-clamp-1 w-fit"
+            className="cursor-alias line-clamp-1 w-fit"
           >
             <span>{song?.name}</span>
 
