@@ -80,7 +80,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           },
           {
             src: 'https://oa-c.anshori.com/oa.js',
-            'data-key': 'oa_pk_c03RZc9U92EaKyyURXOvj9Jk2xFuX8bP',
+            'data-key': 'oa_pk_sX4YQAlna2x_oiN8z8BMFUCw1kK0kEA4',
             'data-collector': 'https://oa-c.anshori.com',
             async: true,
           },
