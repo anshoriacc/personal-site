@@ -8,28 +8,12 @@ import { cn } from '@/lib/utils'
 export const CurrentlyPlaying = () => {
   const currentlyPlayingQuery = useGetCurrentlyPlayingQuery()
 
-  const currentlyPlaying = currentlyPlayingQuery.data?.currentlyPlaying
-  const recentlyPlayed = currentlyPlayingQuery.data?.recentlyPlayed
-
   const isCurrentlyPlaying =
-    currentlyPlaying?.is_playing &&
-    currentlyPlaying?.currently_playing_type === 'track'
-
-  const song = isCurrentlyPlaying
-    ? currentlyPlaying?.item
-    : recentlyPlayed?.items?.[0]?.track
-
-  const artists = isCurrentlyPlaying
-    ? currentlyPlaying?.item?.artists
-    : recentlyPlayed?.items?.[0]?.track.artists
-
-  const artistsName = isCurrentlyPlaying
-    ? currentlyPlaying?.item?.artists.map((artist) => artist.name).join(', ')
-    : recentlyPlayed?.items?.[0]?.track?.artists
-        .map((artist) => artist.name)
-        .join(', ')
-
-  const isNotShowing = !song && !artists && !artistsName
+    currentlyPlayingQuery.data?.isCurrentlyPlaying ?? false
+  const song = currentlyPlayingQuery.data?.track
+  const artists = song?.artists
+  const artistsName = artists?.map((artist) => artist.name).join(', ')
+  const isNotShowing = !song
 
   const vinylRef = useRef<HTMLDivElement>(null)
   const rotation = useMotionValue(0)
@@ -128,12 +112,12 @@ export const CurrentlyPlaying = () => {
   }
 
   return (
-    <div className="group grid grid-cols-[auto_1fr] items-center gap-10">
-      <div
-        className="group/vinyl relative flex size-20 items-center select-none"
-        onMouseEnter={() => (isHovering.current = true)}
-        onMouseLeave={() => (isHovering.current = false)}
-      >
+    <div
+      className="group grid grid-cols-[auto_1fr] items-center gap-10"
+      onMouseEnter={() => (isHovering.current = true)}
+      onMouseLeave={() => (isHovering.current = false)}
+    >
+      <div className="group/vinyl relative flex size-20 items-center select-none">
         {/* vinyl */}
         <div className="absolute left-[50%] aspect-square size-[90%] rounded-full shadow-md transition-all group-hover:left-[60%]">
           <motion.div
@@ -164,8 +148,8 @@ export const CurrentlyPlaying = () => {
                 <div className="size-full bg-neutral-600" />
               ) : (
                 <img
-                  src={song?.album?.images?.[0]?.url}
-                  alt={song?.album?.name}
+                  src={song.imageUrl ?? undefined}
+                  alt={song.albumName}
                   draggable={false}
                   className="size-full bg-neutral-600 object-cover"
                 />
@@ -202,8 +186,8 @@ export const CurrentlyPlaying = () => {
           ) : (
             <div className="relative">
               <img
-                src={song?.album?.images?.[0]?.url}
-                alt={song?.album?.name}
+                src={song.imageUrl ?? undefined}
+                alt={song.albumName}
                 draggable={false}
                 className={cn(
                   'size-full rounded-[5px] bg-neutral-400 object-cover dark:bg-neutral-600',
@@ -235,19 +219,19 @@ export const CurrentlyPlaying = () => {
               : 'Offline. Recently played'}
           </span>
           <a
-            href={song?.external_urls?.spotify ?? '#'}
+            href={song.url}
             target="_blank"
             rel="noopener noreferrer"
-            title={`open ${song?.name} by ${artistsName} in spotify web player`}
-            className="cursor-alias line-clamp-1 w-fit underline-offset-4 hover:underline"
+            title={`open ${song.name} by ${artistsName} in spotify web player`}
+            className="line-clamp-1 w-fit cursor-alias underline-offset-4 hover:underline"
           >
-            {song?.name}
+            {song.name}
           </a>
           <span className="text-muted-foreground line-clamp-1">
-            {artists?.map((artist: any, index: number) => (
+            {artists.map((artist, index) => (
               <span key={artist.id ?? artist.name}>
                 <a
-                  href={artist.external_urls?.spotify ?? '#'}
+                  href={artist.url}
                   target="_blank"
                   rel="noopener noreferrer"
                   title={`open ${artist.name} in spotify web player`}

@@ -15,14 +15,13 @@ import appCss from '../styles.css?url'
 import { cn } from '@/lib/utils'
 import { createPageMeta } from '@/lib/seo'
 import { useMounted } from '@/hooks/use-mounted'
-import { useDeferredScript } from '@/hooks/use-deferred-script'
 import { useIsNightTime } from '@/stores/time.store'
+import { ThemeHotkey } from '@/components/theme-hotkey'
 import { NotFound } from '@/components/not-found'
 import {
   ThemeDetectionScript,
   BodySelectionScript,
 } from '@/components/inline-scripts'
-import { ThemeHotkey } from '@/components/theme-hotkey'
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {
@@ -57,8 +56,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           { rel: 'icon', href: '/favicon.ico', type: 'image/x-icon' },
           { rel: 'apple-touch-icon', href: '/dark192.png' },
           { rel: 'manifest', href: '/manifest.json' },
-          { rel: 'preconnect', href: 'https://analytics.anshori.com' },
-          { rel: 'dns-prefetch', href: 'https://analytics.anshori.com' },
           {
             rel: 'stylesheet',
             href: appCss,
@@ -66,18 +63,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           ...links,
         ],
         scripts: [
-          {
-            children: `
-              window.op=window.op||function(){var n=[];return new Proxy(function(){arguments.length&&n.push([].slice.call(arguments))},{get:function(t,r){return"q"===r?n:function(){n.push([r].concat([].slice.call(arguments)))}} ,has:function(t,r){return"q"===r}}) }();
-              window.op('init', {
-                apiUrl: 'https://analytics.anshori.com/api',
-                clientId: 'eee71111-ab2e-4d1e-a23d-0294f22deb06',
-                trackScreenViews: true,
-                trackOutgoingLinks: true,
-                trackAttributes: true,
-              });
-            `,
-          },
           {
             src: 'https://oa-c.anshori.com/oa.js',
             'data-key': 'oa_pk_sX4YQAlna2x_oiN8z8BMFUCw1kK0kEA4',
@@ -118,13 +103,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
   const theme = Route.useLoaderData()
   const isNight = useIsNightTime()
 
-  // Defer analytics loading until after hydration
-  useDeferredScript({
-    src: 'https://openpanel.dev/op1.js',
-    defer: true,
-    async: true,
-  })
-
   const selectionClasses = mounted
     ? !isNight
       ? 'selection:bg-amber-200 selection:text-amber-900 dark:selection:bg-amber-900 dark:selection:text-amber-200'
@@ -138,6 +116,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
 
       <body
+        suppressHydrationWarning
         className={cn(
           'relative w-screen cursor-default overflow-x-hidden overflow-y-visible',
           selectionClasses,
@@ -145,6 +124,11 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       >
         <Providers theme={theme}>{children}</Providers>
         <TanStackDevtools
+          config={{
+            position: 'bottom-right',
+            openHotkey: ['Control', 'A'],
+            hideUntilHover: true,
+          }}
           plugins={[
             {
               name: 'Tanstack Router',
@@ -157,7 +141,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           ]}
         />
         <ThemeDetectionScript />
-        {mounted ? <BodySelectionScript /> : null}
+        <BodySelectionScript />
         <ThemeHotkey />
         <Scripts />
       </body>

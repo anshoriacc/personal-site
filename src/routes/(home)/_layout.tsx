@@ -1,4 +1,3 @@
-import React from 'react'
 import { Outlet, createFileRoute } from '@tanstack/react-router'
 import { motion } from 'motion/react'
 
@@ -9,10 +8,8 @@ export const Route = createFileRoute('/(home)/_layout')({
 })
 
 function HomeLayout() {
-  const constraintsRef = React.useRef<HTMLDivElement>(null!)
-
   return (
-    <div ref={constraintsRef}>
+    <div>
       <Header />
 
       <motion.div

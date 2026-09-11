@@ -1,5 +1,4 @@
 import { createServerFn } from '@tanstack/react-start'
-import { axiosApi } from '@/lib/axios'
 import { LRUCache } from '@/lib/lru-cache'
 
 // Cache GitHub contributions for 1 hour
@@ -17,14 +16,17 @@ export const getGithubContributions = createServerFn().handler(
       return cached
     }
 
-    const response = await axiosApi<TContributionResponse>(
-      'https://github-contributions-api.jogruber.de/v4/anshoriacc',
-      {
-        params: { y: 'last' }, // last year of contributions
-      },
+    const response = await fetch(
+      'https://github-contributions-api.jogruber.de/v4/anshoriacc?y=last',
     )
 
-    const data = response.data
+    if (!response.ok) {
+      throw new Error(
+        `GitHub contributions request failed with status ${response.status}`,
+      )
+    }
+
+    const data = (await response.json()) as TContributionResponse
 
     githubCache.set(cacheKey, data)
 

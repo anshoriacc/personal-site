@@ -522,7 +522,6 @@ function DateTimePicker({
             </FieldLabel>
             <div className="flex items-center gap-1.5">
               <Select
-                items={HOUR_OPTIONS}
                 value={hourValue}
                 disabled={!selectedDate}
                 onValueChange={(nextValue) =>
@@ -549,7 +548,6 @@ function DateTimePicker({
                 :
               </span>
               <Select
-                items={MINUTE_OPTIONS}
                 value={minuteValue}
                 disabled={!selectedDate}
                 onValueChange={(nextValue) =>

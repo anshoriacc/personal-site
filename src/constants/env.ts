@@ -17,9 +17,7 @@ function formatEnvValidationError(error: z.ZodError): string {
   return `Invalid server environment variables:\n${details}`
 }
 
-export function parseServerEnv(
-  env: Record<string, string | undefined>,
-): TServerEnv {
+function parseServerEnv(env: Record<string, string | undefined>): TServerEnv {
   const result = serverEnvSchema.safeParse(env)
 
   if (!result.success) {

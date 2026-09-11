@@ -34,56 +34,62 @@ export const Clock = ({ className }: Props) => {
     : 'fill-neutral-500'
 
   return (
-    <svg
-      viewBox="0 0 100 100"
-      className={cn('size-7 overflow-hidden rounded-md', className)}
-    >
-      <rect
-        id="clock"
-        x="0"
-        y="0"
-        width="100"
-        height="100"
-        fill="currentColor"
-        className={clockClass}
-      />
-      <circle cx="50" cy="50" r="2" fill="currentColor" />
-      <line
-        id="hour-hand"
-        x1="50"
-        y1="50"
-        x2="50"
-        y2="30"
-        stroke="currentColor"
-        strokeWidth="4"
-        strokeLinecap="round"
-        transform={mounted ? `rotate(${hourRotation}, 50, 50)` : undefined}
-      />
-      <line
-        id="minute-hand"
-        x1="50"
-        y1="50"
-        x2="50"
-        y2="15"
-        stroke="currentColor"
-        strokeWidth="3"
-        strokeLinecap="round"
-        transform={mounted ? `rotate(${minuteRotation}, 50, 50)` : undefined}
-      />
-      <line
-        id="second-hand"
-        x1="50"
-        y1="50"
-        x2="50"
-        y2="10"
-        strokeWidth="2"
-        strokeLinecap="round"
-        className="stroke-rose-500"
-        transform={mounted ? `rotate(${secondRotation}, 50, 50)` : undefined}
-      />
+    <>
+      <svg
+        viewBox="0 0 100 100"
+        className={cn('size-7 overflow-hidden rounded-md', className)}
+      >
+        <rect
+          id="clock"
+          suppressHydrationWarning
+          x="0"
+          y="0"
+          width="100"
+          height="100"
+          fill="currentColor"
+          className={clockClass}
+        />
+        <circle cx="50" cy="50" r="2" fill="currentColor" />
+        <line
+          id="hour-hand"
+          suppressHydrationWarning
+          x1="50"
+          y1="50"
+          x2="50"
+          y2="30"
+          stroke="currentColor"
+          strokeWidth="4"
+          strokeLinecap="round"
+          transform={mounted ? `rotate(${hourRotation}, 50, 50)` : undefined}
+        />
+        <line
+          id="minute-hand"
+          suppressHydrationWarning
+          x1="50"
+          y1="50"
+          x2="50"
+          y2="15"
+          stroke="currentColor"
+          strokeWidth="3"
+          strokeLinecap="round"
+          transform={mounted ? `rotate(${minuteRotation}, 50, 50)` : undefined}
+        />
+        <line
+          id="second-hand"
+          suppressHydrationWarning
+          x1="50"
+          y1="50"
+          x2="50"
+          y2="10"
+          strokeWidth="2"
+          strokeLinecap="round"
+          className="stroke-rose-500"
+          transform={mounted ? `rotate(${secondRotation}, 50, 50)` : undefined}
+        />
+      </svg>
 
-      {mounted ? <ClockScript /> : null}
-    </svg>
+      <ClockScript />
+    </>
   )
 }
 
@@ -127,5 +133,5 @@ const clockScriptProps = {
 }
 
 export const ClockScript = (): React.ReactNode => (
-  <script {...clockScriptProps} />
+  <script suppressHydrationWarning {...clockScriptProps} />
 )

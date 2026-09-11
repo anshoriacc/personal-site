@@ -20,10 +20,6 @@ import { useMounted } from '@/hooks/use-mounted'
 import { ThemeToggle } from './theme-toggle'
 import { Clock } from './clock'
 
-type Props = {
-  constraintsRef?: React.RefObject<HTMLDivElement | HTMLBodyElement>
-}
-
 type ViewState = 'idle' | 'expanded'
 
 type IslandState = {
@@ -70,7 +66,7 @@ const MENU_ITEMS = [
   { to: '/work', label: 'Work', icon: IconFolderCode },
 ] as const
 
-export const Header = ({ constraintsRef }: Props) => {
+export const Header = () => {
   const canGoBack = useCanGoBack()
   const router = useRouter()
   const routerStatus = useRouterState({
@@ -338,8 +334,6 @@ export const Header = ({ constraintsRef }: Props) => {
 
           <motion.header
             ref={headerRef}
-            // drag // for development purpose
-            dragConstraints={constraintsRef}
             layout
             onPointerEnter={handlePointerEnter}
             onPointerLeave={handlePointerLeave}

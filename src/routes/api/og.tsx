@@ -16,7 +16,6 @@ export const Route = createFileRoute('/api/og')({
               style={{
                 background:
                   'radial-gradient(ellipse 1200px 630px at 10% 10%, #aaa 0%, #000 90%)',
-                backdropFilter: 'blur(4px)',
               }}
               tw="relative flex w-full h-full rounded-3xl p-4"
             >
@@ -41,7 +40,7 @@ export const Route = createFileRoute('/api/og')({
                 style={{
                   backgroundImage:
                     'url("data:image/svg+xml,%3Csvg viewBox=%220 0 400 400%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noise%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.5%22 numOctaves=%223%22 result=%22noise%22 /%3E%3CfeColorMatrix in=%22noise%22 type=%22saturate%22 values=%220%22 /%3E%3C/filter%3E%3Crect width=%22400%22 height=%22400%22 fill=%22%23000%22 filter=%22url(%23noise)%22 opacity=%220.15%22 /%3E%3C/svg%3E")',
-                  backgroundSize: '600px 600px',
+                  backgroundSize: '400px 400px',
                 }}
               />
             </div>
