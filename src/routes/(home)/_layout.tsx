@@ -2,6 +2,7 @@ import { Outlet, createFileRoute } from '@tanstack/react-router'
 import { motion } from 'motion/react'
 
 import { Header } from '@/components/header'
+import { Footer } from '@/components/footer'
 
 export const Route = createFileRoute('/(home)/_layout')({
   component: HomeLayout,
@@ -41,6 +42,8 @@ function HomeLayout() {
           <Outlet />
         </div>
       </div>
+
+      <Footer />
     </div>
   )
 }
