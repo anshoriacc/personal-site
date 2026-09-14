@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router'
 
 import { Header } from './header'
 import { MotionContainer, MotionItem } from './ui/motion'
-import { Button } from './ui/button'
+import { buttonVariants } from './ui/button'
 
 export const NotFound = () => {
   return (
@@ -21,13 +21,15 @@ export const NotFound = () => {
               The page you are looking for does not exist.
             </p>
 
-            <Button
-              variant="secondary"
-              render={<Link to="/" className="w-fit" />}
-              nativeButton={false}
+            <Link
+              to="/"
+              className={buttonVariants({
+                variant: 'secondary',
+                className: 'w-fit',
+              })}
             >
               Return Home
-            </Button>
+            </Link>
           </MotionItem>
         </MotionContainer>
       </div>

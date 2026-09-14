@@ -3,8 +3,9 @@ import { Link } from '@tanstack/react-router'
 
 import { cn } from '@/lib/utils'
 import { experiences } from '@/data/experience'
-import { Button } from './ui/button'
+import { buttonVariants } from './ui/button'
 import { Badge } from './ui/badge'
+import { IconArrowUpRight } from '@tabler/icons-react'
 
 type Props = {
   simplified?: boolean
@@ -22,14 +23,12 @@ export const Experience = ({ simplified }: Props) => {
         <h2 className="font-medium">Experience</h2>
         {hasMore && simplified && (
           <div className="flex justify-center">
-            <Button
-              variant="link"
-              size="xs"
-              render={<Link to="/work" />}
-              nativeButton={false}
+            <Link
+              to="/work"
+              className={buttonVariants({ variant: 'link', size: 'xs' })}
             >
               Show More
-            </Button>
+            </Link>
           </div>
         )}
       </div>
@@ -57,9 +56,7 @@ export const Experience = ({ simplified }: Props) => {
                   <span className="text-muted-foreground text-sm">
                     {exp.roles.at(-1)?.startDate} –{' '}
                     <span
-                      className={cn(
-                        exp.roles[0].endDate == 'present' && 'shimmer',
-                      )}
+                      className={cn(exp.roles[0].endDate == 'Now' && 'shimmer')}
                     >
                       {exp.roles[0].endDate}
                     </span>
@@ -77,9 +74,7 @@ export const Experience = ({ simplified }: Props) => {
                         <span>
                           {role.startDate} –{' '}
                           <span
-                            className={cn(
-                              role.endDate == 'present' && 'shimmer',
-                            )}
+                            className={cn(role.endDate == 'Now' && 'shimmer')}
                           >
                             {role.endDate}
                           </span>
@@ -129,6 +124,76 @@ export const Experience = ({ simplified }: Props) => {
               </div>
             )}
           </React.Fragment>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+export const SimplifiedExperience = () => {
+  return (
+    <section className="space-y-6">
+      <div className="flex items-center justify-between gap-2">
+        <h2 className="font-medium">Experience</h2>
+
+        <div className="flex justify-center">
+          <Link
+            to="/work"
+            className={buttonVariants({ variant: 'link', size: 'xs' })}
+          >
+            Show More
+          </Link>
+        </div>
+      </div>
+
+      <div className="space-y-3">
+        {experiences.map((exp) => (
+          <div key={exp.company}>
+            {/* <div className="flex justify-end sm:hidden text-sm">
+              <span className="text-muted-foreground">
+                {exp.roles[0]?.position}
+              </span>
+            </div> */}
+
+            <div className="flex items-center gap-4">
+              {/* duration */}
+              <span className="text-muted-foreground text-sm">
+                {exp.roles.at(-1)?.startDate} –{' '}
+                <span
+                  className={cn(exp.roles[0].endDate == 'Now' && 'shimmer')}
+                >
+                  {exp.roles[0].endDate}
+                </span>
+              </span>
+
+              {/* line */}
+              <span className="flex-1 border-t border-dashed" />
+
+              {/* company */}
+              <span className="flex flex-col items-end sm:inline">
+                <span className="text-muted-foreground inline text-sm sm:hidden">
+                  {exp.roles[0]?.position}
+                </span>
+
+                <span className="text-muted-foreground hidden sm:inline">
+                  {exp.roles[0]?.position} at{' '}
+                </span>
+
+                {exp.url ? (
+                  <a
+                    href={exp.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex w-fit cursor-alias items-center justify-end gap-0.5 underline-offset-4 hover:underline"
+                  >
+                    {exp.company} <IconArrowUpRight className="size-4" />
+                  </a>
+                ) : (
+                  <span>{exp.company}</span>
+                )}
+              </span>
+            </div>
+          </div>
         ))}
       </div>
     </section>

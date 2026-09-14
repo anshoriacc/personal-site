@@ -3,10 +3,9 @@ import { createFileRoute } from '@tanstack/react-router'
 import { createPageMeta } from '@/lib/seo'
 import { getCurrentlyPlayingQueryOptions } from '@/hooks/api/spotify'
 import { getGithubContributionsQueryOptions } from '@/hooks/api/github-contributions'
-import { GitHubContributions } from '@/components/github-contributions'
 import { MotionContainer, MotionItem } from '@/components/ui/motion'
 import { CurrentlyPlaying } from '@/components/currently-playing'
-import { Experience } from '@/components/experience'
+import { SimplifiedExperience } from '@/components/experience'
 import { Profile } from '@/components/profile'
 
 export const Route = createFileRoute('/(home)/_layout/')({
@@ -14,8 +13,14 @@ export const Route = createFileRoute('/(home)/_layout/')({
   loader: async ({ context }) => {
     try {
       await Promise.all([
-        context.queryClient.ensureQueryData(getGithubContributionsQueryOptions),
-        context.queryClient.ensureQueryData(getCurrentlyPlayingQueryOptions),
+        context.queryClient.query({
+          ...getGithubContributionsQueryOptions,
+          staleTime: Infinity,
+        }),
+        context.queryClient.query({
+          ...getCurrentlyPlayingQueryOptions,
+          staleTime: Infinity,
+        }),
       ])
     } catch (error) {
       console.error('Error prefetching data in HomePage loader:', error)
@@ -32,11 +37,7 @@ function HomePage() {
       </MotionItem>
 
       <MotionItem>
-        <Experience simplified />
-      </MotionItem>
-
-      <MotionItem>
-        <GitHubContributions />
+        <SimplifiedExperience />
       </MotionItem>
 
       <MotionItem>

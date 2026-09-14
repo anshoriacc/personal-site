@@ -1,9 +1,7 @@
-import React from 'react'
+import dayjs from 'dayjs'
+
 import { cn } from '@/lib/utils'
 import { useGetGithubContributionsQuery } from '@/hooks/api/github-contributions'
-import { ScrollArea, ScrollBar } from './ui/scroll-area'
-import { GithubIcon } from './svg/github-icon'
-import { Button } from './ui/button'
 import {
   Tooltip,
   TooltipContent,
@@ -11,187 +9,135 @@ import {
   TooltipTrigger,
 } from './ui/tooltip'
 
-const monthFormatter = new Intl.DateTimeFormat(undefined, { month: 'short' })
-const dateFormatter = new Intl.DateTimeFormat(undefined, {
-  month: 'short',
-  day: 'numeric',
-  year: 'numeric',
-})
+const levelClasses = [
+  'bg-muted',
+  'bg-neutral-300 dark:bg-neutral-600',
+  'bg-neutral-500 dark:bg-neutral-400',
+  'bg-neutral-700 dark:bg-neutral-200',
+  'bg-neutral-900 dark:bg-neutral-50',
+]
 
 const formatContributionDate = (date: string): string => {
-  const parsedDate = new Date(date)
+  const parsedDate = dayjs(date)
 
-  if (Number.isNaN(parsedDate.getTime())) {
+  if (!parsedDate.isValid()) {
     return date
   }
 
-  return dateFormatter.format(parsedDate)
+  return parsedDate.format('MMM D, YYYY')
 }
 
-const ContributionCell = React.memo(
-  ({
-    contribution,
-  }: {
-    contribution: {
-      date: string
-      count: number
-      level: 0 | 1 | 2 | 3 | 4
-    }
-  }) => {
-    const levelClasses = [
-      'bg-muted',
-      'bg-neutral-300 dark:bg-neutral-600',
-      'bg-neutral-500 dark:bg-neutral-400',
-      'bg-neutral-700 dark:bg-neutral-200',
-      'bg-neutral-900 dark:bg-neutral-50',
-    ]
+function ContributionCell({
+  contribution,
+}: {
+  contribution: {
+    date: string
+    count: number
+    level: 0 | 1 | 2 | 3 | 4
+  }
+}) {
+  return (
+    <Tooltip disableHoverablePopup withoutProviders>
+      <TooltipTrigger
+        render={
+          <span
+            className={cn(
+              'aspect-square size-1.5 w-full min-w-0 rounded-xs',
+              levelClasses[contribution.level],
+            )}
+            aria-hidden="true"
+          />
+        }
+      />
 
-    return (
-      <Tooltip key={contribution.date} disableHoverablePopup withoutProviders>
-        <TooltipTrigger
-          render={
-            <span
-              className={cn(
-                'size-2 rounded-xs',
-                levelClasses[contribution.level],
-              )}
-            />
-          }
-        />
-
-        <TooltipContent className="select-none">
-          <p>
-            {contribution.count} contribution
-            {contribution.count !== 1 ? 's' : ''} on{' '}
-            {formatContributionDate(contribution.date)}
-          </p>
-        </TooltipContent>
-      </Tooltip>
-    )
-  },
-)
-
-ContributionCell.displayName = 'ContributionCell'
+      <TooltipContent className="select-none">
+        <p>
+          {contribution.count} contribution
+          {contribution.count !== 1 ? 's' : ''} on{' '}
+          {formatContributionDate(contribution.date)}
+        </p>
+      </TooltipContent>
+    </Tooltip>
+  )
+}
 
 export const GitHubContributions = () => {
   const githubContributionsQuery = useGetGithubContributionsQuery()
 
   const contributions = githubContributionsQuery.data?.contributions ?? []
 
-  const monthLabels = React.useMemo(
-    () =>
-      contributions.reduce<Array<{ month: string; columnIndex: number }>>(
-        (acc, contribution, index) => {
-          const date = new Date(contribution.date)
-
-          if (Number.isNaN(date.getTime())) {
-            return acc
-          }
-
-          if (date.getDate() === 1) {
-            const month = monthFormatter.format(date)
-            const columnIndex = Math.floor(index / 7)
-            acc.push({ month, columnIndex })
-          }
-
-          return acc
-        },
-        [],
-      ),
-    [contributions],
-  )
-
   return (
-    <section className="group relative flex w-full flex-col gap-2">
-      <div className="flex items-center gap-2">
-        <h2 className="font-medium">GitHub Contributions</h2>
-        <Button
-          variant="secondary"
-          size="xs"
-          className="gap-1"
-          render={
-            <a
-              href="https://github.com/anshoriacc"
-              target="_blank"
-              rel="noreferrer"
-              className="cursor-alias"
-            />
-          }
-          nativeButton={false}
-        >
-          <GithubIcon aria-hidden="true" className="size-3.5" />
-          GitHub
-        </Button>
-      </div>
-
-      {githubContributionsQuery.data ? (
-        <div className="relative w-full">
-          <ScrollArea
+    <div className="flex flex-col gap-1 select-none">
+      <div className="ring-foreground/10 bg-background rounded-md p-1 ring-1">
+        {githubContributionsQuery.data ? (
+          <div
             className="w-full"
-            viewportClassName="scroll-fade-4 data-[has-overflow-x]:scroll-fade-x"
+            role="img"
+            aria-label={`${githubContributionsQuery.data.total.lastYear ?? 0} GitHub contributions in the last year`}
           >
-            <div className="flex min-w-max flex-col">
+            <TooltipProvider delay={0}>
               <div
-                className="text-muted-foreground mb-1 grid gap-0.5 text-xs"
+                className="grid w-full grid-flow-col grid-rows-7 gap-0.5"
                 style={{
-                  gridTemplateColumns: `repeat(${Math.ceil(contributions.length / 7)}, 0.5rem)`,
+                  gridTemplateColumns: `repeat(${Math.ceil(contributions.length / 7)}, minmax(0, 1fr))`,
                 }}
               >
-                {monthLabels.map(({ month, columnIndex }) => (
-                  <div
-                    key={`${month}-${columnIndex}`}
-                    style={{ gridColumnStart: columnIndex + 1 }}
-                    className="whitespace-nowrap"
-                  >
-                    {month}
-                  </div>
+                {contributions.map((contribution) => (
+                  <ContributionCell
+                    key={contribution.date}
+                    contribution={contribution}
+                  />
                 ))}
               </div>
-
-              <TooltipProvider delay={100}>
-                <div
-                  className="grid grid-flow-col grid-rows-7 gap-0.5 pb-2"
-                  style={{
-                    gridTemplateColumns: `repeat(${Math.ceil(contributions.length / 7)}, 0.5rem)`,
-                  }}
-                >
-                  {contributions.map((contribution) => (
-                    <ContributionCell
-                      key={contribution.date}
-                      contribution={contribution}
-                    />
-                  ))}
-                </div>
-              </TooltipProvider>
-            </div>
-            <ScrollBar
-              orientation="horizontal"
-              className="data-horizontal:h-2"
-            />
-          </ScrollArea>
-        </div>
-      ) : (
-        <div
-          className={cn(
-            'w-full overflow-hidden',
-            githubContributionsQuery.isLoading && 'animate-pulse blur-sm',
-          )}
-        >
-          <div className="flex flex-col gap-1">
-            <div className="ml-1 flex gap-8">
-              {Array.from({ length: 12 }).map((_, i) => (
-                <div key={i} className="h-4 w-8 rounded-xs" />
-              ))}
-            </div>
-
-            <div className="grid grid-flow-col grid-rows-7 gap-0.5 pb-2">
-              {Array.from({ length: 371 }).map((_, i) => (
-                <div key={i} className="bg-muted size-2 rounded-xs" />
-              ))}
-            </div>
+            </TooltipProvider>
           </div>
+        ) : githubContributionsQuery.isLoading ? (
+          <div
+            className="grid w-full grid-flow-col grid-rows-7 gap-0.5 blur-sm motion-safe:**:animate-pulse"
+            style={{
+              gridTemplateColumns: 'repeat(53, minmax(0, 1fr))',
+            }}
+            aria-hidden="true"
+          >
+            {Array.from({ length: 371 }).map((_, index) => (
+              <div
+                key={index}
+                className="bg-muted aspect-square w-full min-w-0 rounded-xs"
+              />
+            ))}
+          </div>
+        ) : (
+          <p className="text-muted-foreground px-2 py-3 text-xs">
+            GitHub activity unavailable. Open the profile to try again.
+          </p>
+        )}
+      </div>
+
+      <div className="flex items-center gap-1.25">
+        <img
+          src="https://avatars.githubusercontent.com/u/50905938"
+          alt=""
+          draggable={false}
+          className="ring-foreground/10 size-10 rounded-full ring-1"
+        />
+
+        <div className="flex flex-col">
+          <a
+            href="https://github.com/anshoriacc"
+            target="_blank"
+            rel="noreferrer"
+            className="w-fit cursor-alias text-base font-semibold underline-offset-4 hover:underline"
+          >
+            anshoriacc
+          </a>
+          {githubContributionsQuery.data && (
+            <span className="text-muted-foreground tabular-nums">
+              {githubContributionsQuery.data.total.lastYear ?? 0} contributions
+              in the last year
+            </span>
+          )}
         </div>
-      )}
-    </section>
+      </div>
+    </div>
   )
 }

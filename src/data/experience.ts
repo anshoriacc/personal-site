@@ -3,7 +3,7 @@ export type ExperienceRole = {
   type?: string
   location?: string
   startDate: string
-  endDate: string | 'present'
+  endDate: string | 'Now'
   description?: string
   responsibilities?: Array<string>
   technologies?: Array<string>
@@ -23,7 +23,7 @@ export const experiences: Array<Experience> = [
         position: 'Full Stack Developer',
         type: 'Full-time',
         startDate: 'May 2026',
-        endDate: 'present',
+        endDate: 'Now',
         description: 'Working on several projects, including Integra Brimob.',
         responsibilities: [
           'Architecting the frontend foundation for Integra Brimob, establishing project structure, reusable UI components, and conventions for scalable feature development.',

@@ -1,9 +1,5 @@
 import { cn } from '@/lib/utils'
-import { Button } from './ui/button'
-import { MailIcon } from './svg/mail-icon'
-import { GithubIcon } from './svg/github-icon'
-import { LinkedInIcon } from './svg/linkedin-icon'
-import { FileTextIcon } from './svg/file-text-icon'
+import { SocialLinks } from './social-links'
 
 export const Profile = () => {
   return (
@@ -27,68 +23,7 @@ export const Profile = () => {
         in <span>Jakarta, Indonesia</span>.
       </p>
 
-      <div className="flex flex-wrap gap-2">
-        <Button
-          variant="secondary"
-          className="gap-1"
-          render={<a href="mailto:anshoriacc@gmail.com" />}
-          nativeButton={false}
-        >
-          <MailIcon className="size-4" />
-          Mail
-        </Button>
-
-        <Button
-          variant="secondary"
-          className="gap-1"
-          render={
-            <a
-              href="https://resume.anshori.com"
-              target="_blank"
-              rel="noreferrer"
-              className="cursor-alias"
-            />
-          }
-          nativeButton={false}
-        >
-          <FileTextIcon className="size-4" />
-          Resume
-        </Button>
-
-        <Button
-          variant="secondary"
-          className="gap-1"
-          render={
-            <a
-              href="https://github.com/anshoriacc"
-              target="_blank"
-              rel="noreferrer"
-              className="cursor-alias"
-            />
-          }
-          nativeButton={false}
-        >
-          <GithubIcon className="size-4" />
-          GitHub
-        </Button>
-
-        <Button
-          variant="secondary"
-          className="gap-1"
-          render={
-            <a
-              href="https://www.linkedin.com/in/achmad-anshori"
-              target="_blank"
-              rel="noreferrer"
-              className="cursor-alias"
-            />
-          }
-          nativeButton={false}
-        >
-          <LinkedInIcon className="size-4" />
-          LinkedIn
-        </Button>
-      </div>
+      <SocialLinks />
     </section>
   )
 }
