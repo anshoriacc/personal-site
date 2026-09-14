@@ -48,7 +48,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           {
             name: 'keywords',
             content:
-              'Achmad Anshori, Software Engineer, Web Developer, React, TypeScript, TanStack, Jakarta, Indonesia, Full Stack Developer',
+              'Achmad Anshori, anshori, Software Engineer, Web Developer, React, TypeScript, TanStack, Jakarta, Indonesia, Full Stack Developer',
           },
           ...meta,
         ],

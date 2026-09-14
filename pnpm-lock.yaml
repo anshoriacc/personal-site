@@ -59,6 +59,9 @@ importers:
       date-fns:
         specifier: ^4.4.0
         version: 4.4.0
+      dayjs:
+        specifier: ^1.11.23
+        version: 1.11.23
       fflate:
         specifier: ^0.8.3
         version: 0.8.3

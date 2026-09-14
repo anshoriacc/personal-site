@@ -1,7 +1,6 @@
 import type { CSSProperties } from 'react'
 
 import { useGetGithubContributionsQuery } from '@/hooks/api/github-contributions'
-
 import { cn } from '@/lib/utils'
 
 const ROW_COUNT = 7
@@ -9,11 +8,12 @@ const PLACEHOLDER_COUNT = 371
 
 const getGridStyle = (itemCount: number): CSSProperties => {
   const columnCount = Math.max(1, Math.ceil(itemCount / ROW_COUNT))
-  const ratioUnitCount = columnCount * 4 - 1
+  // const ratioUnitCount = columnCount * 4 - 1
 
   return {
-    gridTemplateColumns: `repeat(${columnCount}, calc(300cqw / ${ratioUnitCount}))`,
-    gap: `calc(100cqw / ${ratioUnitCount})`,
+    gridTemplateColumns: `repeat(${columnCount}, minmax(0, 1fr))`,
+    // gridTemplateColumns: `repeat(${columnCount}, calc(300cqw / ${ratioUnitCount}))`,
+    // gap: `calc(100cqw / ${ratioUnitCount})`,
   }
 }
 
@@ -32,7 +32,7 @@ export const Footer = () => {
 
   return (
     <footer className="w-full p-4">
-      <div>
+      <div className="pointer-events-none opacity-50">
         {githubContributionsQuery.data ? (
           <div className="@container w-full">
             <div
@@ -43,7 +43,7 @@ export const Footer = () => {
                 <span
                   key={contribution.date}
                   className={cn(
-                    'ring-muted aspect-square w-full rounded-[18%] transition-all duration-100 hover:ring-2',
+                    'ring-muted aspect-square w-full',
                     levelClasses[contribution.level],
                   )}
                 />
@@ -62,10 +62,7 @@ export const Footer = () => {
               style={getGridStyle(PLACEHOLDER_COUNT)}
             >
               {Array.from({ length: PLACEHOLDER_COUNT }).map((_, i) => (
-                <div
-                  key={i}
-                  className="bg-muted aspect-square w-full rounded-[18%]"
-                />
+                <div key={i} className="bg-muted aspect-square w-full" />
               ))}
             </div>
           </div>
