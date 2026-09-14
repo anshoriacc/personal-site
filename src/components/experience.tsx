@@ -149,12 +149,6 @@ export const SimplifiedExperience = () => {
       <div className="space-y-3">
         {experiences.map((exp) => (
           <div key={exp.company}>
-            {/* <div className="flex justify-end sm:hidden text-sm">
-              <span className="text-muted-foreground">
-                {exp.roles[0]?.position}
-              </span>
-            </div> */}
-
             <div className="flex items-center gap-4">
               {/* duration */}
               <span className="text-muted-foreground text-sm">
@@ -171,12 +165,9 @@ export const SimplifiedExperience = () => {
 
               {/* company */}
               <span className="flex flex-col items-end sm:inline">
-                <span className="text-muted-foreground inline text-sm sm:hidden">
+                <span className="text-muted-foreground text-sm sm:text-base">
                   {exp.roles[0]?.position}
-                </span>
-
-                <span className="text-muted-foreground hidden sm:inline">
-                  {exp.roles[0]?.position} at{' '}
+                  <span className="hidden sm:inline"> at </span>
                 </span>
 
                 {exp.url ? (
