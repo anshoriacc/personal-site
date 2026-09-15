@@ -528,10 +528,7 @@ function DateTimePicker({
                   updateTime('hour', String(nextValue))
                 }
               >
-                <SelectTrigger
-                  aria-label={`${label} hour`}
-                  className="w-[4.5rem]"
-                >
+                <SelectTrigger aria-label={`${label} hour`} className="w-18">
                   <SelectValue>{hourValue}</SelectValue>
                 </SelectTrigger>
                 <SelectContent alignItemWithTrigger={false}>
@@ -554,10 +551,7 @@ function DateTimePicker({
                   updateTime('minute', String(nextValue))
                 }
               >
-                <SelectTrigger
-                  aria-label={`${label} minute`}
-                  className="w-[4.5rem]"
-                >
+                <SelectTrigger aria-label={`${label} minute`} className="w-18">
                   <SelectValue>{minuteValue}</SelectValue>
                 </SelectTrigger>
                 <SelectContent alignItemWithTrigger={false}>

@@ -3,7 +3,6 @@ import { createFileRoute } from '@tanstack/react-router'
 import { createPageMeta } from '@/lib/seo'
 import { getCurrentlyPlayingQueryOptions } from '@/hooks/api/spotify'
 import { getGithubContributionsQueryOptions } from '@/hooks/api/github-contributions'
-import { MotionContainer, MotionItem } from '@/components/ui/motion'
 import { CurrentlyPlaying } from '@/components/currently-playing'
 import { SimplifiedExperience } from '@/components/experience'
 import { Profile } from '@/components/profile'
@@ -31,18 +30,12 @@ export const Route = createFileRoute('/(home)/_layout/')({
 
 function HomePage() {
   return (
-    <MotionContainer as="main" className="space-y-12">
-      <MotionItem>
-        <Profile />
-      </MotionItem>
+    <main className="space-y-12">
+      <Profile />
 
-      <MotionItem>
-        <SimplifiedExperience />
-      </MotionItem>
+      <SimplifiedExperience />
 
-      <MotionItem>
-        <CurrentlyPlaying />
-      </MotionItem>
-    </MotionContainer>
+      <CurrentlyPlaying />
+    </main>
   )
 }

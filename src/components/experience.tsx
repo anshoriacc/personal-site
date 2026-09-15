@@ -1,11 +1,11 @@
 import React from 'react'
 import { Link } from '@tanstack/react-router'
+import { IconArrowUpRight } from '@tabler/icons-react'
 
 import { cn } from '@/lib/utils'
 import { experiences } from '@/data/experience'
 import { buttonVariants } from './ui/button'
 import { Badge } from './ui/badge'
-import { IconArrowUpRight } from '@tabler/icons-react'
 
 type Props = {
   simplified?: boolean

@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { createPageMeta } from '@/lib/seo'
-import { MotionContainer, MotionItem } from '@/components/ui/motion'
+import { MotionContainer } from '@/components/ui/motion'
 import { Experience } from '@/components/experience'
 
 export const Route = createFileRoute('/(home)/_layout/work')({
@@ -18,13 +18,9 @@ export const Route = createFileRoute('/(home)/_layout/work')({
 function WorksPage() {
   return (
     <MotionContainer as="main" className="flex flex-col gap-12">
-      <MotionItem>
-        <h1 className="font-semibold sm:text-lg">Work</h1>
-      </MotionItem>
+      <h1 className="font-semibold sm:text-lg">Work</h1>
 
-      <MotionItem>
-        <Experience />
-      </MotionItem>
+      <Experience />
     </MotionContainer>
   )
 }
