@@ -1,29 +1,21 @@
 import React from 'react'
+import { Link, RouterState, useRouterState } from '@tanstack/react-router'
+import { IconFolderCode, IconHome } from '@tabler/icons-react'
 import {
-  Link,
-  RouterState,
-  useCanGoBack,
-  useRouter,
-  useRouterState,
-} from '@tanstack/react-router'
-import {
+  useReducedMotion,
   AnimatePresence,
+  type Variants,
   MotionConfig,
   motion,
-  useReducedMotion,
-  type Variants,
 } from 'motion/react'
-import { IconChevronLeft, IconFolderCode, IconHome } from '@tabler/icons-react'
 
 import { cn } from '@/lib/utils'
 import { useMounted } from '@/hooks/use-mounted'
 import { ThemeToggle } from './theme-toggle'
 import { Clock } from './clock'
 
-type ViewState = 'idle' | 'expanded'
-
 type IslandState = {
-  view: ViewState
+  expanded: boolean
   instant: boolean
 }
 
@@ -34,17 +26,18 @@ type RevealMotion = {
 
 const SITE_NAVIGATION_ID = 'site-navigation'
 const HOVER_MEDIA_QUERY = '(hover: hover) and (pointer: fine)'
+const HOVER_CLOSE_DELAY_MS = 80
 const EASE_OUT = [0.23, 1, 0.32, 1] as const
 
-const SHELL_TRANSITIONS = {
-  expanded: { type: 'spring', duration: 0.32, bounce: 0.12 },
-  idle: { type: 'spring', duration: 0.24, bounce: 0.04 },
+const ISLAND_TRANSITION = {
+  type: 'spring',
+  duration: 0.5,
+  bounce: 0.2,
 } as const
 
 const REVEAL_VARIANTS: Variants = {
   hidden: ({ instant, reduced }: RevealMotion) => ({
     opacity: 0,
-    filter: reduced ? 'blur(0px)' : 'blur(2px)',
     transition: {
       duration: instant ? 0 : reduced ? 0.12 : 0.1,
       ease: EASE_OUT,
@@ -52,7 +45,6 @@ const REVEAL_VARIANTS: Variants = {
   }),
   visible: ({ instant, reduced }: RevealMotion) => ({
     opacity: 1,
-    filter: 'blur(0px)',
     transition: {
       delay: instant || reduced ? 0 : 0.04,
       duration: instant ? 0 : reduced ? 0.12 : 0.16,
@@ -66,115 +58,93 @@ const MENU_ITEMS = [
   { to: '/work', label: 'Work', icon: IconFolderCode },
 ] as const
 
+const canUseHover = () => window.matchMedia(HOVER_MEDIA_QUERY).matches
+
 export const Header = () => {
-  const canGoBack = useCanGoBack()
-  const router = useRouter()
   const routerStatus = useRouterState({
     select: (state: RouterState) => state.status,
   })
 
   const [islandState, setIslandState] = React.useState<IslandState>({
-    view: 'idle',
+    expanded: false,
     instant: true,
   })
   const isMounted = useMounted()
-  const canHover = useCanHover()
   const shouldReduceMotion = useReducedMotion()
 
-  const { view } = islandState
-  const isExpanded = view === 'expanded'
+  const { expanded: isExpanded, instant } = islandState
   const revealMotion: RevealMotion = {
-    instant: islandState.instant,
+    instant,
     reduced: Boolean(shouldReduceMotion),
   }
   const shellTransition =
-    islandState.instant || shouldReduceMotion
-      ? { duration: 0 }
-      : SHELL_TRANSITIONS[view]
+    instant || shouldReduceMotion ? { duration: 0 } : ISLAND_TRANSITION
 
   const headerRef = React.useRef<HTMLElement>(null)
   const triggerRef = React.useRef<HTMLButtonElement>(null)
   const hoverTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(
     null,
   )
-  const isHoveringRef = React.useRef(false)
-  const preserveFocusOnLeaveRef = React.useRef(false)
-  const pointerRef = React.useRef({ x: -Infinity, y: -Infinity })
+  const openedWithKeyboardRef = React.useRef(false)
 
-  const handleViewChange = React.useCallback(
-    (newView: ViewState, instant = false) => {
+  const setExpanded = React.useCallback(
+    (expanded: boolean, nextInstant = false) => {
       setIslandState((current) => {
-        if (current.view === newView) return current
+        if (current.expanded === expanded) return current
 
-        return { view: newView, instant }
+        return { expanded, instant: nextInstant }
       })
     },
     [],
   )
 
+  const clearHoverTimeout = React.useCallback(() => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current)
+      hoverTimeoutRef.current = null
+    }
+  }, [])
+
   const handlePointerEnter = React.useCallback(
-    (event?: React.PointerEvent<HTMLElement>) => {
-      if (!canHover || event?.pointerType === 'touch') return
+    (event: React.PointerEvent<HTMLElement>) => {
+      if (event.pointerType === 'touch' || !canUseHover()) return
 
-      if (hoverTimeoutRef.current) {
-        clearTimeout(hoverTimeoutRef.current)
-      }
-
-      isHoveringRef.current = true
-      handleViewChange('expanded')
+      clearHoverTimeout()
+      openedWithKeyboardRef.current = false
+      setExpanded(true)
     },
-    [canHover, handleViewChange],
+    [clearHoverTimeout, setExpanded],
   )
 
   const handlePointerLeave = React.useCallback(
     (event: React.PointerEvent<HTMLElement>) => {
-      if (!canHover || event.pointerType === 'touch') return
+      if (event.pointerType === 'touch' || !canUseHover()) return
 
-      if (hoverTimeoutRef.current) {
-        clearTimeout(hoverTimeoutRef.current)
-      }
-
-      isHoveringRef.current = false
-
+      clearHoverTimeout()
       hoverTimeoutRef.current = setTimeout(() => {
-        const activeElement = document.activeElement
-        const focusIsInside = headerRef.current?.contains(activeElement)
-        const expandedControlHasFocus =
-          focusIsInside && activeElement !== triggerRef.current
+        hoverTimeoutRef.current = null
 
-        if (
-          !isHoveringRef.current &&
-          !(
-            focusIsInside &&
-            (preserveFocusOnLeaveRef.current || expandedControlHasFocus)
-          )
-        ) {
-          handleViewChange('idle')
+        const header = headerRef.current
+        const keyboardFocusIsInside =
+          openedWithKeyboardRef.current &&
+          Boolean(header?.contains(document.activeElement))
+
+        if (!header?.matches(':hover') && !keyboardFocusIsInside) {
+          setExpanded(false)
         }
-      }, 50)
+      }, HOVER_CLOSE_DELAY_MS)
     },
-    [canHover, handleViewChange],
+    [clearHoverTimeout, setExpanded],
   )
 
   const handleTriggerClick = React.useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
       const isKeyboardClick = event.detail === 0
-      preserveFocusOnLeaveRef.current = isKeyboardClick
-
-      handleViewChange(isExpanded ? 'idle' : 'expanded', isKeyboardClick)
+      openedWithKeyboardRef.current = isKeyboardClick
+      clearHoverTimeout()
+      setExpanded(!isExpanded, isKeyboardClick)
     },
-    [handleViewChange, isExpanded],
-  )
-
-  const handleTriggerKeyDown = React.useCallback(
-    (event: React.KeyboardEvent<HTMLButtonElement>) => {
-      if (event.key !== 'Enter' && event.key !== ' ') return
-
-      event.preventDefault()
-      preserveFocusOnLeaveRef.current = true
-      handleViewChange(isExpanded ? 'idle' : 'expanded', true)
-    },
-    [handleViewChange, isExpanded],
+    [clearHoverTimeout, isExpanded, setExpanded],
   )
 
   const handleBlurCapture = React.useCallback(
@@ -183,32 +153,14 @@ export const Header = () => {
 
       if (nextTarget && event.currentTarget.contains(nextTarget)) return
 
-      preserveFocusOnLeaveRef.current = false
+      openedWithKeyboardRef.current = false
 
-      if (!isHoveringRef.current) {
-        handleViewChange('idle', true)
+      if (!event.currentTarget.matches(':hover')) {
+        setExpanded(false, true)
       }
     },
-    [handleViewChange],
+    [setExpanded],
   )
-
-  // When the back button finishes collapsing, the header slides under a
-  // stationary cursor. Browsers don't fire pointerenter for layout shifts, so
-  // re-check the click position and expand if it's now hovering the header.
-  const handleBackExitComplete = React.useCallback(() => {
-    if (!canHover) return
-
-    const rect = headerRef.current?.getBoundingClientRect()
-    if (!rect) return
-
-    const { x, y } = pointerRef.current
-    const isPointerOverHeader =
-      x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom
-
-    if (isPointerOverHeader) {
-      handlePointerEnter()
-    }
-  }, [canHover, handlePointerEnter])
 
   React.useEffect(() => {
     if (!isExpanded) return
@@ -218,13 +170,17 @@ export const Header = () => {
         headerRef.current &&
         !headerRef.current.contains(event.target as Node)
       ) {
-        handleViewChange('idle')
+        clearHoverTimeout()
+        openedWithKeyboardRef.current = false
+        setExpanded(false)
       }
     }
 
     const handleScroll = () => {
-      if (!canHover) {
-        handleViewChange('idle')
+      if (!canUseHover()) {
+        clearHoverTimeout()
+        openedWithKeyboardRef.current = false
+        setExpanded(false)
       }
     }
 
@@ -235,7 +191,9 @@ export const Header = () => {
         document.activeElement,
       )
 
-      handleViewChange('idle', true)
+      clearHoverTimeout()
+      openedWithKeyboardRef.current = false
+      setExpanded(false, true)
 
       if (shouldRestoreFocus) {
         requestAnimationFrame(() => triggerRef.current?.focus())
@@ -255,24 +213,9 @@ export const Header = () => {
       document.removeEventListener('keydown', handleKeyDown)
       window.removeEventListener('scroll', handleScroll)
     }
-  }, [canHover, handleViewChange, isExpanded])
+  }, [clearHoverTimeout, isExpanded, setExpanded])
 
-  React.useEffect(
-    () => () => {
-      if (hoverTimeoutRef.current) {
-        clearTimeout(hoverTimeoutRef.current)
-      }
-    },
-    [],
-  )
-
-  const handleBackClick = React.useCallback(
-    (event: React.MouseEvent<HTMLButtonElement>) => {
-      pointerRef.current = { x: event.clientX, y: event.clientY }
-      router.history.back()
-    },
-    [router],
-  )
+  React.useEffect(() => clearHoverTimeout, [clearHoverTimeout])
 
   return (
     <MotionConfig reducedMotion="user">
@@ -281,64 +224,13 @@ export const Header = () => {
         className="dark group pointer-events-none fixed top-6 left-0 z-10 flex w-full cursor-default select-none"
       >
         <div className="mx-auto flex">
-          <AnimatePresence
-            mode="popLayout"
-            initial={false}
-            onExitComplete={handleBackExitComplete}
-          >
-            {isMounted && canGoBack && !isExpanded ? (
-              <motion.div
-                initial={{ width: 0, opacity: 0 }}
-                animate={{ width: 42, opacity: 1 }}
-                exit={{ width: 0, opacity: 0 }}
-                transition={{
-                  type: 'spring',
-                  bounce: 0,
-                  duration: shouldReduceMotion ? 0 : 0.2,
-                }}
-                className="pointer-events-auto aspect-square p-1.25"
-              >
-                <motion.button
-                  initial={{
-                    scale: 0.96,
-                    opacity: 0,
-                    filter: 'blur(4px)',
-                    x: -5,
-                  }}
-                  animate={{ scale: 1, opacity: 1, filter: 'blur(0px)', x: 0 }}
-                  exit={{
-                    scale: 0.96,
-                    opacity: 0,
-                    filter: 'blur(4px)',
-                    x: -5,
-                  }}
-                  transition={{
-                    type: 'spring',
-                    bounce: 0,
-                    duration: shouldReduceMotion ? 0 : 0.2,
-                  }}
-                  onClick={handleBackClick}
-                  aria-label="Go Back"
-                  style={{ borderRadius: 10 }}
-                  className={cn(
-                    'flex size-8 items-center justify-center bg-black text-neutral-50 shadow-md',
-                    'box-border border border-white/5 bg-clip-padding backdrop-blur-md backdrop-brightness-100 backdrop-saturate-100',
-                    'touch-manipulation transition-colors hover:bg-neutral-900 focus-visible:ring-2 focus-visible:ring-neutral-100 focus-visible:outline-none',
-                  )}
-                >
-                  <IconChevronLeft aria-hidden="true" className="size-5" />
-                </motion.button>
-              </motion.div>
-            ) : null}
-          </AnimatePresence>
-
           <motion.header
             ref={headerRef}
             layout
             onPointerEnter={handlePointerEnter}
             onPointerLeave={handlePointerLeave}
             onPointerDownCapture={() => {
-              preserveFocusOnLeaveRef.current = false
+              openedWithKeyboardRef.current = false
             }}
             onBlurCapture={handleBlurCapture}
             transition={{ layout: shellTransition }}
@@ -348,29 +240,24 @@ export const Header = () => {
               'box-border border border-white/5 bg-clip-padding backdrop-blur-md backdrop-brightness-100 backdrop-saturate-100',
             )}
           >
-            <motion.div
-              layout
-              className={cn(
-                'relative flex flex-col',
-                isExpanded ? 'w-50' : 'w-auto',
-              )}
+            <div
+              className={cn('relative grid', isExpanded ? 'w-50' : 'w-auto')}
             >
-              <motion.div
-                layout
-                className="relative flex items-center justify-between"
+              <motion.button
+                ref={triggerRef}
+                layout="position"
+                type="button"
+                aria-label={isExpanded ? 'Close Site Menu' : 'Open Site Menu'}
+                aria-expanded={isExpanded}
+                aria-controls={SITE_NAVIGATION_ID}
+                onClick={handleTriggerClick}
+                style={{ borderRadius: 14 }}
+                className={cn(
+                  'group/header-trigger z-10 col-start-1 row-start-1 flex h-10 shrink-0 touch-manipulation items-center py-1.5 pr-3 pl-1.5 text-left focus-visible:ring-2 focus-visible:ring-neutral-100 focus-visible:outline-none focus-visible:ring-inset',
+                  isExpanded ? 'w-full' : 'w-fit',
+                )}
               >
-                <motion.button
-                  ref={triggerRef}
-                  layout="position"
-                  type="button"
-                  aria-label={isExpanded ? 'Close Site Menu' : 'Open Site Menu'}
-                  aria-expanded={isExpanded}
-                  aria-controls={SITE_NAVIGATION_ID}
-                  onClick={handleTriggerClick}
-                  onKeyDown={handleTriggerKeyDown}
-                  style={{ borderRadius: 14 }}
-                  className="flex h-10 shrink-0 touch-manipulation items-center py-1.5 pr-3 pl-1.5 text-left focus-visible:ring-2 focus-visible:ring-neutral-100 focus-visible:outline-none focus-visible:ring-inset"
-                >
+                <span className="transition-transform duration-160 ease-[cubic-bezier(0.23,1,0.32,1)] group-active/header-trigger:scale-[0.97] motion-reduce:transform-none motion-reduce:transition-none">
                   <motion.span
                     initial={{
                       opacity: 0,
@@ -397,29 +284,8 @@ export const Header = () => {
                     <Clock />
                     <LoadingText isPending={routerStatus === 'pending'} />
                   </motion.span>
-                </motion.button>
-
-                <AnimatePresence
-                  mode="popLayout"
-                  initial={false}
-                  custom={revealMotion}
-                >
-                  {isExpanded ? (
-                    <motion.div
-                      key="theme-toggle"
-                      layout="position"
-                      custom={revealMotion}
-                      variants={REVEAL_VARIANTS}
-                      initial="hidden"
-                      animate="visible"
-                      exit="hidden"
-                      className="mr-1.5 flex shrink-0"
-                    >
-                      <ThemeToggle />
-                    </motion.div>
-                  ) : null}
-                </AnimatePresence>
-              </motion.div>
+                </span>
+              </motion.button>
 
               <AnimatePresence
                 mode="popLayout"
@@ -427,44 +293,53 @@ export const Header = () => {
                 custom={revealMotion}
               >
                 {isExpanded ? (
-                  <motion.nav
-                    key={SITE_NAVIGATION_ID}
-                    id={SITE_NAVIGATION_ID}
-                    aria-label="Primary"
-                    layout
+                  <motion.div
+                    key="expanded-content"
                     custom={revealMotion}
                     variants={REVEAL_VARIANTS}
                     initial="hidden"
                     animate="visible"
                     exit="hidden"
-                    className={cn(
-                      'relative flex flex-col gap-1 border-t border-t-white/20 p-1.5 text-sm',
-                      '*:flex *:items-center *:gap-2 *:rounded-md *:p-1.5',
-                    )}
+                    className="pointer-events-none relative z-20 col-start-1 row-start-1 flex w-50 flex-col"
                   >
-                    {MENU_ITEMS.map(({ to, label, icon: Icon }) => (
-                      <Link
-                        key={to}
-                        to={to}
-                        activeProps={{
-                          className: 'text-foreground bg-muted',
-                        }}
-                        inactiveProps={{
-                          className:
-                            'hover:text-foreground text-muted-foreground',
-                        }}
-                        onClick={(event) => {
-                          handleViewChange('idle', event.detail === 0)
-                        }}
-                      >
-                        <Icon aria-hidden="true" className="size-4" />
-                        {label}
-                      </Link>
-                    ))}
-                  </motion.nav>
+                    <div className="flex h-10 items-center justify-end pr-1.5">
+                      <div className="pointer-events-auto flex shrink-0">
+                        <ThemeToggle />
+                      </div>
+                    </div>
+
+                    <nav
+                      id={SITE_NAVIGATION_ID}
+                      aria-label="Primary"
+                      className={cn(
+                        'pointer-events-auto relative flex flex-col gap-1 border-t border-t-white/20 p-1.5 text-sm',
+                        '*:flex *:items-center *:gap-2 *:rounded-md *:p-1.5',
+                      )}
+                    >
+                      {MENU_ITEMS.map(({ to, label, icon: Icon }) => (
+                        <Link
+                          key={to}
+                          to={to}
+                          activeProps={{
+                            className: 'text-foreground bg-muted',
+                          }}
+                          inactiveProps={{
+                            className:
+                              'hover:text-foreground text-muted-foreground',
+                          }}
+                          onClick={(event) => {
+                            setExpanded(false, event.detail === 0)
+                          }}
+                        >
+                          <Icon aria-hidden="true" className="size-4" />
+                          {label}
+                        </Link>
+                      ))}
+                    </nav>
+                  </motion.div>
                 ) : null}
               </AnimatePresence>
-            </motion.div>
+            </div>
           </motion.header>
         </div>
       </motion.div>
@@ -501,20 +376,4 @@ const LoadingText = ({ isPending }: { isPending: boolean }) => {
       ) : null}
     </span>
   )
-}
-
-const useCanHover = (): boolean => {
-  const [canHover, setCanHover] = React.useState(false)
-
-  React.useEffect(() => {
-    const mediaQuery = window.matchMedia(HOVER_MEDIA_QUERY)
-    const syncCanHover = () => setCanHover(mediaQuery.matches)
-
-    syncCanHover()
-    mediaQuery.addEventListener('change', syncCanHover)
-
-    return () => mediaQuery.removeEventListener('change', syncCanHover)
-  }, [])
-
-  return canHover
 }
