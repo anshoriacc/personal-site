@@ -23,7 +23,7 @@ export const Experience = () => {
           return (
             <article key={exp.company} className="space-y-3">
               <div className="flex items-center gap-3">
-                <h3 className="text-foreground min-w-0 text-base font-semibold">
+                <h3 className="text-foreground min-w-0 text-base font-medium">
                   {exp.url ? (
                     <a
                       href={exp.url}
@@ -141,7 +141,7 @@ export const SimplifiedExperience = () => {
         {experiences.map((exp) => (
           <article key={exp.company} className="flex items-center gap-3">
             <div className="min-w-0 space-y-1">
-              <h3 className="text-foreground text-base leading-tight font-semibold">
+              <h3 className="text-foreground text-base leading-tight font-medium">
                 {exp.url ? (
                   <a
                     href={exp.url}
