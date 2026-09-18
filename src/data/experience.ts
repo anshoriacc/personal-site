@@ -4,7 +4,6 @@ export type ExperienceRole = {
   location?: string
   startDate: string
   endDate: string | 'Now'
-  description?: string
   responsibilities?: Array<string>
   technologies?: Array<string>
 }
@@ -12,19 +11,21 @@ export type ExperienceRole = {
 export type Experience = {
   company: string
   url?: string
+  description: string
   roles: Array<ExperienceRole>
 }
 
 export const experiences: Array<Experience> = [
   {
     company: 'Sentra Raya Solusi',
+    description:
+      'Working on several projects, including Integra Brimob, compliance audit-trail dashboards, and Satu SDM.',
     roles: [
       {
         position: 'Full Stack Developer',
         type: 'Full-time',
         startDate: 'May 2026',
         endDate: 'Now',
-        description: 'Working on several projects, including Integra Brimob.',
         responsibilities: [
           'Architecting the frontend foundation for Integra Brimob, establishing project structure, reusable UI components, and conventions for scalable feature development.',
         ],
@@ -32,11 +33,9 @@ export const experiences: Array<Experience> = [
       },
       {
         position: 'Frontend Engineer',
-        type: 'Freelance',
+        type: 'Part-time',
         startDate: 'Jul 2024',
         endDate: 'Apr 2026',
-        description:
-          'Contributed to client projects, including compliance audit-trail dashboards and Satu SDM.',
         responsibilities: [
           'Built compliance-focused audit-trail dashboards for Tugu Insurance and BSI.',
           'Delivered core features for Satu SDM.',
@@ -49,14 +48,14 @@ export const experiences: Array<Experience> = [
   {
     company: 'Travelio',
     url: 'https://www.linkedin.com/company/travelio-com',
+    description:
+      "Contributed to Travelio's online property rental and management platform.",
     roles: [
       {
         position: 'Software Engineer',
         type: 'Full-time',
         startDate: 'Dec 2025',
         endDate: 'Mar 2026',
-        description:
-          "Contributed to Travelio's online property rental and management platform.",
         responsibilities: [
           'Delivered features for Travelio Property Management.',
         ],
@@ -67,13 +66,13 @@ export const experiences: Array<Experience> = [
   {
     company: 'Bithealth',
     url: 'https://www.linkedin.com/company/bithealth',
+    description: 'Contributed to Hospita, a hospital management platform.',
     roles: [
       {
         position: 'Software Engineer',
         type: 'Full-time',
         startDate: 'Mar 2024',
         endDate: 'Nov 2025',
-        description: 'Contributed to Hospita, a hospital management platform.',
         responsibilities: [
           "Integrated BPJS Kesehatan's E-Klaim service into Hospita.",
           'Improved client and server performance by adopting TanStack Query and optimizing server-side queries.',
@@ -86,14 +85,13 @@ export const experiences: Array<Experience> = [
   {
     company: 'Vorta Siber Indonesia',
     url: 'https://www.linkedin.com/company/vorta-siber-indonesia',
+    description: 'Delivered web and mobile applications for multiple clients.',
     roles: [
       {
         position: 'Software Engineer',
         type: 'Full-time',
         startDate: 'Jun 2022',
         endDate: 'Mar 2024',
-        description:
-          'Delivered web and mobile applications for multiple clients.',
         responsibilities: [
           'Built client web and mobile applications with React and React Native.',
           'Integrated third-party face-recognition services into client applications.',

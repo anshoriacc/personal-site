@@ -37,7 +37,7 @@ function HomeLayout() {
 
       <Header />
 
-      <div className="mx-auto flex min-h-dvh w-full max-w-xl flex-col p-4 pt-22">
+      <div className="mx-auto flex min-h-dvh w-full max-w-2xl flex-col p-4 pt-22">
         <div className="flex flex-1 flex-col">
           <Outlet />
         </div>
