@@ -1,37 +1,26 @@
 import { createServerFn } from '@tanstack/react-start'
-import { LRUCache } from '@/lib/lru-cache'
+import { AsyncTTLCache } from '@/lib/async-ttl-cache'
 
-// Cache GitHub contributions for 1 hour
-const githubCache = new LRUCache<TContributionResponse>({
-  maxSize: 5,
-  defaultTTL: 60 * 60 * 1000, // 1 hour
+const githubCache = new AsyncTTLCache<TContributionResponse>({
+  freshTTL: 60 * 60 * 1000,
+  staleTTL: 24 * 60 * 60 * 1000,
 })
 
 export const getGithubContributions = createServerFn().handler(
-  async (): Promise<TContributionResponse> => {
-    const cacheKey = 'github-contributions'
-    const cached = githubCache.get(cacheKey)
-
-    if (cached) {
-      return cached
-    }
-
-    const response = await fetch(
-      'https://github-contributions-api.jogruber.de/v4/anshoriacc?y=last',
-    )
-
-    if (!response.ok) {
-      throw new Error(
-        `GitHub contributions request failed with status ${response.status}`,
+  (): Promise<TContributionResponse> =>
+    githubCache.get(async () => {
+      const response = await fetch(
+        'https://github-contributions-api.jogruber.de/v4/anshoriacc?y=last',
       )
-    }
 
-    const data = (await response.json()) as TContributionResponse
+      if (!response.ok) {
+        throw new Error(
+          `GitHub contributions request failed with status ${response.status}`,
+        )
+      }
 
-    githubCache.set(cacheKey, data)
-
-    return data
-  },
+      return (await response.json()) as TContributionResponse
+    }),
 )
 
 type TContributionResponse = {

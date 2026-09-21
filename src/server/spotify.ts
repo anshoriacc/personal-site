@@ -1,7 +1,7 @@
 import { createServerFn } from '@tanstack/react-start'
 
 import { getServerEnv } from '@/constants/env'
-import { LRUCache } from '@/lib/lru-cache'
+import { AsyncTTLCache } from '@/lib/async-ttl-cache'
 
 const { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, SPOTIFY_REFRESH_TOKEN } =
   getServerEnv()
@@ -15,6 +15,10 @@ const BASIC_AUTH = Buffer.from(
   `${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`,
 ).toString('base64')
 const RETRYABLE_SPOTIFY_STATUSES = new Set([401, 403, 500, 502, 503, 504])
+const SPOTIFY_FALLBACK: TSpotifyDisplayData = {
+  isCurrentlyPlaying: false,
+  track: null,
+}
 
 type TSpotifyAccessToken = {
   value: string
@@ -223,21 +227,16 @@ function normalizeTrack(track: TSpotifyTrack): TSpotifyDisplayTrack {
   }
 }
 
-const spotifyCache = new LRUCache<TSpotifyDisplayData>({
-  maxSize: 10,
-  defaultTTL: 15 * 1000,
+const spotifyCache = new AsyncTTLCache<TSpotifyDisplayData>({
+  freshTTL: 15 * 1000,
+  staleTTL: 5 * 60 * 1000,
 })
 
-export const getCurrentlyPlaying = createServerFn().handler(async () => {
-  const cacheKey = 'currently-playing'
-  const cached = spotifyCache.get(cacheKey)
-
-  if (cached) return cached
-
+async function loadCurrentlyPlaying(): Promise<TSpotifyDisplayData> {
   const accessToken = await getSpotifyAccessToken()
 
   if (!accessToken) {
-    return { isCurrentlyPlaying: false, track: null }
+    return SPOTIFY_FALLBACK
   }
 
   const [currentlyPlaying, recentlyPlayed] = await Promise.all([
@@ -266,6 +265,9 @@ export const getCurrentlyPlaying = createServerFn().handler(async () => {
     track: track ? normalizeTrack(track) : null,
   }
 
-  spotifyCache.set(cacheKey, result)
   return result
-})
+}
+
+export const getCurrentlyPlaying = createServerFn().handler(() =>
+  spotifyCache.get(loadCurrentlyPlaying),
+)
