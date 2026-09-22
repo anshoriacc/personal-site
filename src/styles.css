@@ -144,8 +144,25 @@
   @apply outline-1 -outline-offset-1 outline-black/8 dark:outline-white/8;
 }
 
-.dark .blog-content .shiki,
-.dark .blog-content .shiki span {
-  color: var(--shiki-dark) !important;
-  background-color: var(--shiki-dark-bg) !important;
+/* Follow the time-based selection palette; theme only adjusts contrast. */
+.blog-content .shiki {
+  --code-background: #fafafa;
+  --code-accent: var(--color-amber-700);
+  --code-string: var(--color-amber-800);
+
+  @variant dark {
+    --code-background: #171717;
+    --code-accent: var(--color-amber-300);
+    --code-string: var(--color-amber-200);
+  }
+
+  body[class~='selection:bg-sky-200'] & {
+    --code-accent: var(--color-sky-700);
+    --code-string: var(--color-sky-800);
+
+    @variant dark {
+      --code-accent: var(--color-sky-300);
+      --code-string: var(--color-sky-200);
+    }
+  }
 }

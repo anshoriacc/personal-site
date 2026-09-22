@@ -29,7 +29,21 @@ const config = defineConfig({
         rehypeSlug,
         [
           rehypeShiki,
-          { themes: { light: 'github-light', dark: 'github-dark' } },
+          {
+            theme: 'vesper',
+            colorReplacements: {
+              '#101010': 'var(--code-background)',
+              '#fff': 'var(--foreground)',
+              '#ffff': 'var(--foreground)',
+              '#a0a0a0': 'var(--muted-foreground)',
+              '#8b8b8b94': 'var(--muted-foreground)',
+              '#ffc799': 'var(--code-accent)',
+              '#99ffe4': 'var(--code-string)',
+              '#ff8080': 'var(--destructive)',
+              '#65737e': 'var(--muted-foreground)',
+              '#00000050': 'var(--muted-foreground)',
+            },
+          },
         ],
       ],
     }),
