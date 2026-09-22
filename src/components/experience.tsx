@@ -139,7 +139,7 @@ export const SimplifiedExperience = () => {
 
       <div className="space-y-5">
         {experiences.map((exp) => (
-          <article key={exp.company} className="flex items-center gap-3">
+          <div key={exp.company} className="group flex items-center gap-3">
             <div className="min-w-0 space-y-1">
               <h3 className="text-foreground text-base leading-tight font-medium">
                 {exp.url ? (
@@ -167,7 +167,7 @@ export const SimplifiedExperience = () => {
 
             <span
               aria-hidden="true"
-              className="min-w-4 flex-1 border-t border-dashed"
+              className="min-w-4 group-hover:border-ring flex-1 border-t border-dashed transition-colors"
             />
 
             <span className="text-muted-foreground shrink-0 text-xs whitespace-nowrap tabular-nums">
@@ -176,7 +176,7 @@ export const SimplifiedExperience = () => {
                 {exp.roles[0].endDate}
               </span>
             </span>
-          </article>
+          </div>
         ))}
       </div>
     </section>

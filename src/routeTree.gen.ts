@@ -15,6 +15,8 @@ import { Route as homeLayoutRouteImport } from './routes/(home)/_layout'
 import { Route as ApiOgRouteImport } from './routes/api/og'
 import { Route as homeLayoutIndexRouteImport } from './routes/(home)/_layout/index'
 import { Route as homeLayoutWorkRouteImport } from './routes/(home)/_layout/work'
+import { Route as homeLayoutBlogIndexRouteImport } from './routes/(home)/_layout/blog/index'
+import { Route as homeLayoutBlogSlugRouteImport } from './routes/(home)/_layout/blog/$slug'
 import { Route as homeLayoutPlaygroundXlsxRouteImport } from './routes/(home)/_layout/playground/xlsx'
 
 const HealthRoute = HealthRouteImport.update({
@@ -46,6 +48,16 @@ const homeLayoutWorkRoute = homeLayoutWorkRouteImport.update({
   path: '/work',
   getParentRoute: () => homeLayoutRoute,
 } as any)
+const homeLayoutBlogIndexRoute = homeLayoutBlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => homeLayoutRoute,
+} as any)
+const homeLayoutBlogSlugRoute = homeLayoutBlogSlugRouteImport.update({
+  id: '/blog/$slug',
+  path: '/blog/$slug',
+  getParentRoute: () => homeLayoutRoute,
+} as any)
 const homeLayoutPlaygroundXlsxRoute =
   homeLayoutPlaygroundXlsxRouteImport.update({
     id: '/playground/xlsx',
@@ -59,7 +71,9 @@ export interface FileRoutesByFullPath {
   '/api/og': typeof ApiOgRoute
   '/work': typeof homeLayoutWorkRoute
   '/': typeof homeLayoutIndexRoute
+  '/blog/$slug': typeof homeLayoutBlogSlugRoute
   '/playground/xlsx': typeof homeLayoutPlaygroundXlsxRoute
+  '/blog/': typeof homeLayoutBlogIndexRoute
 }
 export interface FileRoutesByTo {
   '/health': typeof HealthRoute
@@ -67,7 +81,9 @@ export interface FileRoutesByTo {
   '/api/og': typeof ApiOgRoute
   '/work': typeof homeLayoutWorkRoute
   '/': typeof homeLayoutIndexRoute
+  '/blog/$slug': typeof homeLayoutBlogSlugRoute
   '/playground/xlsx': typeof homeLayoutPlaygroundXlsxRoute
+  '/blog': typeof homeLayoutBlogIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -77,15 +93,31 @@ export interface FileRoutesById {
   '/api/og': typeof ApiOgRoute
   '/(home)/_layout/work': typeof homeLayoutWorkRoute
   '/(home)/_layout/': typeof homeLayoutIndexRoute
+  '/(home)/_layout/blog/$slug': typeof homeLayoutBlogSlugRoute
   '/(home)/_layout/playground/xlsx': typeof homeLayoutPlaygroundXlsxRoute
+  '/(home)/_layout/blog/': typeof homeLayoutBlogIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/health' | '/sitemap.xml' | '/api/og' | '/work' | '/' | '/playground/xlsx'
+    | '/health'
+    | '/sitemap.xml'
+    | '/api/og'
+    | '/work'
+    | '/'
+    | '/blog/$slug'
+    | '/playground/xlsx'
+    | '/blog/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    '/health' | '/sitemap.xml' | '/api/og' | '/work' | '/' | '/playground/xlsx'
+    | '/health'
+    | '/sitemap.xml'
+    | '/api/og'
+    | '/work'
+    | '/'
+    | '/blog/$slug'
+    | '/playground/xlsx'
+    | '/blog'
   id:
     | '__root__'
     | '/health'
@@ -94,7 +126,9 @@ export interface FileRouteTypes {
     | '/api/og'
     | '/(home)/_layout/work'
     | '/(home)/_layout/'
+    | '/(home)/_layout/blog/$slug'
     | '/(home)/_layout/playground/xlsx'
+    | '/(home)/_layout/blog/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -148,6 +182,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof homeLayoutWorkRouteImport
       parentRoute: typeof homeLayoutRoute
     }
+    '/(home)/_layout/blog/': {
+      id: '/(home)/_layout/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof homeLayoutBlogIndexRouteImport
+      parentRoute: typeof homeLayoutRoute
+    }
+    '/(home)/_layout/blog/$slug': {
+      id: '/(home)/_layout/blog/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof homeLayoutBlogSlugRouteImport
+      parentRoute: typeof homeLayoutRoute
+    }
     '/(home)/_layout/playground/xlsx': {
       id: '/(home)/_layout/playground/xlsx'
       path: '/playground/xlsx'
@@ -161,13 +209,17 @@ declare module '@tanstack/react-router' {
 interface homeLayoutRouteChildren {
   homeLayoutWorkRoute: typeof homeLayoutWorkRoute
   homeLayoutIndexRoute: typeof homeLayoutIndexRoute
+  homeLayoutBlogSlugRoute: typeof homeLayoutBlogSlugRoute
   homeLayoutPlaygroundXlsxRoute: typeof homeLayoutPlaygroundXlsxRoute
+  homeLayoutBlogIndexRoute: typeof homeLayoutBlogIndexRoute
 }
 
 const homeLayoutRouteChildren: homeLayoutRouteChildren = {
   homeLayoutWorkRoute: homeLayoutWorkRoute,
   homeLayoutIndexRoute: homeLayoutIndexRoute,
+  homeLayoutBlogSlugRoute: homeLayoutBlogSlugRoute,
   homeLayoutPlaygroundXlsxRoute: homeLayoutPlaygroundXlsxRoute,
+  homeLayoutBlogIndexRoute: homeLayoutBlogIndexRoute,
 }
 
 const homeLayoutRouteWithChildren = homeLayoutRoute._addFileChildren(

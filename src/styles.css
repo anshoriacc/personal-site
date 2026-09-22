@@ -5,11 +5,13 @@
 
 @source './routes';
 @source './components';
+@source './content';
 
-@custom-variant dark (&:is(.dark *):not(.theme-light, .theme-light *));
+@custom-variant dark (&:is(.dark *, :root:not(.dark) .theme-inverted *):not(.theme-light, .theme-light *, :root.dark .theme-inverted *));
 
 :root,
-.theme-light {
+.theme-light,
+:root.dark .theme-inverted {
   color-scheme: light;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -45,7 +47,8 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
-.dark {
+.dark,
+:root:not(.dark) .theme-inverted {
   color-scheme: dark;
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
@@ -135,4 +138,14 @@
 }
 
 @layer utilities {
+}
+
+.blog-content :where(img, video) {
+  @apply outline-1 -outline-offset-1 outline-black/8 dark:outline-white/8;
+}
+
+.dark .blog-content .shiki,
+.dark .blog-content .shiki span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
 }

@@ -1,0 +1,87 @@
+---
+title: Writing with components
+description: A small example of words, code, and something you can play with.
+date: '2026-09-19'
+---
+
+import { CounterDemo } from '@/components/blog/counter-demo'
+
+Some ideas are easier to explain when you can try them. This example post mixes ordinary Markdown with a small React component.
+
+## Words first
+
+Start with text. Add **emphasis**, a [useful link](https://mdxjs.com/), or a short list when it helps:
+
+- Keep the page easy to read.
+- Give each idea room to breathe.
+- Make examples small enough to understand.
+
+> An example you can change often says more than a screenshot.
+
+## A working example
+
+This counter lives inside the post. Try it, then reset it.
+
+<CounterDemo />
+
+The component is imported just like it would be in any React file:
+
+```mdx
+import { CounterDemo } from '@/components/blog/counter-demo'
+
+<CounterDemo />
+```
+
+## A picture
+
+A still image can give an idea a little more context. This one uses ordinary Markdown image syntax.
+
+![A pine forest beneath a granite mountain](https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=1280&h=800&q=85)
+
+```md
+![Describe the image](/blog/your-picture.jpg)
+```
+
+## A video
+
+Sometimes movement tells the story better. Press play to watch this short clip of flowers opening.
+
+<video
+  controls
+  playsInline
+  preload="metadata"
+  width="960"
+  height="540"
+  aria-label="A close-up of flowers opening"
+  className="my-6 h-auto w-full rounded-lg"
+>
+  <source
+    src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"
+    type="video/mp4"
+  />
+  Your browser does not support embedded video.{' '}
+  <a href="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4">
+    Open the video.
+  </a>
+</video>
+
+The player uses native controls and waits for you to press play. The sample clip is from [MDN’s public-domain media collection](https://github.com/mdn/interactive-examples/tree/main/live-examples/media/cc0-videos).
+
+```mdx
+<video
+  controls
+  playsInline
+  preload="metadata"
+  className="my-6 w-full rounded-lg"
+>
+  <source src="/blog/your-video.mp4" type="video/mp4" />
+</video>
+```
+
+Images and videos share a subtle inset outline in both themes. Put your own files in `public/blog` and use `/blog/filename` in the post.
+
+## Room to explore
+
+The same approach works for diagrams, charts, and small tools. Keep the writing in an `.mdx` file and the interactive parts in React components.
+
+This is a starter post. Replace it with your own words when you’re ready.

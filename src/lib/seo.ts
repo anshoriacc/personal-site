@@ -13,6 +13,8 @@ type PageMetaOptions = {
   ogDescription?: string
   ogSubtitle?: string
   noindex?: boolean
+  type?: 'website' | 'article'
+  publishedTime?: string
 }
 
 type PageMeta = {
@@ -29,6 +31,8 @@ export function createPageMeta(options: PageMetaOptions = {}): PageMeta {
     ogDescription,
     ogSubtitle,
     noindex = false,
+    type = 'website',
+    publishedTime,
   } = options
 
   const fullTitle = title ? `${title} - ${SITE_NAME}` : SITE_NAME
@@ -51,7 +55,10 @@ export function createPageMeta(options: PageMetaOptions = {}): PageMeta {
     { property: 'og:image', content: ogImageUrl },
     { property: 'og:image:width', content: '1200' },
     { property: 'og:image:height', content: '630' },
-    { property: 'og:type', content: 'website' },
+    { property: 'og:type', content: type },
+    ...(publishedTime
+      ? [{ property: 'article:published_time', content: publishedTime }]
+      : []),
     { property: 'og:locale', content: 'en_US' },
     { property: 'og:site_name', content: SITE_NAME },
     { name: 'twitter:card', content: 'summary_large_image' },

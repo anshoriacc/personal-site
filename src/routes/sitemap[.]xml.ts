@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { posts } from 'virtual:blog'
 
 export const Route = createFileRoute('/sitemap.xml')({
   server: {
@@ -10,6 +11,12 @@ export const Route = createFileRoute('/sitemap.xml')({
         const urls = [
           { loc: '/', priority: '1.0', changefreq: 'weekly' },
           { loc: '/work', priority: '0.8', changefreq: 'monthly' },
+          { loc: '/blog', priority: '0.8', changefreq: 'weekly' },
+          ...posts.map((post) => ({
+            loc: `/blog/${post.slug}`,
+            priority: '0.7',
+            changefreq: 'monthly',
+          })),
         ]
 
         const urlEntries = urls

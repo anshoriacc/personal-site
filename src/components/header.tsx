@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link, RouterState, useRouterState } from '@tanstack/react-router'
-import { IconFolderCode, IconHome } from '@tabler/icons-react'
+import { IconFolderCode, IconHome, IconNotebook } from '@tabler/icons-react'
 import {
   useReducedMotion,
   AnimatePresence,
@@ -56,6 +56,7 @@ const REVEAL_VARIANTS: Variants = {
 const MENU_ITEMS = [
   { to: '/', label: 'Home', icon: IconHome },
   { to: '/work', label: 'Work', icon: IconFolderCode },
+  { to: '/blog', label: 'Blog', icon: IconNotebook },
 ] as const
 
 const canUseHover = () => window.matchMedia(HOVER_MEDIA_QUERY).matches

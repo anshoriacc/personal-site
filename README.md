@@ -4,6 +4,12 @@
 
 A personal website built with React, TypeScript, and TanStack Start featuring Spotify integration, GitHub contributions visualization, and an animated clock that adapts to day/night themes.
 
+## Blog
+
+Write posts in `src/content/blog/*.mdx` with Markdown and imported React components.
+See [the blog guide](docs/blog.md) for the implementation plan, frontmatter, drafts,
+and publishing workflow.
+
 ## Tech Stack
 
 - **Framework**: [TanStack Start](https://tanstack.com/start)
