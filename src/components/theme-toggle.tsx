@@ -2,7 +2,7 @@ import { AnimatePresence, motion, type Variants } from 'motion/react'
 import { IconMoon, IconSun } from '@tabler/icons-react'
 
 import { cn } from '@/lib/utils'
-import { useSetTheme, useTheme } from '@/stores/theme.store'
+import { useToggleTheme, useTheme } from '@/stores/theme.store'
 import { Button } from '@/components/ui/button'
 
 type Props = {
@@ -29,16 +29,13 @@ const ICON_TRANSITION = {
 
 export const ThemeToggle = ({ className }: Props) => {
   const theme = useTheme()
-  const setTheme = useSetTheme()
-
-  const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark')
-  }
+  const toggleTheme = useToggleTheme()
 
   return (
     <Button
       variant="ghost"
       onClick={toggleTheme}
+      aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
       className={cn(
         'text-muted-foreground hover:text-foreground aspect-square size-7 h-fit rounded-md border-0 p-0 transition-[color,background-color,transform] duration-160 ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.97] motion-reduce:transform-none motion-reduce:transition-none',
         className,
@@ -65,7 +62,6 @@ export const ThemeToggle = ({ className }: Props) => {
           </motion.span>
         </AnimatePresence>
       </span>
-      <span className="sr-only">Toggle theme</span>
     </Button>
   )
 }

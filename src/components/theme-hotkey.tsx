@@ -1,13 +1,10 @@
 import { useHotkey } from '@tanstack/react-hotkeys'
-import { useSetTheme, useTheme } from '@/stores/theme.store'
+import { useToggleTheme } from '@/stores/theme.store'
 
 export const ThemeHotkey = () => {
-  const theme = useTheme()
-  const setTheme = useSetTheme()
+  const toggleTheme = useToggleTheme()
 
-  useHotkey('T', () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark')
-  })
+  useHotkey('T', toggleTheme)
 
   return null
 }
