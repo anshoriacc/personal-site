@@ -3,8 +3,9 @@ import { setThemeServerFn, type TTheme } from '@/server/theme'
 
 interface ThemeStore {
   theme: TTheme
-  setTheme: (theme: TTheme) => Promise<void>
-  initTheme: (theme: TTheme) => void
+  override: TTheme | null
+  toggleTheme: () => Promise<void>
+  initTheme: (theme: TTheme, override: TTheme | null) => void
 }
 
 type TResolvedTheme = TTheme
@@ -53,17 +54,24 @@ const getInitialTheme = (): TTheme => {
 
 export const useThemeStore = create<ThemeStore>((set) => ({
   theme: getInitialTheme(),
+  override: null,
 
-  initTheme: (theme) => {
-    set({ theme })
+  initTheme: (theme, override) => {
+    set({ theme, override })
   },
 
-  setTheme: async (theme) => {
-    set({ theme })
+  toggleTheme: async () => {
+    const theme = useThemeStore.getState().theme === 'dark' ? 'light' : 'dark'
+    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)')
+      .matches
+      ? 'dark'
+      : 'light'
+    const override = theme === systemTheme ? null : theme
+    set({ theme, override })
     applyTheme(theme)
 
     try {
-      await setThemeServerFn({ data: theme })
+      await setThemeServerFn({ data: override })
     } catch (error) {
       console.error('Failed to persist theme:', error)
     }
@@ -71,4 +79,4 @@ export const useThemeStore = create<ThemeStore>((set) => ({
 }))
 
 export const useTheme = () => useThemeStore((state) => state.theme)
-export const useSetTheme = () => useThemeStore((state) => state.setTheme)
+export const useToggleTheme = () => useThemeStore((state) => state.toggleTheme)

@@ -110,7 +110,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
     : 'selection:bg-neutral-200 selection:text-neutral-900 dark:selection:bg-neutral-900 dark:selection:text-neutral-200'
 
   return (
-    <html lang="en" className={theme} suppressHydrationWarning>
+    <html lang="en" className={theme ?? 'dark'} suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
