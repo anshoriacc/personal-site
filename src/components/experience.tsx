@@ -21,7 +21,7 @@ export const Experience = () => {
           ]
 
           return (
-            <article key={exp.company} className="space-y-3">
+            <article key={exp.company} className="group space-y-3">
               <div className="flex items-center gap-3">
                 <h3 className="text-foreground min-w-0 text-base font-medium">
                   {exp.url ? (
@@ -44,7 +44,7 @@ export const Experience = () => {
 
                 <span
                   aria-hidden="true"
-                  className="min-w-4 flex-1 border-t border-dashed"
+                  className="group-hover:border-ring flex-1 border-t border-dashed transition-colors"
                 />
 
                 <span className="text-muted-foreground shrink-0 text-xs whitespace-nowrap tabular-nums">
@@ -143,7 +143,7 @@ export const SimplifiedExperience = () => {
 
       <div className="space-y-5">
         {experiences.map((exp) => (
-          <article key={exp.company} className="flex items-center gap-3 group">
+          <article key={exp.company} className="group flex items-center gap-3">
             <div>
               <p className="text-muted-foreground text-xs">
                 {exp.roles[0]?.position}
@@ -171,7 +171,7 @@ export const SimplifiedExperience = () => {
 
             <span
               aria-hidden="true"
-              className="flex-1 border-t border-dashed group-hover:border-ring transition-colors"
+              className="group-hover:border-ring flex-1 border-t border-dashed transition-colors"
             />
 
             <span className="text-muted-foreground shrink-0 text-xs whitespace-nowrap tabular-nums">
