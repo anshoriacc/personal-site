@@ -141,7 +141,7 @@
 }
 
 .blog-content :where(img, video) {
-  @apply outline-1 -outline-offset-1 outline-black/8 dark:outline-white/8;
+  @apply outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10;
 }
 
 /* Follow the time-based selection palette; theme only adjusts contrast. */

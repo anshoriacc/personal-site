@@ -82,7 +82,7 @@ function BlogPostPage() {
           </time>
         </header>
 
-        <div className="blog-content mt-10 min-w-0 text-[0.9375rem] leading-7 wrap-break-word *:first:mt-0 *:last:mb-0">
+        <div className="blog-content cursor-auto mt-10 min-w-0 text-[0.9375rem] leading-7 wrap-break-word *:first:mt-0 *:last:mb-0">
           <Content components={mdxComponents} />
         </div>
       </article>
